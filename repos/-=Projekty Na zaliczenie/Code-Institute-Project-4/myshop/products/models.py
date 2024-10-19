@@ -32,3 +32,12 @@ class Product(models.Model):
 class Category(models.Model):
     # The name of the category (e.g., Electronics, Clothing, etc.)
     name = models.CharField(max_length=255)
+    
+    # A short description for the category (optional)
+    description = models.TextField(blank=True, null=True)
+    
+    # This field will create a URL-friendly version of the category name
+    slug = models.SlugField(unique=True)
+
+    def __str__(self):
+        return self.name
