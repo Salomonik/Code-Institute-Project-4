@@ -28,3 +28,7 @@ class Product(models.Model):
     # String representation of the product
     def __str__(self):
         return self.name
+    
+class Category(models.Model):
+    # The name of the category (e.g., Electronics, Clothing, etc.)
+    name = models.CharField(max_length=255)
