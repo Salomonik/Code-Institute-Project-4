@@ -23,6 +23,7 @@ def category_products(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
     
     # Get all products that belong to this category
-    products = category.products.all()
+    products = category.product_set.all()
+
     
     return render(request, 'products/category_products.html', {'category': category, 'products': products})
