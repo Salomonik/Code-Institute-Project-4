@@ -1,27 +1,16 @@
-nav ul {
-	list-style-type: none;
-	padding: 0;
-  }
-  
-  nav ul li {
-	display: inline-block;
-	position: relative;
-  }
-  
-  nav ul li ul {
-	display: none;
-	position: absolute;
-	top: 100%;
-	left: 0;
-	list-style-type: none;
-	padding: 0;
-  }
-  
-  nav ul li:hover ul {
-	display: block;
-  }
-  
-  nav ul li ul li {
-	display: block;
-  }
-  
+.navbar {
+    padding: 15px 20px;
+}
+
+.navbar-brand img {
+    max-width: 150px;
+}
+
+.navbar-nav .nav-link {
+    font-size: 1.1rem;
+    margin-right: 15px;
+}
+
+.dropdown-menu {
+    background-color: #f8f9fa;
+}
