@@ -55,6 +55,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'myshop.urls'
 
+MEDIA_URL = '/media/'  # Public URL for accessing media files
+MEDIA_ROOT = BASE_DIR / 'media'  # Physical directory to store media files
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
