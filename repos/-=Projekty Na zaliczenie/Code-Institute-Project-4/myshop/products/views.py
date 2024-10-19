@@ -47,3 +47,9 @@ def category_products(request, category_slug):
 
     
     return render(request, 'products/category_products.html', {'category': category, 'products': products})
+
+from .models import Category
+
+def category_list(request):
+    categories = Category.objects.all()
+    return {'categories': categories}
