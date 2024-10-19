@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Products in {{ category.name }}{% endblock %}
+
+{% block content %}
+    <h1>Products in {{ category.name }}</h1>
+
+    <ul>
+        {% for product in products %}
+            <li>
+                <a href="{% url 'product_detail' product.id %}">
+                    <strong>{{ product.name }}</strong>
+                </a> - ${{ product.price }} <br>
+                {{ product.description }} <br>
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" width="200px">
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
