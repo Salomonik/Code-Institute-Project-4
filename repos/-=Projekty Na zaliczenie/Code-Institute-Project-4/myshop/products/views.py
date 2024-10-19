@@ -3,22 +3,31 @@ from .models import Product, Category
 
 # View to list all products on the main page
 def product_list(request):
-   # Get the sorting option from the query parameters (default is "name")
+    # Get the selected sorting option from the query parameters
     sort_by = request.GET.get('sort', 'name')
-    
-    # Sort products based on the selected option
-    if sort_by == 'price':
-        products = Product.objects.all().order_by('price')
-    elif sort_by == 'price_desc':
-        products = Product.objects.all().order_by('-price')
-    elif sort_by == 'date':
-        products = Product.objects.all().order_by('id')
-    elif sort_by == 'name':
-        products = Product.objects.all().order_by('name')
-    else:
-        products = Product.objects.all()  # Default order
 
-    return render(request, 'products/product_list.html', {'products': products})
+    # Get the selected category from the query parameters
+    category_slug = request.GET.get('category')
+
+    # Filter products by category if category_slug is present
+    if category_slug:
+        category = Category.objects.get(slug=category_slug)
+        products = Product.objects.filter(category=category)
+    else:
+        products = Product.objects.all()
+
+    # Apply sorting
+    if sort_by == 'price':
+        products = products.order_by('price')
+    elif sort_by == 'price_desc':
+        products = products.order_by('-price')
+    elif sort_by == 'date':
+        products = products.order_by('id')
+    else:
+        products = products.order_by('name')
+
+    categories = Category.objects.all()  # Get all categories for the filter menu
+    return render(request, 'products/product_list.html', {'products': products, 'categories': categories})
 
 # View to display product details
 def product_detail(request, product_id):
