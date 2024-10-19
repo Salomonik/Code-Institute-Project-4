@@ -6,7 +6,18 @@ def product_list(request):
    # Get the sorting option from the query parameters (default is "name")
     sort_by = request.GET.get('sort', 'name')
     
-    # Return the list of products to be rendered in the template
+    # Sort products based on the selected option
+    if sort_by == 'price':
+        products = Product.objects.all().order_by('price')
+    elif sort_by == 'price_desc':
+        products = Product.objects.all().order_by('-price')
+    elif sort_by == 'date':
+        products = Product.objects.all().order_by('id')
+    elif sort_by == 'name':
+        products = Product.objects.all().order_by('name')
+    else:
+        products = Product.objects.all()  # Default order
+
     return render(request, 'products/product_list.html', {'products': products})
 
 # View to display product details
