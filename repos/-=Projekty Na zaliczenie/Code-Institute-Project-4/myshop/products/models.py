@@ -24,6 +24,9 @@ class Product(models.Model):
     
     # Automatically updates the date when the product is updated
     updated_at = models.DateTimeField(auto_now=True)
+    
+     # Add a foreign key to Category (many-to-one relationship)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
 
     # String representation of the product
     def __str__(self):
