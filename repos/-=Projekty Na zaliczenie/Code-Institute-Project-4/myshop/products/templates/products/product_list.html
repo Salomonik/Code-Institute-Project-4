@@ -4,6 +4,16 @@
 
 {% block content %}
     <h1>Product List</h1>
+	    <!-- Filtering by category -->
+		<div class="filter-options">
+			<label>Filter by category:</label>
+			<ul>
+				<li><a href="?">All Categories</a></li>
+				{% for category in categories %}
+					<li><a href="?category={{ category.slug }}">{{ category.name }}</a></li>
+				{% endfor %}
+			</ul>
+		</div>
     <!-- Sorting options -->
     <div class="sort-options">
         <label>Sort by:</label>
