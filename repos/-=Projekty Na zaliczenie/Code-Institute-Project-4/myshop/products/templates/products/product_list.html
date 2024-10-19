@@ -8,7 +8,9 @@
     <ul>
         {% for product in products %}
             <li>
-                <strong>{{ product.name }}</strong> - ${{ product.price }} <br>
+                <a href="{% url 'product_detail' product.id %}">
+                    <strong>{{ product.name }}</strong>
+                </a> - ${{ product.price }} <br>
                 {{ product.description }} <br>
                 {% if product.image %}
                     <img src="{{ product.image.url }}" alt="{{ product.name }}" width="200px">
