@@ -98,6 +98,7 @@
 					<div class="mt-3">
 						<a href="#" id="show-login">Already have an account? Login here</a>
 					</div>
+				</div>
 
 
 				</div>
@@ -172,51 +173,22 @@
 	</script>
 	<script>
 		document.addEventListener('DOMContentLoaded', function () {
-			const form = document.querySelector('form');
+			const form = document.querySelector('#register-form form');
+			const submitButton = form.querySelector('button[type="submit"]');
 
 			form.addEventListener('submit', function (event) {
-				event.preventDefault();  // Prevent default form submission
+				event.preventDefault();
 
 				const formData = new FormData(form);
 				const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-				fetch('/register/', {
+				submitButton.disabled = true;
+
+				fetch('{% url "register" %}', {
 					method: 'POST',
 					headers: {
 						'X-CSRFToken': csrfToken,
-						'X-Requested-With': 'XMLHttpRequest',  // Mark it as an AJAX request
-					},
-					body: formData
-				})
-					.then(response => response.json())
-					.then(data => {
-						if (data.success) {
-							alert('Registration successful!');
-							// Optionally redirect or close form
-						} else {
-							alert('Registration failed: ' + JSON.stringify(data.errors));
-						}
-					})
-					.catch(error => {
-						console.error('Error:', error);
-					});
-			});
-		});
-
-		document.addEventListener('DOMContentLoaded', function () {
-			const form = document.querySelector('form');
-
-			form.addEventListener('submit', function (event) {
-				event.preventDefault();  // Prevent default form submission
-
-				const formData = new FormData(form);  // Collect form data
-				const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-
-				fetch('/register/', {
-					method: 'POST',
-					headers: {
-						'X-CSRFToken': csrfToken,
-						'X-Requested-With': 'XMLHttpRequest',  // Mark it as an AJAX request
+						'X-Requested-With': 'XMLHttpRequest',
 					},
 					body: formData
 				})
@@ -224,24 +196,33 @@
 					.then(data => {
 						if (data.success) {
 							// Show success toast
-							const toastElement = document.getElementById('successToast');
-							const toast = new bootstrap.Toast(toastElement);
-							toast.show();
+							var successToast = new bootstrap.Toast(document.getElementById('successToast'))
+							successToast.show();
 
-							// Redirect to homepage after 3 seconds
+							// Redirect after a short delay
 							setTimeout(() => {
 								window.location.href = '/';
-							}, 3000);
+							}, 2000);
 						} else {
-							// Handle errors (showing in console for now)
-							alert('Registration failed: ' + JSON.stringify(data.errors));
+							submitButton.disabled = false;
+							// Display errors
+							for (let field in data.errors) {
+								let errorElement = document.createElement('div');
+								errorElement.className = 'invalid-feedback';
+								errorElement.textContent = data.errors[field][0];
+								let inputElement = form.querySelector(`[name="${field}"]`);
+								inputElement.classList.add('is-invalid');
+								inputElement.parentNode.appendChild(errorElement);
+							}
 						}
 					})
 					.catch(error => {
+						submitButton.disabled = false;
 						console.error('Error:', error);
 					});
 			});
 		});
+
 
 
 

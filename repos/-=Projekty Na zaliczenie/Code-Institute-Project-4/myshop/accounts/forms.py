@@ -2,15 +2,15 @@ from django import forms
 from django.contrib.auth.models import User
 
 class UserRegisterForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput, label='Password')  # Single password field
+    password = forms.CharField(widget=forms.PasswordInput)
 
     class Meta:
         model = User
         fields = ['username', 'email', 'password']
 
-    def save(self, commit=True):
-        user = super(UserRegisterForm, self).save(commit=False)
-        user.set_password(self.cleaned_data['password'])  # Hash password
-        if commit:
-            user.save()
-        return user
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if User.objects.filter(username=username).exists():
+            raise forms.ValidationError("This username is already taken. Please choose another.")
+        return username
+
