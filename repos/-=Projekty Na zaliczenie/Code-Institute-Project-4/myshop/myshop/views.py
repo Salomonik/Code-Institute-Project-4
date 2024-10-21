@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages  # For displaying messages to the user
 
@@ -20,11 +21,13 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Your account has been created! You can log in now.')
-            return redirect('login')  # Redirect to login after registration
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'success': True})
+            return redirect('login')
         else:
-            messages.error(request, 'Please correct the error below.')  # Error feedback
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'errors': form.errors})
     else:
         form = UserCreationForm()
-    
+
     return render(request, 'register.html', {'form': form})

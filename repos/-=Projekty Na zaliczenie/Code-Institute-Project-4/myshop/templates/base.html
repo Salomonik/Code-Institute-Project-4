@@ -102,7 +102,7 @@
 					<div class="mt-3">
 						<a href="#" id="show-login">Already have an account? Login here</a>
 					</div>
-					<a href="{% provider_login_url 'google' %}">Login with Google</a>
+
 
 				</div>
 
@@ -160,6 +160,39 @@
 			loginForm.style.display = 'block';
 			registerForm.style.display = 'none';
 		});
+	</script>
+	<script>
+		const form = document.getElementById('register-form');
+
+		form.addEventListener('submit', function (event) {
+			event.preventDefault();  // Prevent form from submitting the default way
+
+			const formData = new FormData(form);
+			const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+			fetch('/register/', {
+				method: 'POST',
+				headers: {
+					'X-CSRFToken': csrfToken
+				},
+				body: formData
+			})
+				.then(response => response.json())  // Expect JSON response
+				.then(data => {
+					if (data.success) {
+						alert('Registration successful!');
+						// Optionally close the off-canvas or redirect
+						document.querySelector('.offcanvas').classList.remove('show'); // Close off-canvas
+					} else {
+						// Handle form errors, e.g., show them in the form
+						alert('Registration failed: ' + JSON.stringify(data.errors));
+					}
+				})
+				.catch(error => {
+					console.error('Error:', error);
+				});
+		});
+
 	</script>
 
 </body>
