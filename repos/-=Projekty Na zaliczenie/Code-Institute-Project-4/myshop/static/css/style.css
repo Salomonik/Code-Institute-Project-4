@@ -14,3 +14,15 @@
 .dropdown-menu {
     background-color: #f8f9fa;
 }
+
+.offcanvas-header {
+    background-color: #f8f9fa;
+}
+
+.offcanvas-body {
+    padding: 20px;
+}
+
+.form-control {
+    border-radius: 0;
+}
