@@ -22,7 +22,7 @@
 			<div class="container">
 				<!-- Logo -->
 				<a class="navbar-brand" href="{% url 'home' %}">
-					<img src="{% static 'images/logo.png' %}" alt="Logo" width="120">
+					<img src="{% static 'images/logo.webp' %}" alt="Logo" width="120">
 				</a>
 
 				<!-- Toggle button for mobile view -->
@@ -82,15 +82,11 @@
 					<form method="POST" action="{% url 'register' %}">
 						{% csrf_token %}
 						<div class="mb-3">
-							<label for="first_name" class="form-label">First Name</label>
-							<input type="text" class="form-control" id="first_name" name="first_name" required>
+							<label for="username" class="form-label">Username</label>
+							<input type="text" class="form-control" id="username" name="username" required>
 						</div>
 						<div class="mb-3">
-							<label for="last_name" class="form-label">Last Name</label>
-							<input type="text" class="form-control" id="last_name" name="last_name" required>
-						</div>
-						<div class="mb-3">
-							<label for="email" class="form-label">Email address</label>
+							<label for="email" class="form-label">Email</label>
 							<input type="email" class="form-control" id="email" name="email" required>
 						</div>
 						<div class="mb-3">
@@ -112,11 +108,11 @@
 						{% csrf_token %}
 						<div class="mb-3">
 							<label for="email" class="form-label">Email *</label>
-							<input type="email" class="form-control" id="email" name="email" required>
+							<input type="email" class="form-control" id="login-email" name="email" required>
 						</div>
 						<div class="mb-3">
 							<label for="password" class="form-label">Password *</label>
-							<input type="password" class="form-control" id="password" name="password" required>
+							<input type="password" class="form-control" id="login-password" name="password" required>
 						</div>
 						<div class="mb-3">
 							<a href="{% url 'password_reset' %}">Forgot your password?</a>
@@ -129,6 +125,19 @@
 				</div>
 			</div>
 		</div>
+		<!-- Toast Container -->
+		<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+			<div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+				<div class="toast-header">
+					<strong class="me-auto">Success</strong>
+					<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+				</div>
+				<div class="toast-body">
+					Account created successfully!
+				</div>
+			</div>
+		</div>
+
 	</header>
 
 	<main class="container mt-4">
@@ -162,36 +171,79 @@
 		});
 	</script>
 	<script>
-		const form = document.getElementById('register-form');
+		document.addEventListener('DOMContentLoaded', function () {
+			const form = document.querySelector('form');
 
-		form.addEventListener('submit', function (event) {
-			event.preventDefault();  // Prevent form from submitting the default way
+			form.addEventListener('submit', function (event) {
+				event.preventDefault();  // Prevent default form submission
 
-			const formData = new FormData(form);
-			const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+				const formData = new FormData(form);
+				const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-			fetch('/register/', {
-				method: 'POST',
-				headers: {
-					'X-CSRFToken': csrfToken
-				},
-				body: formData
-			})
-				.then(response => response.json())  // Expect JSON response
-				.then(data => {
-					if (data.success) {
-						alert('Registration successful!');
-						// Optionally close the off-canvas or redirect
-						document.querySelector('.offcanvas').classList.remove('show'); // Close off-canvas
-					} else {
-						// Handle form errors, e.g., show them in the form
-						alert('Registration failed: ' + JSON.stringify(data.errors));
-					}
+				fetch('/register/', {
+					method: 'POST',
+					headers: {
+						'X-CSRFToken': csrfToken,
+						'X-Requested-With': 'XMLHttpRequest',  // Mark it as an AJAX request
+					},
+					body: formData
 				})
-				.catch(error => {
-					console.error('Error:', error);
-				});
+					.then(response => response.json())
+					.then(data => {
+						if (data.success) {
+							alert('Registration successful!');
+							// Optionally redirect or close form
+						} else {
+							alert('Registration failed: ' + JSON.stringify(data.errors));
+						}
+					})
+					.catch(error => {
+						console.error('Error:', error);
+					});
+			});
 		});
+
+		document.addEventListener('DOMContentLoaded', function () {
+			const form = document.querySelector('form');
+
+			form.addEventListener('submit', function (event) {
+				event.preventDefault();  // Prevent default form submission
+
+				const formData = new FormData(form);  // Collect form data
+				const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+				fetch('/register/', {
+					method: 'POST',
+					headers: {
+						'X-CSRFToken': csrfToken,
+						'X-Requested-With': 'XMLHttpRequest',  // Mark it as an AJAX request
+					},
+					body: formData
+				})
+					.then(response => response.json())
+					.then(data => {
+						if (data.success) {
+							// Show success toast
+							const toastElement = document.getElementById('successToast');
+							const toast = new bootstrap.Toast(toastElement);
+							toast.show();
+
+							// Redirect to homepage after 3 seconds
+							setTimeout(() => {
+								window.location.href = '/';
+							}, 3000);
+						} else {
+							// Handle errors (showing in console for now)
+							alert('Registration failed: ' + JSON.stringify(data.errors));
+						}
+					})
+					.catch(error => {
+						console.error('Error:', error);
+					});
+			});
+		});
+
+
 
 	</script>
 

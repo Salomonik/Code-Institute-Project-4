@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from django.contrib import messages  # For displaying messages to the user
+from accounts.forms import UserRegisterForm  # Import the form from forms.py
+from django import forms
 
 # Home page view
 def home(request):
@@ -16,18 +19,19 @@ def contact(request):
     return render(request, 'contact.html')
 
 # Register page view
+
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = UserRegisterForm(request.POST)
         if form.is_valid():
             form.save()
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'success': True})
-            return redirect('login')
+            messages.success(request, 'Account created successfully!')  # Use messages for feedback
+            return redirect('home')
         else:
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'success': False, 'errors': form.errors})
     else:
-        form = UserCreationForm()
-
+        form = UserRegisterForm()
     return render(request, 'register.html', {'form': form})
