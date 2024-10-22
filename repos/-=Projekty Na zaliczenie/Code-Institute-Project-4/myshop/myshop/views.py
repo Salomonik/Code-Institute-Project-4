@@ -39,3 +39,8 @@ def register(request):
             return JsonResponse({'success': False, 'errors': form.errors})
     else:
         return JsonResponse({'error': 'GET method not allowed'}, status=405)
+    
+def logout_view(request):
+    logout(request)
+    messages.success(request, 'You have been successfully logged out.')
+    return redirect('home')
