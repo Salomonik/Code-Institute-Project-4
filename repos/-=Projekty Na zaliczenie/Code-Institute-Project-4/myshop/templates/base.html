@@ -359,23 +359,24 @@
 		document.querySelectorAll('.add-to-cart').forEach(function (button) {
 			button.addEventListener('click', function (e) {
 				e.preventDefault();
-				const productId = this.dataset.productId;
+				const productId = this.dataset.productId;  // Get product ID
 
-				fetch('/cart/add/', {
+				fetch(`/cart/add/${productId}/`, {
 					method: 'POST',
 					headers: {
 						'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
 						'Content-Type': 'application/json',
 					},
-					body: JSON.stringify({ product_id: productId })
+					body: JSON.stringify({})
 				})
 					.then(response => response.json())
 					.then(data => {
 						document.getElementById('cart-subtotal').textContent = `Subtotal: $${data.cart_total_price}`;
-						// Update cart content dynamically
+						// Handle other updates like updating cart items
 					});
 			});
 		});
+
 
 	</script>
 	<script src="https://kit.fontawesome.com/ba182bdcb1.js" crossorigin="anonymous"></script>
