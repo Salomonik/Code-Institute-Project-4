@@ -75,7 +75,7 @@
 						</li>
 						{% else %}
 						<li class="nav-item">
-							<form method="POST" action="{% url 'logout' %}">
+							<form method="POST" action="{% url 'accounts:logout' %}">
 								{% csrf_token %}
 								<button type="submit" class="btn btn-link nav-link"
 									style="border: none; background: none;">
@@ -98,7 +98,7 @@
 			<div class="offcanvas-body">
 				<!-- Registration Form (initially shown) -->
 				<div id="register-form">
-					<form method="POST" action="{% url 'register' %}">
+					<form method="POST" action="{% url 'accounts:register' %}">
 						{% csrf_token %}
 						<div class="mb-3">
 							<label for="username" class="form-label">Username</label>
@@ -121,18 +121,15 @@
 
 				<!-- Login Form (hidden initially) -->
 				<div id="login-form" style="display: none;">
-					<form method="POST" action="{% url 'login' %}">
+					<form method="POST" action="{% url 'accounts:login' %}">
 						{% csrf_token %}
 						<div class="mb-3">
 							<label for="login-email" class="form-label">Email *</label>
-							<input type="email" class="form-control" id="login-email" name="username" required>
+							<input type="email" class="form-control" id="login-email" name="email" required>
 						</div>
 						<div class="mb-3">
 							<label for="login-password" class="form-label">Password *</label>
 							<input type="password" class="form-control" id="login-password" name="password" required>
-						</div>
-						<div class="mb-3">
-							<a href="{% url 'password_reset' %}">Forgot your password?</a>
 						</div>
 						<button type="submit" class="btn btn-primary">Sign In</button>
 					</form>
@@ -172,100 +169,140 @@
 
 	<!-- JavaScript to handle forms -->
 	<script>
-		<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const showRegisterLink = document.getElementById('show-register');
-        const showLoginLink = document.getElementById('show-login');
-        const loginForm = document.getElementById('login-form');
-        const registerForm = document.getElementById('register-form');
-        const offcanvasElement = document.getElementById('offcanvasRight');
-        const offcanvas = new bootstrap.Offcanvas(offcanvasElement);
+		document.addEventListener('DOMContentLoaded', function () {
+			const showRegisterLink = document.getElementById('show-register');
+			const showLoginLink = document.getElementById('show-login');
+			const loginForm = document.getElementById('login-form');
+			const registerForm = document.getElementById('register-form');
+			const offcanvasElement = document.getElementById('offcanvasRight');
+			const offcanvas = new bootstrap.Offcanvas(offcanvasElement);
 
-        // Toggle between login and register forms
-        showRegisterLink.addEventListener('click', function () {
-            loginForm.style.display = 'none';
-            registerForm.style.display = 'block';
-        });
+			// Toggle between login and register forms
+			showRegisterLink?.addEventListener('click', function (e) {
+				e.preventDefault();
+				loginForm.style.display = 'none';
+				registerForm.style.display = 'block';
+			});
 
-        showLoginLink.addEventListener('click', function () {
-            loginForm.style.display = 'block';
-            registerForm.style.display = 'none';
-        });
+			showLoginLink?.addEventListener('click', function (e) {
+				e.preventDefault();
+				loginForm.style.display = 'block';
+				registerForm.style.display = 'none';
+			});
 
-        // Function to handle form submissions
-        function handleFormSubmit(form, url) {
-            const submitButton = form.querySelector('button[type="submit"]');
+			// Function to handle form submissions
+			function handleFormSubmit(form, url) {
+				if (!form) return;
 
-            form.addEventListener('submit', function (event) {
-                event.preventDefault();
+				form.addEventListener('submit', async function (event) {
+					event.preventDefault();
+					console.log('Form submitted to URL:', url); // Debug log
 
-                const formData = new FormData(form);
-                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+					// Clear previous errors
+					form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+					form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+					const alertDiv = form.querySelector('.alert');
+					if (alertDiv) alertDiv.remove();
 
-                submitButton.disabled = true; // Disable button while submitting
+					const submitButton = form.querySelector('button[type="submit"]');
+					submitButton.disabled = true;
 
-                fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': csrfToken,
-                        'X-Requested-With': 'XMLHttpRequest', // Mark as AJAX
-                    },
-                    body: formData
-                })
-                .then(response => response.json())  // Expect JSON response
-                .then(data => {
-                    if (data.success) {
-                        // Show success toast
-                        const successToast = new bootstrap.Toast(document.getElementById('successToast'));
-                        document.querySelector('#successToast .toast-body').textContent = data.message || 'Action completed successfully!';
-                        successToast.show();
+					try {
+						const formData = new FormData(form);
+						// Log form data for debugging
+						for (let pair of formData.entries()) {
+							console.log(pair[0] + ': ' + pair[1]);
+						}
 
-                        // Close offcanvas
-                        offcanvas.hide();
+						const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+						console.log('CSRF Token present:', !!csrfToken); // Debug log
 
-                        // Redirect after short delay
-                        setTimeout(() => {
-                            window.location.href = '/';  // Redirect to homepage
-                        }, 1000);
-                    } else {
-                        submitButton.disabled = false;  // Re-enable submit button
-                        // Show errors
-                        for (let field in data.errors) {
-                            let errorElement = document.createElement('div');
-                            errorElement.className = 'invalid-feedback';
-                            errorElement.textContent = data.errors[field][0];
-                            let inputElement = form.querySelector(`[name="${field}"]`);
-                            inputElement.classList.add('is-invalid');
-                            inputElement.parentNode.appendChild(errorElement);
-                        }
-                    }
-                })
-                .catch(error => {
-                    submitButton.disabled = false;  // Re-enable on error
-                    console.error('Error:', error);
-                });
-            });
-        }
+						if (!csrfToken) {
+							throw new Error('CSRF token not found');
+						}
 
-        // Handle registration and login form submissions
-        handleFormSubmit(document.querySelector('#register-form form'), '{% url "register" %}');
-        handleFormSubmit(document.querySelector('#login-form form'), '{% url "login" %}');
-    });
+						const response = await fetch(url, {
+							method: 'POST',
+							headers: {
+								'X-CSRFToken': csrfToken,
+								'X-Requested-With': 'XMLHttpRequest',
+							},
+							body: formData
+						});
 
-    // Handle logout action
-    document.addEventListener('DOMContentLoaded', function () {
-        const logoutLink = document.querySelector('a[href="{% url 'logout' %}"]');
-        if (logoutLink) {
-            logoutLink.addEventListener('click', function (e) {
-                e.preventDefault();
-                if (confirm('Are you sure you want to logout?')) {
-                    window.location.href = this.href;
-                }
-            });
-        }
-    });
-</script>
+						console.log('Response status:', response.status); // Debug log
+						// Log raw response for debugging
+						const responseText = await response.text();
+						console.log('Raw response:', responseText);
 
+						let data;
+						try {
+							data = JSON.parse(responseText);
+						} catch (e) {
+							console.error('JSON parse error:', e);
+							throw new Error('Invalid JSON response from server');
+						}
+
+						if (response.ok && data.success) {
+							const successToast = new bootstrap.Toast(document.getElementById('successToast'));
+							document.querySelector('#successToast .toast-body').textContent =
+								data.message || 'Logged in successfully!';
+							successToast.show();
+
+							offcanvas.hide();
+
+							setTimeout(() => {
+								window.location.href = data.redirect_url || '/';
+							}, 1000);
+						} else {
+							submitButton.disabled = false;
+
+							if (data.errors) {
+								Object.entries(data.errors).forEach(([field, errors]) => {
+									const inputElement = form.querySelector(`[name="${field}"]`);
+									if (inputElement) {
+										inputElement.classList.add('is-invalid');
+										const errorElement = document.createElement('div');
+										errorElement.className = 'invalid-feedback';
+										errorElement.textContent = Array.isArray(errors) ? errors[0] : errors;
+										inputElement.parentNode.appendChild(errorElement);
+									}
+								});
+							}
+
+							// Pokaż ogólny komunikat błędu jeśli jest
+							if (data.message) {
+								const errorDiv = document.createElement('div');
+								errorDiv.className = 'alert alert-danger mt-3';
+								errorDiv.textContent = data.message;
+								form.insertBefore(errorDiv, form.firstChild);
+							}
+						}
+					} catch (error) {
+						console.error('Detailed error:', error); // Detailed error logging
+						submitButton.disabled = false;
+
+						const errorDiv = document.createElement('div');
+						errorDiv.className = 'alert alert-danger mt-3';
+						errorDiv.textContent = 'An error occurred: ' + error.message;
+						form.insertBefore(errorDiv, form.firstChild);
+					}
+				});
+			}
+
+			// Initialize form handlers
+			const loginFormElement = document.querySelector('#login-form form');
+			const registerFormElement = document.querySelector('#register-form form');
+
+			if (loginFormElement) {
+				console.log('Login form found, action URL:', loginFormElement.action); // Debug log
+				handleFormSubmit(loginFormElement, loginFormElement.action);
+			}
+			if (registerFormElement) {
+				console.log('Register form found, action URL:', registerFormElement.action); // Debug log
+				handleFormSubmit(registerFormElement, registerFormElement.action);
+			}
+		});
 	</script>
 </body>
 
