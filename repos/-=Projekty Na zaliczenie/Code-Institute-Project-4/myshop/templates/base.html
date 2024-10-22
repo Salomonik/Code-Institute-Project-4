@@ -87,7 +87,7 @@
 						{% endif %}
 						<li>
 							<button id="cart-button">
-								<i class="fas fa-shopping-cart"></i> Cart
+								<i class="fas fa-shopping-cart"></i>
 								<span id="cart-total-items">0</span>
 							</button>
 						</li>
@@ -157,14 +157,22 @@
 				<h2>Shopping Cart</h2>
 				<button id="close-cart" class="close-btn">&times;</button>
 			</div>
+
+			<!-- Container to dynamically load cart items -->
 			<div id="cart-items-container">
-				<!-- Cart items will be dynamically loaded here -->
+				<!-- Cart items will be dynamically loaded here from JavaScript -->
 			</div>
+
+			<!-- Message to display if the cart is empty -->
+			<p id="empty-cart-message" style="display: none;">Your cart is empty.</p>
+
+			<!-- Cart footer to display the subtotal and checkout button -->
 			<div class="cart-footer">
 				<p id="cart-subtotal">Subtotal: $0</p>
 				<button id="checkout-btn" class="btn">Checkout</button>
 			</div>
 		</div>
+
 
 
 
@@ -196,7 +204,7 @@
 			<span class="text-muted">© 2024 My Shop. All rights reserved.</span>
 		</div>
 	</footer>
-
+	<script src="https://kit.fontawesome.com/ba182bdcb1.js" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
 
 	<!-- JavaScript to handle forms -->
@@ -337,11 +345,6 @@
 		});
 
 
-
-
-
-
-
 		document.addEventListener("DOMContentLoaded", function () {
 			const cartButton = document.getElementById('cart-button'); // Cart button to open cart
 			const cartOffCanvas = document.getElementById('cart-off-canvas');
@@ -351,8 +354,13 @@
 			const cartSubtotal = document.getElementById('cart-subtotal');
 			const emptyCartMessage = document.getElementById('empty-cart-message');
 
+			// Debug: Check if the DOM elements are found
+			console.log('Cart button:', cartButton);
+			console.log('Cart off-canvas:', cartOffCanvas);
+
 			// Function to update cart display
 			function updateCartDisplay(items, totalPrice) {
+				console.log('Updating cart display with items:', items); // Debug: Log items being updated
 				cartItemsContainer.innerHTML = ''; // Clear existing items
 
 				if (items.length === 0) {
@@ -363,31 +371,35 @@
 					// Loop through items and add them to the cart
 					items.forEach(item => {
 						const itemHtml = `
-		            <div class="cart-item">
-		                <p>${item.name} - ${item.quantity} x $${item.price}</p>
-		            </div>`;
+		        <div class="cart-item">
+		            <p>${item.name} - ${item.quantity} x $${item.price}</p>
+		        </div>`;
 						cartItemsContainer.insertAdjacentHTML('beforeend', itemHtml);
 					});
 
 					// Update cart subtotal
 					cartSubtotal.textContent = `Subtotal: $${totalPrice}`;
+					console.log('Cart subtotal updated:', totalPrice); // Debug: Log subtotal
 				}
 			}
 
 			// Event to open the cart
 			cartButton.addEventListener('click', function () {
+				console.log('Cart button clicked'); // Debug: Log cart button click
 				cartOffCanvas.classList.add('show');
 				cartOverlay.classList.add('show');
 			});
 
 			// Event to close the cart
 			closeCartButton.addEventListener('click', function () {
+				console.log('Close cart button clicked'); // Debug: Log cart close button click
 				cartOffCanvas.classList.remove('show');
 				cartOverlay.classList.remove('show');
 			});
 
 			// Close cart when overlay is clicked
 			cartOverlay.addEventListener('click', function () {
+				console.log('Cart overlay clicked'); // Debug: Log overlay click
 				cartOffCanvas.classList.remove('show');
 				cartOverlay.classList.remove('show');
 			});
@@ -397,6 +409,7 @@
 				button.addEventListener('click', function (e) {
 					e.preventDefault();
 					const productId = this.dataset.productId;  // Get product ID
+					console.log(`Add to Cart clicked for product ID: ${productId}`); // Debug: Log product ID
 
 					// Send request to add the product to the cart
 					fetch(`/cart/add/${productId}/`, {
@@ -407,8 +420,13 @@
 						},
 						body: JSON.stringify({})
 					})
-						.then(response => response.json())
+						.then(response => {
+							console.log('Response status:', response.status); // Debug: Log response status
+							return response.json();  // Convert to JSON
+						})
 						.then(data => {
+							console.log('Response data:', data); // Debug: Log JSON data
+
 							// Update cart with new data from server
 							const items = data.items.map(item => ({
 								name: item.name,
@@ -421,16 +439,15 @@
 							cartOffCanvas.classList.add('show');
 							cartOverlay.classList.add('show');
 						})
-						.catch(error => console.error('Error:', error));
+						.catch(error => console.error('Error adding item to cart:', error)); // Debug: Log error
 				});
 			});
 		});
 
 
 
-
 	</script>
-	<script src="https://kit.fontawesome.com/ba182bdcb1.js" crossorigin="anonymous"></script>
+
 </body>
 
 </html>
