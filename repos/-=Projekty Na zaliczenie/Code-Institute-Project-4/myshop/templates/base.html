@@ -327,6 +327,29 @@
 				handleFormSubmit(registerFormElement, registerFormElement.action);
 			}
 		});
+
+		document.addEventListener("DOMContentLoaded", function () {
+			const cartButton = document.getElementById('cart-button'); // Your cart icon/button
+			const cartOffCanvas = document.getElementById('cart-off-canvas');
+			const cartOverlay = document.getElementById('cart-overlay');
+			const closeCartButton = document.getElementById('close-cart');
+
+			cartButton.addEventListener('click', function () {
+				cartOffCanvas.classList.add('show');
+				cartOverlay.classList.add('show');
+			});
+
+			closeCartButton.addEventListener('click', function () {
+				cartOffCanvas.classList.remove('show');
+				cartOverlay.classList.remove('show');
+			});
+
+			cartOverlay.addEventListener('click', function () {
+				cartOffCanvas.classList.remove('show');
+				cartOverlay.classList.remove('show');
+			});
+		});
+
 	</script>
 </body>
 
