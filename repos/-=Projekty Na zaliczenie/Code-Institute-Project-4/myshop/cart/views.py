@@ -19,3 +19,9 @@ def add_to_cart(request, product_id):
         cart_item.save()
 
     return redirect('cart:cart_detail')
+
+# View to display cart
+def cart_detail(request):
+    cart_items = CartItem.objects.filter(user=request.user if request.user.is_authenticated else None)
+    total_price = sum(item.get_total_price() for item in cart_items)
+    return render(request, 'cart/cart_detail.html', {'cart_items': cart_items, 'total_price': total_price})
