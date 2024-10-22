@@ -13,6 +13,7 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('contact/', views.contact, name='contact'),
     path('accounts/', include('accounts.urls', namespace='accounts')),
+    path('cart/', include('cart.urls', namespace='cart')),
     
     
 ]
