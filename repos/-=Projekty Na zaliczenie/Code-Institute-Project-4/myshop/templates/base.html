@@ -48,13 +48,14 @@
 						<!-- Dropdown for categories -->
 						<li class="nav-item dropdown">
 							<a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button"
-								data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							   data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								Categories
 							</a>
 							<div class="dropdown-menu" aria-labelledby="categoriesDropdown">
 								{% for category in categories %}
-								<a class="dropdown-item" href="{% url 'category_products' category.slug %}">{{
-									category.name }}</a>
+								<a class="dropdown-item" href="{% url 'products:category_products' category.slug %}">
+									{{ category.name }}
+								</a>
 								{% endfor %}
 							</div>
 						</li>
@@ -130,6 +131,9 @@
 						<div class="mb-3">
 							<label for="login-password" class="form-label">Password *</label>
 							<input type="password" class="form-control" id="login-password" name="password" required>
+						</div>
+						<div class="mb-3">
+							<a href="{% url 'accounts:password_reset' %}">Forgot your password?</a>
 						</div>
 						<button type="submit" class="btn btn-primary">Sign In</button>
 					</form>
