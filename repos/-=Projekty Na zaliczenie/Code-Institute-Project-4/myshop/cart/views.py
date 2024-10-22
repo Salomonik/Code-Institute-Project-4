@@ -4,21 +4,28 @@ from .models import CartItem
 from .forms import CartAddProductForm
 
 # View to add an item to the cart
-def add_to_cart(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    form = CartAddProductForm(request.POST)
+def add_to_cart(request):
+    product_id = request.POST.get('product_id')
+    product = Product.objects.get(id=product_id)
+    cart = Cart.objects.get(user=request.user)
+    
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+    cart_item.quantity += 1
+    cart_item.save()
 
-    if form.is_valid():
-        quantity = form.cleaned_data['quantity']
-        user = request.user if request.user.is_authenticated else None
-        cart_item, created = CartItem.objects.get_or_create(
-            product=product, user=user, defaults={'quantity': quantity}
-        )
-        if not created:
-            cart_item.quantity += quantity
-        cart_item.save()
+    # Return updated cart details
+    cart_items = cart.cartitem_set.all()
+    total_price = sum(item.get_total_price() for item in cart_items)
 
-    return redirect('cart:cart_detail')
+    return JsonResponse({
+        'cart_total': cart_items.count(),
+        'cart_total_price': total_price,
+        'item': {
+            'name': product.name,
+            'price': product.price,
+            'quantity': cart_item.quantity,
+        }
+    })
 
 # View to display cart
 def cart_detail(request):
