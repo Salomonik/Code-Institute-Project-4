@@ -166,6 +166,8 @@
 			</div>
 		</div>
 
+
+
 		<!-- Overlay -->
 		<div id="cart-overlay" class="overlay"></div>
 
@@ -334,48 +336,97 @@
 			}
 		});
 
+
+
+
+
+
+
 		document.addEventListener("DOMContentLoaded", function () {
-			const cartButton = document.getElementById('cart-button'); // Your cart icon/button
+			const cartButton = document.getElementById('cart-button'); // Cart button to open cart
 			const cartOffCanvas = document.getElementById('cart-off-canvas');
 			const cartOverlay = document.getElementById('cart-overlay');
 			const closeCartButton = document.getElementById('close-cart');
+			const cartItemsContainer = document.getElementById('cart-items-container');
+			const cartSubtotal = document.getElementById('cart-subtotal');
+			const emptyCartMessage = document.getElementById('empty-cart-message');
 
+			// Function to update cart display
+			function updateCartDisplay(items, totalPrice) {
+				cartItemsContainer.innerHTML = ''; // Clear existing items
+
+				if (items.length === 0) {
+					emptyCartMessage.style.display = 'block'; // Show empty cart message
+				} else {
+					emptyCartMessage.style.display = 'none'; // Hide empty cart message
+
+					// Loop through items and add them to the cart
+					items.forEach(item => {
+						const itemHtml = `
+		            <div class="cart-item">
+		                <p>${item.name} - ${item.quantity} x $${item.price}</p>
+		            </div>`;
+						cartItemsContainer.insertAdjacentHTML('beforeend', itemHtml);
+					});
+
+					// Update cart subtotal
+					cartSubtotal.textContent = `Subtotal: $${totalPrice}`;
+				}
+			}
+
+			// Event to open the cart
 			cartButton.addEventListener('click', function () {
 				cartOffCanvas.classList.add('show');
 				cartOverlay.classList.add('show');
 			});
 
+			// Event to close the cart
 			closeCartButton.addEventListener('click', function () {
 				cartOffCanvas.classList.remove('show');
 				cartOverlay.classList.remove('show');
 			});
 
+			// Close cart when overlay is clicked
 			cartOverlay.addEventListener('click', function () {
 				cartOffCanvas.classList.remove('show');
 				cartOverlay.classList.remove('show');
 			});
-		});
 
-		document.querySelectorAll('.add-to-cart').forEach(function (button) {
-			button.addEventListener('click', function (e) {
-				e.preventDefault();
-				const productId = this.dataset.productId;  // Get product ID
+			// Add to cart event
+			document.querySelectorAll('.add-to-cart').forEach(function (button) {
+				button.addEventListener('click', function (e) {
+					e.preventDefault();
+					const productId = this.dataset.productId;  // Get product ID
 
-				fetch(`/cart/add/${productId}/`, {
-					method: 'POST',
-					headers: {
-						'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({})
-				})
-					.then(response => response.json())
-					.then(data => {
-						document.getElementById('cart-subtotal').textContent = `Subtotal: $${data.cart_total_price}`;
-						// Handle other updates like updating cart items
-					});
+					// Send request to add the product to the cart
+					fetch(`/cart/add/${productId}/`, {
+						method: 'POST',
+						headers: {
+							'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({})
+					})
+						.then(response => response.json())
+						.then(data => {
+							// Update cart with new data from server
+							const items = data.items.map(item => ({
+								name: item.name,
+								price: item.price,
+								quantity: item.quantity
+							}));
+							updateCartDisplay(items, data.cart_total_price); // Update display
+
+							// Optionally open cart after adding item
+							cartOffCanvas.classList.add('show');
+							cartOverlay.classList.add('show');
+						})
+						.catch(error => console.error('Error:', error));
+				});
 			});
 		});
+
+
 
 
 	</script>
