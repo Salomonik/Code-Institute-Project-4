@@ -33,7 +33,18 @@
             <input type="text" name="postal_code" id="postal_code" required>
         </fieldset>
 
+        <fieldset>
+            <legend>Payment Information</legend>
 
+            <label for="card_number">Card Number:</label>
+            <input type="text" name="card_number" id="card_number" required>
+
+            <label for="expiry_date">Expiry Date:</label>
+            <input type="text" name="expiry_date" id="expiry_date" placeholder="MM/YY" required>
+
+            <label for="cvv">CVV:</label>
+            <input type="text" name="cvv" id="cvv" required>
+        </fieldset>
 
         <button type="submit">Place Order</button>
     </form>
