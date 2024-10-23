@@ -55,3 +55,7 @@ def checkout(request):
         'cart_items': cart,
         'total': total
     })
+    
+    
+def checkout_success(request):
+    return render(request, 'checkout/success.html')
