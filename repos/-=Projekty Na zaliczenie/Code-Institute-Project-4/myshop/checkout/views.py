@@ -32,7 +32,7 @@ def checkout(request):
                 cart_items.delete()
 
                 # Redirect to a success page or payment gateway
-                return redirect('checkout_success')  # Create this URL later
+                return redirect('checkout_success') 
     else:
         form = CheckoutForm()
 
