@@ -386,6 +386,20 @@
 			cartTotalItemsElement.textContent = totalItems;  // Aktualizuje wyświetlaną liczbę produktów
 		}
 
+		// Function to fetch cart data when the page loads (added for initial load update)
+		async function fetchCartDataOnPageLoad() {
+			try {
+				const response = await fetch('/cart/get-items/'); // Fetch the current cart items
+				const data = await response.json();
+
+				// NEW: Calculate the total number of items in the cart and update the display
+				const totalItems = data.items.reduce((total, item) => total + item.quantity, 0);
+				updateCartTotalItems(totalItems);  // Update the number of items in the cart button
+			} catch (error) {
+				console.error('Error fetching cart data:', error);
+			}
+		}
+
 		// Funkcja renderująca elementy koszyka
 		function renderCartItems(items) {
 			const cartItemsContainer = document.getElementById('cart-items-container');
@@ -479,6 +493,8 @@
 
 				cartSubtotal.textContent = `Subtotal: $${parseFloat(data.total).toFixed(2)}`;
 				logCartState();
+				updateCartTotalItems(data.items.reduce((total, item) => total + item.quantity, 0));
+
 			} catch (error) {
 				console.error('Error updating cart:', error);
 			}
@@ -510,7 +526,7 @@
 				if (response.ok) {
 					const data = await response.json();
 					showToast('Product added to cart successfully!');
-					updateCart();
+					await updateCart();
 					openCart(); // Otwórz koszyk po dodaniu produktu
 				} else {
 					const errorData = await response.json();
