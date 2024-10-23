@@ -465,16 +465,21 @@
 				const response = await fetch(`/cart/remove/${productId}/`, {
 					method: 'POST',
 					headers: {
-						'X-CSRFToken': getCsrfToken(),
+						'Content-Type': 'application/json',
+						'X-CSRFToken': getCsrfToken(),  // Include CSRF token for security
 					}
 				});
 
 				if (response.ok) {
 					const data = await response.json();
-					updateCartDisplay(data.items, data.total);
+					showToast('Product removed from cart!');  // Show success toast
+					await updateCart(); // Refresh the cart to reflect changes
+				} else {
+					showToast('Error removing product from cart', 'error');
 				}
 			} catch (error) {
-				console.error('Error removing item from cart:', error);
+				console.error('Error removing from cart:', error);
+				showToast('Error removing product from cart', 'error');
 			}
 		}
 
