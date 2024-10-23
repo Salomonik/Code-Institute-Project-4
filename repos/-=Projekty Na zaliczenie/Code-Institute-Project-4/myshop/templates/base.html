@@ -381,6 +381,11 @@
 			document.body.style.overflow = '';
 		}
 
+		function updateCartTotalItems(totalItems) {
+			const cartTotalItemsElement = document.getElementById('cart-total-items');
+			cartTotalItemsElement.textContent = totalItems;  // Aktualizuje wyświetlaną liczbę produktów
+		}
+
 		// Funkcja renderująca elementy koszyka
 		function renderCartItems(items) {
 			const cartItemsContainer = document.getElementById('cart-items-container');
