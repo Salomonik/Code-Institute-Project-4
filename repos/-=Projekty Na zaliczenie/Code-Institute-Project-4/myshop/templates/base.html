@@ -70,22 +70,33 @@
 						</li>
 
 						<!-- Login/Register link -->
-						{% if not user.is_authenticated %}
-						<li class="nav-item">
+						<li class="nav-item dropdown">
+							{% if not user.is_authenticated %}
+							<!-- If the user is not authenticated, show the login icon -->
 							<a class="nav-link" href="#" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
-								aria-controls="offcanvasRight">Login/Register</a>
+								aria-controls="offcanvasRight">
+								<i class="fa-solid fa-user"></i>
+							</a>
+							{% else %}
+							<!-- If the user is authenticated, show the dropdown menu -->
+							<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
+								aria-expanded="false">
+								<i class="fa-solid fa-user"></i>
+							</a>
+							<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+								<li>
+									<a class="dropdown-item" href="{% url 'profile' %}">Profile</a> <!-- Link to user's profile page -->
+								</li>
+								<li>
+									<form method="POST" action="{% url 'accounts:logout' %}" style="margin: 0;">
+										{% csrf_token %}
+										<button type="submit" class="dropdown-item">Logout</button>
+									</form>
+								</li>
+							</ul>
+							{% endif %}
 						</li>
-						{% else %}
-						<li class="nav-item">
-							<form method="POST" action="{% url 'accounts:logout' %}">
-								{% csrf_token %}
-								<button type="submit" class="btn btn-link nav-link"
-									style="border: none; background: none;">
-									Logout
-								</button>
-							</form>
-						</li>
-						{% endif %}
+						
 						<li>
 							<button id="cart-button">
 								<i class="fas fa-shopping-cart"></i>
@@ -545,33 +556,33 @@
 
 
 		async function removeFromCart(productId) {
-    console.log(`Sending request to remove product ID ${productId} from cart.`);
+			console.log(`Sending request to remove product ID ${productId} from cart.`);
 
-    try {
-        const response = await fetch(`/cart/remove/${productId}/`, {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': getCsrfToken(),  // Make sure CSRF token is included
-                'Content-Type': 'application/json'
-            }
-        });
+			try {
+				const response = await fetch(`/cart/remove/${productId}/`, {
+					method: 'POST',
+					headers: {
+						'X-CSRFToken': getCsrfToken(),  // Make sure CSRF token is included
+						'Content-Type': 'application/json'
+					}
+				});
 
-        if (!response.ok) {
-            console.error('Error response from server:', response);
-            showToast('Error removing item from cart', 'error');
-            return;
-        }
+				if (!response.ok) {
+					console.error('Error response from server:', response);
+					showToast('Error removing item from cart', 'error');
+					return;
+				}
 
-        const data = await response.json();
-        console.log(`Product ID ${productId} removed successfully:`, data);
+				const data = await response.json();
+				console.log(`Product ID ${productId} removed successfully:`, data);
 
-        showToast('Item removed from cart');
-        await updateCart();  // Refresh the cart after removing the item
-    } catch (error) {
-        console.error('Error removing from cart:', error);
-        showToast('Error removing item from cart', 'error');
-    }
-}
+				showToast('Item removed from cart');
+				await updateCart();  // Refresh the cart after removing the item
+			} catch (error) {
+				console.error('Error removing from cart:', error);
+				showToast('Error removing item from cart', 'error');
+			}
+		}
 
 
 
@@ -632,6 +643,8 @@
 
 					// Update the subtotal with the new total from the server response
 					cartSubtotal.textContent = `Subtotal: $${data.total}`;
+					const totalQuantity = data.items.reduce((sum, item) => sum + item.quantity, 0); // Calculate total quantity
+					document.getElementById('cart-total-items').textContent = totalQuantity;  // Update cart icon
 				}
 			} catch (error) {
 				console.error('Error updating cart:', error);
