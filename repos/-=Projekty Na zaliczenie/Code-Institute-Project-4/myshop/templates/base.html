@@ -544,29 +544,35 @@
 		}
 
 
-		// Funkcja do usuwania produktu z koszyka
 		async function removeFromCart(productId) {
-			try {
-				const response = await fetch(`/cart/remove/${productId}/`, {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						'X-CSRFToken': getCsrfToken(),  // Include CSRF token for security
-					}
-				});
+    console.log(`Sending request to remove product ID ${productId} from cart.`);
 
-				if (response.ok) {
-					const data = await response.json();
-					showToast('Product removed from cart!');  // Show success toast
-					await updateCart(); // Refresh the cart to reflect changes
-				} else {
-					showToast('Error removing product from cart', 'error');
-				}
-			} catch (error) {
-				console.error('Error removing from cart:', error);
-				showToast('Error removing product from cart', 'error');
-			}
-		}
+    try {
+        const response = await fetch(`/cart/remove/${productId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCsrfToken(),  // Make sure CSRF token is included
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            console.error('Error response from server:', response);
+            showToast('Error removing item from cart', 'error');
+            return;
+        }
+
+        const data = await response.json();
+        console.log(`Product ID ${productId} removed successfully:`, data);
+
+        showToast('Item removed from cart');
+        await updateCart();  // Refresh the cart after removing the item
+    } catch (error) {
+        console.error('Error removing from cart:', error);
+        showToast('Error removing item from cart', 'error');
+    }
+}
+
 
 
 		// Function to update and re-render the cart (ensure it properly updates the quantity)
