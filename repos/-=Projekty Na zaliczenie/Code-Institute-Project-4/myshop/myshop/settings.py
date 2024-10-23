@@ -183,3 +183,6 @@ EMAIL_HOST_PASSWORD = 'prff vglc aynd zsqz'  # Use the App Password you generate
 
 
 PHONENUMBER_DEFAULT_REGION = 'GB'
+
+STRIPE_SECRET_KEY = 'sk_test_51QDBKRA2HSKZ7VdwP2NeKBu9RUrHxSedDEStGHJluPtMXlSye484AvRuKDjuHHYtcvYP7toQpwrXOaieDhWxJ2nP00p2drrYLp'  # Your Secret Key
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51QDBKRA2HSKZ7VdwmQzbjmQMcdr8uZumf0GZaZ9z2jn1nUMU8tnOcvSH4r5FZjrmMV1zvdzd5CluDOnvcZAFMn9100YYHUBVwB'  # Your Publishable Key

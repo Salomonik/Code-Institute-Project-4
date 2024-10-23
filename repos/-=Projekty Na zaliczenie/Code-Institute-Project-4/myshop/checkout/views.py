@@ -4,8 +4,13 @@ from django.db import transaction
 from django.contrib import messages
 from .models import Order, OrderItem
 from cart.models import CartItem
-from products.models import Product  # Import produktu
+from products.models import Product
 from .forms import CheckoutForm
+import stripe
+from django.http import JsonResponse
+from django.conf import settings
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 @login_required
 def checkout(request):
