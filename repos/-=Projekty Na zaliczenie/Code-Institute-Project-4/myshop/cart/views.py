@@ -108,6 +108,14 @@ def update_cart(request, product_id):
         print(f"Invalid quantity or request data for product {product_id}")
         return JsonResponse({'status': 'error', 'message': 'Invalid quantity or request data'}, status=400)
 
+    # Retrieve the product
+    product = get_object_or_404(Product, id=product_id)
+
+    # Check if the requested quantity exceeds available stock
+    if quantity > product.stock:
+        print(f"Requested quantity {quantity} exceeds available stock {product.stock} for product {product_id}")
+        return JsonResponse({'status': 'error', 'message': f'Only {product.stock} items available in stock'}, status=400)
+
     # Ensure the quantity is valid
     if quantity <= 0:
         print(f"Removing product {product_id} because quantity is 0 or less.")
@@ -136,7 +144,7 @@ def update_cart(request, product_id):
     # Calculate the total quantity and price
     total_quantity = 0
     total_price = Decimal('0.00')
-    
+
     if request.user.is_authenticated:
         cart_items = cart.cartitem_set.all()
     else:
@@ -161,6 +169,7 @@ def update_cart(request, product_id):
     print(f"Final cart total quantity: {total_quantity}, total price: {total_price}")
 
     return JsonResponse({'status': 'success', 'message': 'Cart updated', 'total_quantity': total_quantity, 'total_price': str(total_price)})
+
 
 
 
