@@ -49,7 +49,9 @@ INSTALLED_APPS = [
     'products',
     'checkout',
     'accounts',
-    'cart',    
+    'cart',  
+    'django_countries',
+    'phonenumber_field',
 ]
 
 MIDDLEWARE = [
@@ -177,3 +179,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'salomonik@gmail.com'
 EMAIL_HOST_PASSWORD = 'prff vglc aynd zsqz'  # Use the App Password you generated
+
+
+
+PHONENUMBER_DEFAULT_REGION = 'GB'

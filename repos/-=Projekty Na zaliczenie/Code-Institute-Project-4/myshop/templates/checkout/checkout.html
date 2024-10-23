@@ -4,21 +4,56 @@
 
 {% block content %}
 <div class="checkout-container">
-    <h1>Checkout</h1>
-    
+	<h1>Checkout</h1>
+
 	<form method="POST">
 		{% csrf_token %}
 		{{ form.as_p }}
-	
+
 		<h2>Order Summary</h2>
 		<ul>
 			{% for item in cart_items %}
-				<li>{{ item.product.name }} - Quantity: {{ item.quantity }} - ${{ item.get_total_price }}</li>
+			<li>{{ item.product.name }} - Quantity: {{ item.quantity }} - ${{ item.get_total_price }}</li>
 			{% endfor %}
 		</ul>
 		<p><strong>Total:</strong> ${{ total }}</p>
-	
+
 		<button type="submit" class="btn btn-primary">Place Order</button>
 	</form>
 </div>
+
+<script
+    src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initAutocomplete"
+    async defer>
+</script>
+	function initAutocomplete() {
+		var autocomplete = new google.maps.places.Autocomplete(
+			document.getElementById('id_street_address1'),
+			{ types: ['address'] }
+		);
+		autocomplete.setFields(['address_component']);
+		autocomplete.addListener('place_changed', function () {
+			var place = autocomplete.getPlace();
+			var components = place.address_components;
+
+			// Poniżej ustawiasz pola autouzupełnienia
+			components.forEach(function (component) {
+				var types = component.types;
+				if (types.includes('locality')) {
+					document.getElementById('id_city').value = component.long_name;
+				}
+				if (types.includes('administrative_area_level_1')) {
+					document.getElementById('id_county').value = component.long_name;
+				}
+				if (types.includes('postal_code')) {
+					document.getElementById('id_postal_code').value = component.long_name;
+				}
+				if (types.includes('country')) {
+					document.getElementById('id_country').value = component.short_name;
+				}
+			});
+		});
+	}
+</script>
+
 {% endblock %}

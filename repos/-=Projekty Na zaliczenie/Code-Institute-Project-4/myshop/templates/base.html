@@ -175,18 +175,20 @@
 				<h2>Shopping Cart</h2>
 				<button id="close-cart" class="close-btn">&times;</button>
 			</div>
-
+		
 			<!-- Kontener na dynamicznie ładowane elementy koszyka -->
 			<div id="cart-items-container">
 				<!-- Elementy koszyka będą tutaj dodawane przez JavaScript -->
 			</div>
-
+		
 			<!-- Wiadomość o pustym koszyku -->
 			<p id="empty-cart-message" style="display: none;">Your cart is empty.</p>
-
+		
+			<!-- **Nowy element Subtotal** -->
+			<p id="cart-subtotal">Subtotal: $0.00</p>  <!-- Tutaj zostanie wyświetlona suma koszyka -->
+		
 			<!-- Stopka koszyka z sumą i przyciskiem checkout -->
 			<a href="{% url 'checkout:checkout' %}" class="btn btn-primary">Proceed to Checkout</a>
-
 		</div>
 
 		<!-- Overlay, który pojawia się przy otwartym koszyku -->
