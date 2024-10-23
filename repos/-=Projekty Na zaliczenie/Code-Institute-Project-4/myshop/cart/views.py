@@ -98,27 +98,41 @@ def remove_from_cart(request, product_id):
 
 
 def update_cart(request, product_id):
-    if request.method == 'POST':
-        product = get_object_or_404(Product, id=product_id)
-        quantity = int(request.POST.get('quantity', 0))
-        
-        if quantity <= 0:
-            return remove_from_cart(request, product_id)
-        
-        if request.user.is_authenticated:
-            cart = Cart.objects.get(user=request.user)
-            cart_item = cart.cartitem_set.filter(product_id=product_id).first()
-            if cart_item:
-                cart_item.quantity = quantity
-                cart_item.save()
-        else:
-            cart = request.session.get('cart', {})
-            if str(product_id) in cart:
-                cart[str(product_id)]['quantity'] = quantity
-                request.session['cart'] = cart
+    """Update quantity in cart"""
+    try:
+        quantity = int(request.POST.get('quantity', 1))  # Default to 1 if not found or invalid
+    except ValueError:
+        # If quantity isn't a valid integer, log and return an error response
+        print(f"Invalid quantity for product {product_id}")
+        return JsonResponse({'status': 'error', 'message': 'Invalid quantity'}, status=400)
 
-        # Zwracanie zaktualizowanej zawartości koszyka
-        return get_cart_items(request)
+    # Debugging: Log the quantity received
+    print(f"Received request to update product {product_id} with quantity {quantity}")
+
+    # Ensure the quantity is valid and remove only if it's explicitly zero
+    if quantity <= 0:
+        # Debugging: Log that we are about to remove the item
+        print(f"Removing product {product_id} because quantity is 0 or less.")
+        return remove_from_cart(request, product_id)  # Only remove if quantity is explicitly 0
+    
+    if request.user.is_authenticated:
+        cart = Cart.objects.get(user=request.user)
+        cart_item = cart.cartitem_set.filter(product_id=product_id).first()
+        if cart_item:
+            cart_item.quantity = quantity
+            cart_item.save()
+            # Debugging: Log the updated quantity
+            print(f"Updated product {product_id} to quantity {cart_item.quantity}")
+    else:
+        cart = request.session.get('cart', {})
+        if str(product_id) in cart:
+            cart[str(product_id)]['quantity'] = quantity
+            request.session['cart'] = cart
+            # Debugging: Log the session-based cart update
+            print(f"Updated product {product_id} in session to quantity {quantity}")
+
+    return JsonResponse({'status': 'success', 'message': 'Cart updated'})
+
 
 
 
@@ -167,17 +181,20 @@ def get_cart_items(request):
     
  
 def remove_from_cart(request, product_id):
+    print(f"Received request to remove product {product_id}")
     if request.method == 'POST':
         if request.user.is_authenticated:
             cart = Cart.objects.get(user=request.user)
             cart_item = cart.cartitem_set.filter(product_id=product_id).first()
             if cart_item:
                 cart_item.delete()
+                print(f"Removed product {product_id} from cart.")
         else:
             cart = request.session.get('cart', {})
             if str(product_id) in cart:
                 del cart[str(product_id)]
                 request.session['cart'] = cart
+                print(f"Removed product {product_id} from session-based cart.")
 
         # Zwracanie zaktualizowanej zawartości koszyka
         return get_cart_items(request)  

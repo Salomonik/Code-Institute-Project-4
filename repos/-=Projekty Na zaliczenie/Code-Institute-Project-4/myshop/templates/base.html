@@ -402,60 +402,116 @@
 			}
 		}
 
-		// Funkcja renderująca elementy koszyka
-		function renderCartItems(items) {
-			const cartItemsContainer = document.getElementById('cart-items-container');
-			cartItemsContainer.innerHTML = '';  // Wyczyść zawartość przed dodaniem nowych elementów
+		// // Funkcja renderująca elementy koszyka
+		// function renderCartItems(items) {
+		// 	const cartItemsContainer = document.getElementById('cart-items-container');
+		// 	cartItemsContainer.innerHTML = '';  // Wyczyść zawartość przed dodaniem nowych elementów
 
+		// 	items.forEach(item => {
+		// 		const itemElement = document.createElement('div');
+		// 		itemElement.classList.add('cart-item');
+		// 		itemElement.innerHTML = `
+		//     <div class="cart-item-details">
+		//         <h4>${item.name}</h4>
+		//         <div class="price-quantity">
+		//             <span class="price">$${item.price}</span>
+		//             <div class="quantity-controls">
+		//                 <input type="number" class="quantity-input" value="${item.quantity}" min="1" data-product-id="${item.product_id}">
+		//             </div>
+		//         </div>
+		//         <span class="subtotal">Subtotal: $${item.total}</span>
+		//     </div>
+		//     <button class="remove-item" data-product-id="${item.product_id}">&times;</button>
+		// `;
+
+		// 		cartItemsContainer.appendChild(itemElement);
+
+		// 		// Dodaj event listener do przycisku usuwania
+		// 		itemElement.querySelector('.remove-item').addEventListener('click', () => {
+		// 			removeFromCart(item.product_id);
+		// 		});
+
+		// 		// Dodaj event listener do zmiany ilości
+		// 		itemElement.querySelector('.quantity-input').addEventListener('change', (e) => {
+		// 			updateCartQuantity(item.product_id, e.target.value);
+		// 		});
+		// 	});
+		// }
+
+		// Debounce function to prevent rapid firing of updates while the user is typing
+		function debounce(func, delay) {
+			let timeout;
+			return function (...args) {
+				clearTimeout(timeout);
+				timeout = setTimeout(() => func.apply(this, args), delay);
+			};
+		}
+
+		// Function to render cart items in the DOM (dynamically)
+		function renderCartItems(items) {
 			items.forEach(item => {
 				const itemElement = document.createElement('div');
 				itemElement.classList.add('cart-item');
+
 				itemElement.innerHTML = `
             <div class="cart-item-details">
                 <h4>${item.name}</h4>
-                <div class="price-quantity">
-                    <span class="price">$${item.price}</span>
-                    <div class="quantity-controls">
-                        <input type="number" class="quantity-input" value="${item.quantity}" min="1" data-product-id="${item.product_id}">
-                    </div>
-                </div>
-                <span class="subtotal">Subtotal: $${item.total}</span>
+                <p>$${item.price}</p>
+                <input type="number" class="quantity-input" value="${item.quantity}" min="1" data-product-id="${item.product_id}">
+                <p class="subtotal">Subtotal: $${(item.price * item.quantity).toFixed(2)}</p>
             </div>
             <button class="remove-item" data-product-id="${item.product_id}">&times;</button>
         `;
 
+				// Append item to the cart container
 				cartItemsContainer.appendChild(itemElement);
 
-				// Dodaj event listener do przycisku usuwania
-				itemElement.querySelector('.remove-item').addEventListener('click', () => {
-					removeFromCart(item.product_id);
-				});
+				// Add event listener for quantity change
+				const quantityInput = itemElement.querySelector('.quantity-input');
 
-				// Dodaj event listener do zmiany ilości
-				itemElement.querySelector('.quantity-input').addEventListener('change', (e) => {
-					updateCartQuantity(item.product_id, e.target.value);
+				// Use debounce to delay the update until the user finishes changing the quantity
+				quantityInput.addEventListener('input', debounce((e) => {
+					const newQuantity = parseInt(e.target.value, 10);  // Parse the new quantity as an integer
+
+					if (isNaN(newQuantity) || newQuantity <= 0) {
+						// If quantity is invalid or zero, remove the item
+						removeFromCart(item.product_id);
+					} else {
+						// Otherwise, update the quantity
+						updateCartQuantity(item.product_id, newQuantity);
+					}
+				}, 500));  // 500ms delay before the change is processed
+
+				// Add event listener for removing the item
+				const removeButton = itemElement.querySelector('.remove-item');
+				removeButton.addEventListener('click', () => {
+					removeFromCart(item.product_id); // Remove the item from cart
 				});
 			});
 		}
 
 
-		async function updateCartItemQuantity(productId, quantity) {
+		async function updateCartQuantity(productId, newQuantity) {
 			try {
 				const response = await fetch(`/cart/update/${productId}/`, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
-						'X-CSRFToken': getCsrfToken(),
+						'X-CSRFToken': getCsrfToken(),  // Include CSRF token for security
 					},
-					body: JSON.stringify({ quantity: quantity })
+					body: JSON.stringify({ quantity: newQuantity })  // Send the new quantity
 				});
 
 				if (response.ok) {
 					const data = await response.json();
-					updateCartDisplay(data.items, data.total);
+					showToast('Quantity updated!');  // Show success toast
+					await updateCart(); // Refresh the cart to reflect changes
+				} else {
+					showToast('Error updating quantity', 'error');
 				}
 			} catch (error) {
-				console.error('Error updating cart item quantity:', error);
+				console.error('Error updating cart quantity:', error);
+				showToast('Error updating quantity', 'error');
 			}
 		}
 
@@ -490,18 +546,18 @@
 				const response = await fetch('/cart/get-items/');
 				const data = await response.json();
 
+				// Update cart display in DOM
+				cartItemsContainer.innerHTML = ''; // Clear previous cart items
 				if (data.items.length === 0) {
 					emptyCartMessage.style.display = 'block';
-					cartItemsContainer.innerHTML = '';
 				} else {
 					emptyCartMessage.style.display = 'none';
-					renderCartItems(data.items);  // Używamy funkcji renderującej elementy koszyka
+					renderCartItems(data.items); // Re-render the cart items
 				}
 
-				cartSubtotal.textContent = `Subtotal: $${parseFloat(data.total).toFixed(2)}`;
-				logCartState();
+				// Update the cart subtotal and total items
+				cartSubtotal.textContent = `Subtotal: ${formatPrice(data.total)}`;
 				updateCartTotalItems(data.items.reduce((total, item) => total + item.quantity, 0));
-
 			} catch (error) {
 				console.error('Error updating cart:', error);
 			}
