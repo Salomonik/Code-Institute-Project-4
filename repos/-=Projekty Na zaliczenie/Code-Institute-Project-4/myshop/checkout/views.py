@@ -1,24 +1,28 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from django.contrib import messages
 from .models import Order, OrderItem
-from cart.models import CartItem  # Assuming cart items are stored in CartItem model
+from cart.models import CartItem, Cart  # Assuming cart models are here
 from .forms import CheckoutForm
 
 @login_required
 def checkout(request):
-    cart_items = CartItem.objects.filter(cart__user=request.user)
-    total = sum(item.product.price * item.quantity for item in cart_items)
+    # Get the cart for the logged-in user
+    cart = Cart.objects.get(user=request.user)
+    cart_items = CartItem.objects.filter(cart=cart)
+    total = cart.get_cart_total()
+
+    if not cart_items.exists():
+        messages.error(request, "Your cart is empty.")
+        return redirect('cart')  # Redirect to cart page if empty
 
     if request.method == 'POST':
         form = CheckoutForm(request.POST)
         if form.is_valid():
             with transaction.atomic():
                 # Create the order
-                order = Order.objects.create(
-                    user=request.user,
-                    total=total
-                )
+                order = Order.objects.create(user=request.user, total=total)
                 
                 # Create order items from cart items
                 for cart_item in cart_items:
@@ -28,11 +32,10 @@ def checkout(request):
                         quantity=cart_item.quantity
                     )
 
-                # Clear the cart after the order is placed
+                # Clear the cart after placing the order
                 cart_items.delete()
 
-                # Redirect to a success page or payment gateway
-                return redirect('checkout_success') 
+                return redirect('checkout:checkout_success')  # Redirect to success page
     else:
         form = CheckoutForm()
 

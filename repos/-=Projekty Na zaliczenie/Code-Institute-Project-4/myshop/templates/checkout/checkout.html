@@ -6,24 +6,19 @@
 <div class="checkout-container">
     <h1>Checkout</h1>
     
-    <form method="post">
-        {% csrf_token %}
-        <div class="checkout-form">
-            <h2>Shipping Information</h2>
-            {{ form.as_p }}
-        </div>
-
-        <div class="checkout-summary">
-            <h2>Order Summary</h2>
-            <ul>
-                {% for item in cart_items %}
-                <li>{{ item.product.name }} - Quantity: {{ item.quantity }} - ${{ item.product.price * item.quantity }}</li>
-                {% endfor %}
-            </ul>
-            <p><strong>Total:</strong> ${{ total }}</p>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Place Order</button>
-    </form>
+	<form method="POST">
+		{% csrf_token %}
+		{{ form.as_p }}
+	
+		<h2>Order Summary</h2>
+		<ul>
+			{% for item in cart_items %}
+				<li>{{ item.product.name }} - Quantity: {{ item.quantity }} - ${{ item.get_total_price }}</li>
+			{% endfor %}
+		</ul>
+		<p><strong>Total:</strong> ${{ total }}</p>
+	
+		<button type="submit" class="btn btn-primary">Place Order</button>
+	</form>
 </div>
 {% endblock %}

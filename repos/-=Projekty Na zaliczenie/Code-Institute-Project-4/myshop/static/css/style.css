@@ -1,5 +1,3 @@
-
-
 /* Global styles */
 :root {
     --primary-color: #0066cc;
@@ -8,43 +6,57 @@
     --text-color: #333;
     --border-color: #e0e0e0;
     --transition: all 0.3s ease;
-  }
-  
-  body {
+}
+
+body {
     font-family: 'Inter', sans-serif;
     color: var(--text-color);
     line-height: 1.6;
-  }
-  
-  /* Navbar styles */
-  .navbar {
+}
+
+/* Navbar styles */
+.navbar {
     padding: 1rem 0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  }
-  
-  .navbar-brand img {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Reset list styles for navigation */
+.navbar-nav,
+.navbar-nav .dropdown-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.navbar-nav .nav-item {
+    margin-right: 15px;
+}
+
+.navbar-brand img {
     transition: var(--transition);
-  }
-  
-  .navbar-brand img:hover {
+}
+
+.navbar-brand img:hover {
     transform: scale(1.05);
-  }
-  
-  .nav-link {
+}
+
+.nav-link {
     font-weight: 500;
     color: var(--text-color) !important;
     padding: 0.5rem 1rem;
     transition: var(--transition);
-  }
-  
-  .nav-link:hover {
+}
+
+.nav-link:hover {
     color: var(--primary-color) !important;
-  }
-  
-  /* Cart Button */
-  #cart-button {
+}
+}
+
+/* Cart Button */
+#cart-button,
+#profile-button {
     background: var(--primary-color);
-    color: white;
+    color: white !important; /* Dodano !important aby nadpisać style .nav-link */
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 50px;
@@ -52,41 +64,68 @@
     align-items: center;
     gap: 0.5rem;
     transition: var(--transition);
-  }
-  
-  #cart-button:hover {
+    text-decoration: none;
+}
+
+#cart-button:hover,
+#profile-button:hover {
     background: #0052a3;
     transform: translateY(-2px);
-  }
-  
-  #cart-total-items {
+    color: white !important;
+    text-decoration: none;
+}
+
+.nav-link.dropdown-toggle[id="userDropdown"] {
+    background: var(--primary-color);
+    color: white !important;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+}
+
+.nav-link.dropdown-toggle[id="userDropdown"]:hover {
+    background: #0052a3;
+    transform: translateY(-2px);
+}
+
+#cart-total-items {
     background: white;
     color: var(--primary-color);
     padding: 0.2rem 0.6rem;
     border-radius: 50%;
     font-size: 0.8rem;
     font-weight: bold;
-  }
-  
-  /* Off-Canvas Cart */
+}
+
+/* Off-Canvas Cart */
 /* Style dla off-canvas koszyka */
 /* Koszyk Off-Canvas */
 .off-canvas {
     position: fixed;
     top: 0;
     right: -100%;
-    width: 350px; /* Większa szerokość dla lepszego układu */
+    width: 350px;
+    /* Większa szerokość dla lepszego układu */
     height: 100%;
-    background-color: #fff; /* Tło koszyka */
+    background-color: #fff;
+    /* Tło koszyka */
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
     transition: right 0.3s ease;
     z-index: 1000;
-    overflow-y: auto; /* Aby przewijać w razie dużej liczby elementów */
+    overflow-y: auto;
+    /* Aby przewijać w razie dużej liczby elementów */
     padding: 20px;
 
-    display: flex; /* Dodano flex, aby ułatwić rozmieszczenie elementów pionowo */
-    flex-direction: column; /* Ustawienie, aby elementy były ułożone w kolumnie */
-    overflow: hidden; /* Ukrywanie nadmiarowych elementów */
+    display: flex;
+    /* Dodano flex, aby ułatwić rozmieszczenie elementów pionowo */
+    flex-direction: column;
+    /* Ustawienie, aby elementy były ułożone w kolumnie */
+    overflow: hidden;
+    /* Ukrywanie nadmiarowych elementów */
 }
 
 .off-canvas.show {
@@ -234,88 +273,99 @@
     display: block;
 }
 
-  
-  /* Login/Register Off-Canvas */
-  .offcanvas {
+
+/* Login/Register Off-Canvas */
+.offcanvas {
     width: 400px !important;
-  }
-  
-  .offcanvas-header {
+}
+
+.offcanvas-header {
     border-bottom: 1px solid var(--border-color);
     padding: 1.5rem;
-  }
-  
-  .offcanvas-header h5 {
+}
+
+.offcanvas-header h5 {
     font-weight: 600;
-  }
-  
-  .offcanvas-body {
+}
+
+.offcanvas-body {
     padding: 2rem;
-  }
-  
-  .form-label {
+}
+
+.form-label {
     font-weight: 500;
     margin-bottom: 0.5rem;
-  }
-  
-  .form-control {
+}
+
+.form-control {
     border: 1px solid var(--border-color);
     padding: 0.75rem;
     border-radius: 4px;
     transition: var(--transition);
-  }
-  
-  .form-control:focus {
+}
+
+.form-control:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(0,102,204,0.2);
-  }
-  
-  .btn-primary {
+    box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+}
+
+.btn-primary {
     background: var(--primary-color);
     border: none;
-    padding: 0.75rem 1.5rem;
-    font-weight: 500;
+    padding: 0.5rem 1rem;
+    color: white;
     transition: var(--transition);
-  }
-  
-  .btn-primary:hover {
+}
+
+.btn-primary:hover {
     background: #0052a3;
     transform: translateY(-2px);
-  }
-
-  #cart-items-container {
-    flex: 1; /* Zapewnienie elastycznej przestrzeni dla produktów */
-    overflow-y: auto; /* Możliwość przewijania produktów, gdy jest ich dużo */
-    padding-right: 10px; /* Dodano odstęp na pasek przewijania */
-    margin-bottom: 15px; /* Odstęp między produktami a stopką */
 }
-  
-  /* Animations */
-  @keyframes slideIn {
+
+.badge {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+#cart-items-container {
+    flex: 1;
+    /* Zapewnienie elastycznej przestrzeni dla produktów */
+    overflow-y: auto;
+    /* Możliwość przewijania produktów, gdy jest ich dużo */
+    padding-right: 10px;
+    /* Dodano odstęp na pasek przewijania */
+    margin-bottom: 15px;
+    /* Odstęp między produktami a stopką */
+}
+
+/* Animations */
+@keyframes slideIn {
     from {
-      opacity: 0;
-      transform: translateX(20px);
+        opacity: 0;
+        transform: translateX(20px);
     }
+
     to {
-      opacity: 1;
-      transform: translateX(0);
+        opacity: 1;
+        transform: translateX(0);
     }
-  }
-  
-  /* Responsive Styles */
-  @media (max-width: 768px) {
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
     .off-canvas {
-      width: 100%;
-      right: -100%;
+        width: 100%;
+        right: -100%;
     }
-    
+
     .offcanvas {
-      width: 100% !important;
+        width: 100% !important;
     }
-  }
+}
 
 
-  .profile-container {
+.profile-container {
     display: flex;
     justify-content: space-between;
     gap: 20px;
@@ -351,8 +401,4 @@
 ul {
     margin: 0;
     padding-left: 15px;
-}
-
-li {
-    list-style-type: disc;
 }

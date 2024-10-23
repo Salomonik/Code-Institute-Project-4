@@ -41,12 +41,13 @@
 
 				<!-- Navbar links -->
 				<div class="collapse navbar-collapse" id="navbarNav">
-					<ul class="navbar-nav ms-auto">
+					<ul class="navbar-nav ms-auto list-unstyled"> <!-- Dodano klasę list-unstyled -->
+						<!-- Home Link -->
 						<li class="nav-item">
 							<a class="nav-link" href="{% url 'home' %}">Home</a>
 						</li>
 
-						<!-- Dropdown for categories -->
+						<!-- Categories Dropdown -->
 						<li class="nav-item dropdown">
 							<a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button"
 								data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -61,7 +62,7 @@
 							</div>
 						</li>
 
-						<!-- Static links -->
+						<!-- About Us and Contact Links -->
 						<li class="nav-item">
 							<a class="nav-link" href="{% url 'about' %}">About Us</a>
 						</li>
@@ -69,23 +70,24 @@
 							<a class="nav-link" href="{% url 'contact' %}">Contact</a>
 						</li>
 
-						<!-- Login/Register link -->
+						<!-- User Authentication -->
 						<li class="nav-item dropdown">
 							{% if not user.is_authenticated %}
-							<!-- If the user is not authenticated, show the login icon -->
-							<a class="nav-link" href="#" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+							<!-- Niezalogowany użytkownik -->
+							<a class="btn btn-primary rounded-pill d-flex align-items-center gap-2" href="#"
+								data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
 								aria-controls="offcanvasRight">
 								<i class="fa-solid fa-user"></i>
 							</a>
 							{% else %}
-							<!-- If the user is authenticated, show the dropdown menu -->
-							<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
-								aria-expanded="false">
+							<!-- Zalogowany użytkownik -->
+							<a class="btn btn-primary" href="#" id="userDropdown" role="button"
+								data-bs-toggle="dropdown" aria-expanded="false">
 								<i class="fa-solid fa-user"></i>
 							</a>
-							<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+							<ul class="dropdown-menu dropdown-menu-end list-unstyled" aria-labelledby="userDropdown">
 								<li>
-									<a class="dropdown-item" href="{% url 'profile' %}">Profile</a> <!-- Link to user's profile page -->
+									<a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
 								</li>
 								<li>
 									<form method="POST" action="{% url 'accounts:logout' %}" style="margin: 0;">
@@ -96,9 +98,10 @@
 							</ul>
 							{% endif %}
 						</li>
-						
-						<li>
-							<button id="cart-button">
+
+						<!-- Cart Button -->
+						<li class="nav-item">
+							<button id="cart-button" class="btn btn-primary">
 								<i class="fas fa-shopping-cart"></i>
 								<span id="cart-total-items">0</span>
 							</button>
@@ -107,6 +110,7 @@
 				</div>
 			</div>
 		</nav>
+
 
 		<!-- Offcanvas for Login/Register -->
 		<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
@@ -181,10 +185,8 @@
 			<p id="empty-cart-message" style="display: none;">Your cart is empty.</p>
 
 			<!-- Stopka koszyka z sumą i przyciskiem checkout -->
-			<div class="cart-footer">
-				<p id="cart-subtotal">Subtotal: $0</p>
-				<button id="checkout-btn" class="btn">Checkout</button>
-			</div>
+			<a href="{% url 'checkout:checkout' %}" class="btn btn-primary">Proceed to Checkout</a>
+
 		</div>
 
 		<!-- Overlay, który pojawia się przy otwartym koszyku -->
@@ -749,6 +751,8 @@
 				console.error('Błąd podczas pobierania stanu koszyka:', error);
 			}
 		}
+
+
 
 
 	</script>
