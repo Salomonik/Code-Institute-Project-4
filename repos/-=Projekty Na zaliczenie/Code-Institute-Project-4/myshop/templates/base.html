@@ -368,15 +368,18 @@
 
 		// Otwieranie i zamykanie koszyka
 		function openCart() {
-			cartOffCanvas.classList.add('open');
-			cartOverlay.style.display = 'block';
-			updateCart();
-		}
+        cartOffCanvas.classList.add('show');
+        cartOverlay.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        updateCart(); // Dynamicznie aktualizujemy zawartość koszyka
+    }
 
-		function closeCart() {
-			cartOffCanvas.classList.remove('open');
-			cartOverlay.style.display = 'none';
-		}
+    // Funkcja do zamykania koszyka
+    function closeCart() {
+        cartOffCanvas.classList.remove('show');
+        cartOverlay.style.display = 'none';
+        document.body.style.overflow = '';
+    }
 
 		// Funkcja renderująca elementy koszyka
 		function renderCartItems(items) {
@@ -430,6 +433,7 @@
 				}
 
 				cartSubtotal.textContent = `Subtotal: $${parseFloat(data.total).toFixed(2)}`;
+				logCartState();
 			} catch (error) {
 				console.error('Error updating cart:', error);
 			}
