@@ -19,3 +19,7 @@ def about(request):
 # Contact page view
 def contact(request):
     return render(request, 'contact.html')
+
+# Profile page view
+def profile(request):
+    return render(request, 'profile.html')
