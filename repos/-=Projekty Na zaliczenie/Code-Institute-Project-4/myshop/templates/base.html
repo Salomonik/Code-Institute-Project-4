@@ -368,18 +368,18 @@
 
 		// Otwieranie i zamykanie koszyka
 		function openCart() {
-        cartOffCanvas.classList.add('show');
-        cartOverlay.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-        updateCart(); // Dynamicznie aktualizujemy zawartość koszyka
-    }
+			cartOffCanvas.classList.add('show');
+			cartOverlay.style.display = 'block';
+			document.body.style.overflow = 'hidden';
+			updateCart(); // Dynamicznie aktualizujemy zawartość koszyka
+		}
 
-    // Funkcja do zamykania koszyka
-    function closeCart() {
-        cartOffCanvas.classList.remove('show');
-        cartOverlay.style.display = 'none';
-        document.body.style.overflow = '';
-    }
+		// Funkcja do zamykania koszyka
+		function closeCart() {
+			cartOffCanvas.classList.remove('show');
+			cartOverlay.style.display = 'none';
+			document.body.style.overflow = '';
+		}
 
 		// Funkcja renderująca elementy koszyka
 		function renderCartItems(items) {
@@ -415,6 +415,46 @@
 					updateCartQuantity(item.product_id, e.target.value);
 				});
 			});
+		}
+
+
+		async function updateCartItemQuantity(productId, quantity) {
+			try {
+				const response = await fetch(`/cart/update/${productId}/`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'X-CSRFToken': getCsrfToken(),
+					},
+					body: JSON.stringify({ quantity: quantity })
+				});
+
+				if (response.ok) {
+					const data = await response.json();
+					updateCartDisplay(data.items, data.total);
+				}
+			} catch (error) {
+				console.error('Error updating cart item quantity:', error);
+			}
+		}
+
+		// Funkcja do usuwania produktu z koszyka
+		async function removeFromCart(productId) {
+			try {
+				const response = await fetch(`/cart/remove/${productId}/`, {
+					method: 'POST',
+					headers: {
+						'X-CSRFToken': getCsrfToken(),
+					}
+				});
+
+				if (response.ok) {
+					const data = await response.json();
+					updateCartDisplay(data.items, data.total);
+				}
+			} catch (error) {
+				console.error('Error removing item from cart:', error);
+			}
 		}
 
 
