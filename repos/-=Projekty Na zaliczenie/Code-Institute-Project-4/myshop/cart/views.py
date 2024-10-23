@@ -96,27 +96,30 @@ def remove_from_cart(request, product_id):
     messages.success(request, "Produkt usunięty z koszyka")
     return redirect('cart:cart_detail')
 
+
 def update_cart(request, product_id):
-    """Aktualizuj ilość produktu w koszyku"""
-    quantity = int(request.POST.get('quantity', 0))
-    
-    if quantity <= 0:
-        return remove_from_cart(request, product_id)
+    if request.method == 'POST':
+        product = get_object_or_404(Product, id=product_id)
+        quantity = int(request.POST.get('quantity', 0))
         
-    if request.user.is_authenticated:
-        cart = Cart.objects.get(user=request.user)
-        cart_item = cart.cartitem_set.filter(product_id=product_id).first()
-        if cart_item:
-            cart_item.quantity = quantity
-            cart_item.save()
-    else:
-        cart = request.session.get('cart', {})
-        if str(product_id) in cart:
-            cart[str(product_id)]['quantity'] = quantity
-            request.session['cart'] = cart
-    
-    messages.success(request, "Koszyk zaktualizowany")
-    return redirect('cart:cart_detail')
+        if quantity <= 0:
+            return remove_from_cart(request, product_id)
+        
+        if request.user.is_authenticated:
+            cart = Cart.objects.get(user=request.user)
+            cart_item = cart.cartitem_set.filter(product_id=product_id).first()
+            if cart_item:
+                cart_item.quantity = quantity
+                cart_item.save()
+        else:
+            cart = request.session.get('cart', {})
+            if str(product_id) in cart:
+                cart[str(product_id)]['quantity'] = quantity
+                request.session['cart'] = cart
+
+        # Zwracanie zaktualizowanej zawartości koszyka
+        return get_cart_items(request)
+
 
 
 def get_cart_items(request):
@@ -161,3 +164,6 @@ def get_cart_items(request):
         'items': items,
         'total': str(total)
     })
+    
+ 
+ 
