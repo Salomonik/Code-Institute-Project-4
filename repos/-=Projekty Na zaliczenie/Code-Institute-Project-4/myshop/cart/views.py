@@ -166,4 +166,18 @@ def get_cart_items(request):
     })
     
  
- 
+ def remove_from_cart(request, product_id):
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            cart = Cart.objects.get(user=request.user)
+            cart_item = cart.cartitem_set.filter(product_id=product_id).first()
+            if cart_item:
+                cart_item.delete()
+        else:
+            cart = request.session.get('cart', {})
+            if str(product_id) in cart:
+                del cart[str(product_id)]
+                request.session['cart'] = cart
+
+        # Zwracanie zaktualizowanej zawartości koszyka
+        return get_cart_items(request)  
