@@ -70,82 +70,170 @@
   
   /* Off-Canvas Cart */
 /* Style dla off-canvas koszyka */
+/* Koszyk Off-Canvas */
 .off-canvas {
     position: fixed;
     top: 0;
-    right: -400px; /* Początkowo schowany */
-    width: 400px;
-    height: 100vh;
-    background-color: white;
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    right: -100%;
+    width: 350px; /* Większa szerokość dla lepszego układu */
+    height: 100%;
+    background-color: #fff; /* Tło koszyka */
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
     transition: right 0.3s ease;
     z-index: 1000;
+    overflow-y: auto; /* Aby przewijać w razie dużej liczby elementów */
     padding: 20px;
+
+    display: flex; /* Dodano flex, aby ułatwić rozmieszczenie elementów pionowo */
+    flex-direction: column; /* Ustawienie, aby elementy były ułożone w kolumnie */
+    overflow: hidden; /* Ukrywanie nadmiarowych elementów */
 }
 
-.off-canvas.open {
+.off-canvas.show {
     right: 0;
 }
 
+/* Nagłówek koszyka */
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.cart-header h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #333;
+}
+
+/* Elementy koszyka */
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.cart-item-details {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.cart-item h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 5px 0;
+    color: #333;
+}
+
+.cart-item .price {
+    font-size: 1rem;
+    color: #555;
+}
+
+.cart-item .quantity-controls {
+    margin-top: 5px;
+}
+
+.cart-item .subtotal {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #007bff;
+    margin-top: 5px;
+}
+
+.quantity-input {
+    width: 60px;
+    text-align: center;
+    padding: 5px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top: 5px;
+}
+
+/* Przycisk usuwania produktu */
+.remove-item {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: #dc3545;
+    cursor: pointer;
+}
+
+.remove-item:hover {
+    color: #bd2130;
+}
+
+/* Wiadomość o pustym koszyku */
+#empty-cart-message {
+    text-align: center;
+    font-size: 1rem;
+    color: #777;
+    margin-top: 20px;
+}
+
+/* Stopka koszyka */
+.cart-footer {
+    padding: 15px 0;
+    background-color: #f8f9fa;
+    text-align: center;
+    border-top: 1px solid #e9ecef;
+    margin-top: auto;
+}
+
+.cart-footer p {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin: 0 0 10px;
+}
+
+#checkout-btn {
+    display: inline-block;
+    width: 100%;
+    padding: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#checkout-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Overlay */
 .overlay {
-    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
+    display: none;
     z-index: 999;
 }
 
-/* Style dla elementów koszyka */
-.cart-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+.overlay.show {
+    display: block;
 }
 
-.close-btn {
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-}
-
-.cart-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #eee;
-}
-
-.cart-footer {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 20px;
-    background-color: white;
-    border-top: 1px solid #eee;
-}
-
-/* Style dla przycisków */
-.quantity-btn {
-    padding: 2px 8px;
-    margin: 0 5px;
-    border: 1px solid #ddd;
-    background: white;
-    cursor: pointer;
-}
-
-.remove-btn {
-    background: none;
-    border: none;
-    color: red;
-    cursor: pointer;
-}
   
   /* Login/Register Off-Canvas */
   .offcanvas {
@@ -194,6 +282,13 @@
     background: #0052a3;
     transform: translateY(-2px);
   }
+
+  #cart-items-container {
+    flex: 1; /* Zapewnienie elastycznej przestrzeni dla produktów */
+    overflow-y: auto; /* Możliwość przewijania produktów, gdy jest ich dużo */
+    padding-right: 10px; /* Dodano odstęp na pasek przewijania */
+    margin-bottom: 15px; /* Odstęp między produktami a stopką */
+}
   
   /* Animations */
   @keyframes slideIn {

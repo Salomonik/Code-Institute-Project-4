@@ -166,7 +166,7 @@ def get_cart_items(request):
     })
     
  
- def remove_from_cart(request, product_id):
+def remove_from_cart(request, product_id):
     if request.method == 'POST':
         if request.user.is_authenticated:
             cart = Cart.objects.get(user=request.user)
