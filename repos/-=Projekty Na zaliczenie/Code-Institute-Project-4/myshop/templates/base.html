@@ -11,6 +11,7 @@
 	<link rel="stylesheet" href="{% static 'css/style.css' %}" />
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css">
 	<link rel="icon" href="{% static 'images/favicon.ico' %}" />
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -152,31 +153,34 @@
 
 
 		<!-- Off-Canvas Cart Container -->
+		<!-- Przycisk otwierający koszyk -->
+		<button id="cart-button">
+			<i class="fas fa-shopping-cart"></i> Koszyk
+		</button>
+
+		<!-- Cart Off-Canvas Container -->
 		<div id="cart-off-canvas" class="off-canvas">
 			<div class="cart-header">
 				<h2>Shopping Cart</h2>
 				<button id="close-cart" class="close-btn">&times;</button>
 			</div>
 
-			<!-- Container to dynamically load cart items -->
+			<!-- Kontener na dynamicznie ładowane elementy koszyka -->
 			<div id="cart-items-container">
-				<!-- Cart items will be dynamically loaded here from JavaScript -->
+				<!-- Elementy koszyka będą tutaj dodawane przez JavaScript -->
 			</div>
 
-			<!-- Message to display if the cart is empty -->
+			<!-- Wiadomość o pustym koszyku -->
 			<p id="empty-cart-message" style="display: none;">Your cart is empty.</p>
 
-			<!-- Cart footer to display the subtotal and checkout button -->
+			<!-- Stopka koszyka z sumą i przyciskiem checkout -->
 			<div class="cart-footer">
 				<p id="cart-subtotal">Subtotal: $0</p>
 				<button id="checkout-btn" class="btn">Checkout</button>
 			</div>
 		</div>
 
-
-
-
-		<!-- Overlay -->
+		<!-- Overlay, który pojawia się przy otwartym koszyku -->
 		<div id="cart-overlay" class="overlay"></div>
 
 
@@ -216,6 +220,8 @@
 			const registerForm = document.getElementById('register-form');
 			const offcanvasElement = document.getElementById('offcanvasRight');
 			const offcanvas = new bootstrap.Offcanvas(offcanvasElement);
+
+
 
 			// Toggle between login and register forms
 			showRegisterLink?.addEventListener('click', function (e) {
@@ -345,105 +351,185 @@
 		});
 
 
-		document.addEventListener("DOMContentLoaded", function () {
-			const cartButton = document.getElementById('cart-button'); // Cart button to open cart
-			const cartOffCanvas = document.getElementById('cart-off-canvas');
-			const cartOverlay = document.getElementById('cart-overlay');
-			const closeCartButton = document.getElementById('close-cart');
+		// Główne elementy DOM
+		const cartButton = document.getElementById('cart-button');
+		const cartOffCanvas = document.getElementById('cart-off-canvas');
+		const cartOverlay = document.getElementById('cart-overlay');
+		const cartItemsContainer = document.getElementById('cart-items-container');
+		const emptyCartMessage = document.getElementById('empty-cart-message');
+		const cartSubtotal = document.getElementById('cart-subtotal');
+		const closeCartBtn = document.getElementById('close-cart');
+		const checkoutBtn = document.getElementById('checkout-btn');
+
+		// Funkcje pomocnicze
+		function formatPrice(price) {
+			return `$${parseFloat(price).toFixed(2)}`;
+		}
+
+		// Otwieranie i zamykanie koszyka
+		function openCart() {
+			cartOffCanvas.classList.add('open');
+			cartOverlay.style.display = 'block';
+			updateCart();
+		}
+
+		function closeCart() {
+			cartOffCanvas.classList.remove('open');
+			cartOverlay.style.display = 'none';
+		}
+
+		// Funkcja renderująca elementy koszyka
+		function renderCartItems(items) {
 			const cartItemsContainer = document.getElementById('cart-items-container');
-			const cartSubtotal = document.getElementById('cart-subtotal');
-			const emptyCartMessage = document.getElementById('empty-cart-message');
+			cartItemsContainer.innerHTML = '';  // Wyczyść zawartość przed dodaniem nowych elementów
 
-			// Debug: Check if the DOM elements are found
-			console.log('Cart button:', cartButton);
-			console.log('Cart off-canvas:', cartOffCanvas);
+			items.forEach(item => {
+				const itemElement = document.createElement('div');
+				itemElement.classList.add('cart-item');
+				itemElement.innerHTML = `
+            <div class="cart-item-details">
+                <h4>${item.name}</h4>
+                <div class="price-quantity">
+                    <span class="price">$${item.price}</span>
+                    <div class="quantity-controls">
+                        <input type="number" class="quantity-input" value="${item.quantity}" min="1" data-product-id="${item.product_id}">
+                    </div>
+                </div>
+                <span class="subtotal">Subtotal: $${item.total}</span>
+            </div>
+            <button class="remove-item" data-product-id="${item.product_id}">&times;</button>
+        `;
 
-			// Function to update cart display
-			function updateCartDisplay(items, totalPrice) {
-				console.log('Updating cart display with items:', items); // Debug: Log items being updated
-				cartItemsContainer.innerHTML = ''; // Clear existing items
+				cartItemsContainer.appendChild(itemElement);
 
-				if (items.length === 0) {
-					emptyCartMessage.style.display = 'block'; // Show empty cart message
+				// Dodaj event listener do przycisku usuwania
+				itemElement.querySelector('.remove-item').addEventListener('click', () => {
+					removeFromCart(item.product_id);
+				});
+
+				// Dodaj event listener do zmiany ilości
+				itemElement.querySelector('.quantity-input').addEventListener('change', (e) => {
+					updateCartQuantity(item.product_id, e.target.value);
+				});
+			});
+		}
+
+
+		// Aktualizacja zawartości koszyka
+		async function updateCart() {
+			try {
+				const response = await fetch('/cart/get-items/');
+				const data = await response.json();
+
+				if (data.items.length === 0) {
+					emptyCartMessage.style.display = 'block';
+					cartItemsContainer.innerHTML = '';
 				} else {
-					emptyCartMessage.style.display = 'none'; // Hide empty cart message
-
-					// Loop through items and add them to the cart
-					items.forEach(item => {
-						const itemHtml = `
-		        <div class="cart-item">
-		            <p>${item.name} - ${item.quantity} x $${item.price}</p>
-		        </div>`;
-						cartItemsContainer.insertAdjacentHTML('beforeend', itemHtml);
-					});
-
-					// Update cart subtotal
-					cartSubtotal.textContent = `Subtotal: $${totalPrice}`;
-					console.log('Cart subtotal updated:', totalPrice); // Debug: Log subtotal
+					emptyCartMessage.style.display = 'none';
+					renderCartItems(data.items);  // Używamy funkcji renderującej elementy koszyka
 				}
+
+				cartSubtotal.textContent = `Subtotal: $${parseFloat(data.total).toFixed(2)}`;
+			} catch (error) {
+				console.error('Error updating cart:', error);
+			}
+		}
+
+
+		function getCsrfToken() {
+			return document.querySelector('[name=csrfmiddlewaretoken]').value;
+		}
+
+
+		// Dodawanie produktu do koszyka
+		async function addToCart(productId, quantity = 1, stock = 0) {
+			if (quantity > stock) {
+				showToast(`Only ${stock} items available in stock`, 'error');
+				return;
 			}
 
-			// Event to open the cart
-			cartButton.addEventListener('click', function () {
-				console.log('Cart button clicked'); // Debug: Log cart button click
-				cartOffCanvas.classList.add('show');
-				cartOverlay.classList.add('show');
+			try {
+				const response = await fetch(`/cart/add/${productId}/`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'X-CSRFToken': getCsrfToken(),
+					},
+					body: JSON.stringify({ quantity: quantity })
+				});
+
+				if (response.ok) {
+					const data = await response.json();
+					showToast('Product added to cart successfully!');
+					updateCart();
+					openCart(); // Otwórz koszyk po dodaniu produktu
+				} else {
+					const errorData = await response.json();
+					showToast(errorData.message, 'error');
+				}
+			} catch (error) {
+				console.error('Error adding to cart:', error);
+				showToast('Error adding product to cart', 'error');
+			}
+		}
+
+		// Dodanie obsługi walidacji dla przycisku "Add to Cart"
+		document.querySelectorAll('.add-to-cart').forEach(button => {
+			button.addEventListener('click', (e) => {
+				const productId = e.target.dataset.productId;
+				const stock = e.target.dataset.stock; // Zdobądź ilość dostępnego stocku
+				const quantity = 1; // Przykład, możesz dynamicznie ustawić ilość z pola
+				addToCart(productId, quantity, stock);
 			});
+		});
 
-			// Event to close the cart
-			closeCartButton.addEventListener('click', function () {
-				console.log('Close cart button clicked'); // Debug: Log cart close button click
-				cartOffCanvas.classList.remove('show');
-				cartOverlay.classList.remove('show');
-			});
 
-			// Close cart when overlay is clicked
-			cartOverlay.addEventListener('click', function () {
-				console.log('Cart overlay clicked'); // Debug: Log overlay click
-				cartOffCanvas.classList.remove('show');
-				cartOverlay.classList.remove('show');
-			});
+		// Funkcja do wyświetlania toastów
+		function showToast(message, type = 'success') {
+			const toast = new bootstrap.Toast(document.getElementById('successToast'));
+			const toastBody = document.querySelector('.toast-body');
+			toastBody.textContent = message;
+			toast.show();
+		}
 
-			// Add to cart event
-			document.querySelectorAll('.add-to-cart').forEach(function (button) {
-				button.addEventListener('click', function (e) {
-					e.preventDefault();
-					const productId = this.dataset.productId;  // Get product ID
-					console.log(`Add to Cart clicked for product ID: ${productId}`); // Debug: Log product ID
+		// Event Listeners
+		cartButton.addEventListener('click', openCart);
+		closeCartBtn.addEventListener('click', closeCart);
+		cartOverlay.addEventListener('click', closeCart);
 
-					// Send request to add the product to the cart
-					fetch(`/cart/add/${productId}/`, {
-						method: 'POST',
-						headers: {
-							'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-							'Content-Type': 'application/json',
-						},
-						body: JSON.stringify({})
-					})
-						.then(response => {
-							console.log('Response status:', response.status); // Debug: Log response status
-							return response.json();  // Convert to JSON
-						})
-						.then(data => {
-							console.log('Response data:', data); // Debug: Log JSON data
-
-							// Update cart with new data from server
-							const items = data.items.map(item => ({
-								name: item.name,
-								price: item.price,
-								quantity: item.quantity
-							}));
-							updateCartDisplay(items, data.cart_total_price); // Update display
-
-							// Optionally open cart after adding item
-							cartOffCanvas.classList.add('show');
-							cartOverlay.classList.add('show');
-						})
-						.catch(error => console.error('Error adding item to cart:', error)); // Debug: Log error
+		// Inicjalizacja
+		document.addEventListener('DOMContentLoaded', () => {
+			// Dodaj obsługę kliknięcia dla wszystkich przycisków "Add to Cart"
+			document.querySelectorAll('.add-to-cart').forEach(button => {
+				button.addEventListener('click', (e) => {
+					const productId = e.target.dataset.productId;
+					addToCart(productId);
 				});
 			});
 		});
 
+		async function logCartState() {
+			try {
+				const response = await fetch('/cart/get-items/');
+				const data = await response.json();
+
+				console.log("=== Aktualny stan koszyka ===");
+				console.log(`Liczba przedmiotów: ${data.items.length}`);
+				console.log(`Łączna wartość: ${data.total}`);
+
+				// Szczegóły każdego produktu
+				data.items.forEach((item, index) => {
+					console.log(`Produkt #${index + 1}:`);
+					console.log(`  Nazwa: ${item.name}`);
+					console.log(`  Ilość: ${item.quantity}`);
+					console.log(`  Cena: ${item.price}`);
+					console.log(`  Wartość całkowita: ${item.total}`);
+				});
+
+			} catch (error) {
+				console.error('Błąd podczas pobierania stanu koszyka:', error);
+			}
+		}
 
 
 	</script>

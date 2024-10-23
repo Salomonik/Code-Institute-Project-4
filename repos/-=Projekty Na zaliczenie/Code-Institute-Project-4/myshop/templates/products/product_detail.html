@@ -3,22 +3,24 @@
 {% block title %}{{ product.name }}{% endblock %}
 
 {% block content %}
-    <h1>{{ product.name }}</h1>
-    <p><strong>Price:</strong> ${{ product.price }}</p>
-    <form action="{% url 'cart:add_to_cart' product.id %}" method="post">
-        {% csrf_token %}
-        {{ form.quantity }}
-        <button type="submit">Add to Cart</button>
-    </form>
-    
-    <p><strong>Description:</strong> {{ product.description }}</p>
-    
-    {% if product.image %}
-        <img src="{{ product.image.url }}" alt="{{ product.name }}" width="300px">
-    {% endif %}
-    
-    <p><strong>Stock:</strong> {{ product.stock }}</p>
+<h1>{{ product.name }}</h1>
+<p><strong>Price:</strong> ${{ product.price }}</p>
 
-    <a href="{% url 'products:product_list' %}">Back to Products</a>
+<!-- Zamiast formularza, użyjemy przycisku z dynamicznymi atrybutami -->
+<button class="add-to-cart" 
+        data-product-id="{{ product.id }}" 
+        data-stock="{{ product.stock }}">
+    Add to Cart
+</button>
+
+<p><strong>Description:</strong> {{ product.description }}</p>
+
+{% if product.image %}
+<img src="{{ product.image.url }}" alt="{{ product.name }}" width="300px">
+{% endif %}
+
+<p><strong>Stock:</strong> {{ product.stock }}</p>
+
+<a href="{% url 'products:product_list' %}">Back to Products</a>
 
 {% endblock %}
