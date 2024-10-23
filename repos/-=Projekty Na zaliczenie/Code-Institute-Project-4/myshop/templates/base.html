@@ -491,22 +491,54 @@
 		}
 
 
+		document.querySelectorAll('.quantity-input').forEach(input => {
+			input.addEventListener('change', (e) => {
+				const newQuantity = parseInt(e.target.value, 10);  // Parse the new quantity as an integer
+
+				// Debugging: Log the quantity input change event
+				console.log(`Quantity input change for product ID ${e.target.dataset.productId}: New Quantity: ${newQuantity}`);
+
+				if (isNaN(newQuantity) || newQuantity <= 0) {
+					// Invalid quantity, show an error and reset to 1
+					e.target.value = 1;
+					showToast('Quantity must be at least 1.', 'error');
+				} else {
+					// Update the quantity for this product in the cart
+					updateCartQuantity(e.target.dataset.productId, newQuantity);
+				}
+			});
+		});
+
+		// Function to dynamically update the quantity of an item in the cart
 		async function updateCartQuantity(productId, newQuantity) {
+			// Ensure newQuantity is valid
+			if (newQuantity <= 0 || isNaN(newQuantity)) {
+				console.log(`Invalid quantity for product ID ${productId}. Quantity: ${newQuantity}.`);
+				showToast('Invalid quantity. Quantity must be at least 1.', 'error');
+				return;
+			}
+
+			// Debugging: Log the quantity to be sent to the server
+			console.log(`Sending request to update quantity of product ID ${productId} to ${newQuantity}.`);
+
 			try {
 				const response = await fetch(`/cart/update/${productId}/`, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
-						'X-CSRFToken': getCsrfToken(),  // Include CSRF token for security
+						'X-CSRFToken': getCsrfToken(),  // Include CSRF token
 					},
-					body: JSON.stringify({ quantity: newQuantity })  // Send the new quantity
+					body: JSON.stringify({ quantity: newQuantity })  // Send the new valid quantity
 				});
 
+				const data = await response.json();
+
 				if (response.ok) {
-					const data = await response.json();
-					showToast('Quantity updated!');  // Show success toast
-					await updateCart(); // Refresh the cart to reflect changes
+					console.log(`Quantity update successful for product ID ${productId}:`, data);
+					showToast('Quantity updated!');
+					await updateCart();  // Refresh the cart
 				} else {
+					console.log('Error response from server:', response);
 					showToast('Error updating quantity', 'error');
 				}
 			} catch (error) {
@@ -514,6 +546,7 @@
 				showToast('Error updating quantity', 'error');
 			}
 		}
+
 
 		// Funkcja do usuwania produktu z koszyka
 		async function removeFromCart(productId) {
@@ -540,28 +573,71 @@
 		}
 
 
-		// Aktualizacja zawartości koszyka
+		// Function to update and re-render the cart (ensure it properly updates the quantity)
 		async function updateCart() {
 			try {
 				const response = await fetch('/cart/get-items/');
 				const data = await response.json();
 
-				// Update cart display in DOM
-				cartItemsContainer.innerHTML = ''; // Clear previous cart items
+				// Debugging: Log the received cart data from the server
+				console.log('Cart data received from server:', data);
+
+				// Clear the current cart items
+				cartItemsContainer.innerHTML = '';
+
 				if (data.items.length === 0) {
 					emptyCartMessage.style.display = 'block';
+					cartSubtotal.textContent = 'Subtotal: $0.00';
 				} else {
 					emptyCartMessage.style.display = 'none';
-					renderCartItems(data.items); // Re-render the cart items
-				}
 
-				// Update the cart subtotal and total items
-				cartSubtotal.textContent = `Subtotal: ${formatPrice(data.total)}`;
-				updateCartTotalItems(data.items.reduce((total, item) => total + item.quantity, 0));
+					// Re-render each item in the cart
+					data.items.forEach(item => {
+						const itemElement = document.createElement('div');
+						itemElement.classList.add('cart-item');
+
+						itemElement.innerHTML = `
+                    <div class="cart-item-details">
+                        <h4>${item.name}</h4>
+                        <p>$${item.price}</p>
+                        <input type="number" class="quantity-input" value="${item.quantity}" min="1" data-product-id="${item.product_id}">
+                        <p class="subtotal">Subtotal: $${(item.price * item.quantity).toFixed(2)}</p>
+                    </div>
+                    <button class="remove-item" data-product-id="${item.product_id}">&times;</button>
+                `;
+
+						// Append item to the cart container
+						cartItemsContainer.appendChild(itemElement);
+
+						// Add event listeners for quantity change
+						const quantityInput = itemElement.querySelector('.quantity-input');
+						quantityInput.addEventListener('change', (e) => {
+							const newQuantity = parseInt(e.target.value, 10);
+							if (isNaN(newQuantity) || newQuantity <= 0) {
+								e.target.value = 1;
+								showToast('Quantity must be at least 1.', 'error');
+							} else {
+								updateCartQuantity(item.product_id, newQuantity);
+							}
+						});
+
+						// Add event listeners for removing an item
+						const removeButton = itemElement.querySelector('.remove-item');
+						removeButton.addEventListener('click', () => {
+							removeFromCart(item.product_id);
+						});
+					});
+
+					// Update the subtotal with the new total from the server response
+					cartSubtotal.textContent = `Subtotal: $${data.total}`;
+				}
 			} catch (error) {
 				console.error('Error updating cart:', error);
+				showToast('Error updating cart', 'error');
 			}
 		}
+
+
 
 
 		function getCsrfToken() {

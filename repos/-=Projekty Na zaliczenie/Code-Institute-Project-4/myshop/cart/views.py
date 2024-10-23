@@ -96,43 +96,71 @@ def remove_from_cart(request, product_id):
     messages.success(request, "Produkt usunięty z koszyka")
     return redirect('cart:cart_detail')
 
-
 def update_cart(request, product_id):
     """Update quantity in cart"""
+
     try:
-        quantity = int(request.POST.get('quantity', 1))  # Default to 1 if not found or invalid
-    except ValueError:
-        # If quantity isn't a valid integer, log and return an error response
-        print(f"Invalid quantity for product {product_id}")
-        return JsonResponse({'status': 'error', 'message': 'Invalid quantity'}, status=400)
+        # Parse the JSON request body to get the quantity
+        data = json.loads(request.body)
+        quantity = int(data.get('quantity', 1))  # Default to 1 if not found or invalid
+        print(f"Received request to update product {product_id} with quantity {quantity}")
+    except (ValueError, json.JSONDecodeError):
+        print(f"Invalid quantity or request data for product {product_id}")
+        return JsonResponse({'status': 'error', 'message': 'Invalid quantity or request data'}, status=400)
 
-    # Debugging: Log the quantity received
-    print(f"Received request to update product {product_id} with quantity {quantity}")
-
-    # Ensure the quantity is valid and remove only if it's explicitly zero
+    # Ensure the quantity is valid
     if quantity <= 0:
-        # Debugging: Log that we are about to remove the item
         print(f"Removing product {product_id} because quantity is 0 or less.")
-        return remove_from_cart(request, product_id)  # Only remove if quantity is explicitly 0
-    
+        return remove_from_cart(request, product_id)
+
     if request.user.is_authenticated:
+        # For authenticated users, update cart item quantity
         cart = Cart.objects.get(user=request.user)
         cart_item = cart.cartitem_set.filter(product_id=product_id).first()
         if cart_item:
             cart_item.quantity = quantity
             cart_item.save()
-            # Debugging: Log the updated quantity
-            print(f"Updated product {product_id} to quantity {cart_item.quantity}")
+            print(f"Updated product {product_id} to quantity {cart_item.quantity} for user {request.user.username}")
+        else:
+            print(f"Product {product_id} not found in cart for user {request.user.username}")
     else:
+        # For session-based cart (unauthenticated users)
         cart = request.session.get('cart', {})
         if str(product_id) in cart:
-            cart[str(product_id)]['quantity'] = quantity
-            request.session['cart'] = cart
-            # Debugging: Log the session-based cart update
+            cart[str(product_id)]['quantity'] = quantity  # Update the session cart
+            request.session['cart'] = cart  # Save the updated session cart
             print(f"Updated product {product_id} in session to quantity {quantity}")
+        else:
+            print(f"Product {product_id} not found in session-based cart.")
 
-    return JsonResponse({'status': 'success', 'message': 'Cart updated'})
+    # Calculate the total quantity and price
+    total_quantity = 0
+    total_price = Decimal('0.00')
+    
+    if request.user.is_authenticated:
+        cart_items = cart.cartitem_set.all()
+    else:
+        cart_items = request.session.get('cart', {}).values()
 
+    # Log each item's quantity and total price for debugging
+    for item in cart_items:
+        if isinstance(item, CartItem):
+            item_quantity = item.quantity
+            item_total = item.product.price * item.quantity
+        else:
+            item_quantity = item['quantity']
+            item_total = Decimal(item['price']) * item['quantity']
+
+        total_quantity += item_quantity
+        total_price += item_total
+
+        # Log each item's details
+        print(f"Product ID {product_id}, Quantity: {item_quantity}, Item Total: {item_total}")
+
+    # Final log showing the cart's total quantity and price
+    print(f"Final cart total quantity: {total_quantity}, total price: {total_price}")
+
+    return JsonResponse({'status': 'success', 'message': 'Cart updated', 'total_quantity': total_quantity, 'total_price': str(total_price)})
 
 
 
