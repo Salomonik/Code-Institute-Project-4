@@ -5,38 +5,119 @@
 {% block content %}
 <div class="checkout-container container mt-5">
     <div class="row">
-        <!-- Left side: Address form -->
-        <div class="col-md-6">
-            <h1>Checkout</h1>
-
-            <form method="POST" id="address-form">
+        <!-- Left side: Contact, Delivery, and Payment form -->
+        <div class="col-md-7">
+            <h2>Contact Information</h2>
+            <form method="POST" id="checkout-form">
                 {% csrf_token %}
-                {{ form.as_p }}
+                <!-- Contact Section -->
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
+                </div>
 
-                <h2>Order Summary</h2>
-                <ul>
-                    {% for item in cart_items %}
-                    <li>{{ item.product.name }} - Quantity: {{ item.quantity }} - ${{ item.get_total_price }}</li>
-                    {% endfor %}
-                </ul>
-                <p><strong>Total:</strong> ${{ total }}</p>
+                <div class="form-check mb-3">
+                    <input type="checkbox" class="form-check-input" id="subscribe" name="subscribe">
+                    <label class="form-check-label" for="subscribe">Email me with news and offers</label>
+                </div>
 
-                <button type="submit" class="btn btn-primary">Place Order</button>
+                <!-- Delivery Section -->
+                <h3>Delivery</h3>
+                <div class="mb-3">
+                    <label for="country" class="form-label">Country/Region</label>
+                    <select class="form-select" id="country" name="country">
+                        <option>United Kingdom</option>
+                        <!-- Add more country options as needed -->
+                    </select>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="first_name" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="first_name" name="first_name" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="last_name" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="last_name" name="last_name" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="address" class="form-label">Address</label>
+                    <input type="text" class="form-control" id="address" name="address" placeholder="Street Address" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="city" class="form-label">City</label>
+                    <input type="text" class="form-control" id="city" name="city" required>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="postcode" class="form-label">Postcode</label>
+                        <input type="text" class="form-control" id="postcode" name="postcode" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="phone" class="form-label">Phone</label>
+                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="Phone Number" required>
+                    </div>
+                </div>
+
+                <!-- Payment Section -->
+                <h3>Payment</h3>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="payment_method" id="credit_card" value="credit_card" checked>
+                    <label class="form-check-label" for="credit_card">
+                        Credit Card
+                    </label>
+                </div>
+
+                <!-- Stripe payment form -->
+                <div id="card-element" class="mb-3">
+                    <!-- Stripe will inject the Card element here -->
+                </div>
+                <button type="submit" class="btn btn-primary">Pay Now</button>
+
+                <!-- Error Display -->
+                <div id="card-errors" role="alert" class="text-danger mt-2"></div>
             </form>
         </div>
 
-        <!-- Right side: Stripe payment form -->
-        <div class="col-md-6">
-            <h2>Payment Details</h2>
+        <!-- Right side: Order Summary -->
+        <div class="col-md-5">
+            <h2>Order Summary</h2>
+            <div class="order-summary">
+                <ul class="list-group mb-3">
+                    {% for item in cart_items %}
+                    <li class="list-group-item d-flex justify-content-between lh-condensed">
+                        <div class="order-item-img">
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="img-thumbnail" style="width: 75px; height: 75px;">
+                        </div>
+                        <div class="order-item-details ms-3">
+                            <h6 class="my-0">{{ item.product.name }}</h6>
+                            <small class="text-muted">Quantity: {{ item.quantity }}</small>
+                        </div>
+                        <span class="text-muted">£{{ item.get_total_price }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <ul class="list-group mb-3">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Subtotal</span>
+                        <strong>£{{ total }}</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Shipping</span>
+                        <strong>Enter shipping address</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Total</span>
+                        <strong>£{{ total }}</strong>
+                    </li>
+                </ul>
 
-            <!-- Stripe payment form (Elements) -->
-            <form id="payment-form">
-                <div id="card-element"><!-- Stripe will inject Card element here --></div>
-                <button id="checkout-button" class="btn btn-success mt-3">Pay with Card</button>
-            </form>
 
-            <!-- Stripe Error messages -->
-            <div id="card-errors" role="alert" class="mt-2 text-danger"></div>
+            </div>
         </div>
     </div>
 </div>

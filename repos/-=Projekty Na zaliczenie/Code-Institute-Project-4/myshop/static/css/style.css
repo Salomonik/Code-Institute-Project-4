@@ -50,22 +50,10 @@ body {
 .nav-link:hover {
     color: var(--primary-color) !important;
 }
-}
+
 
 /* Cart Button */
-#cart-button,
-#profile-button {
-    background: var(--primary-color);
-    color: white !important; /* Dodano !important aby nadpisać style .nav-link */
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 50px;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: var(--transition);
-    text-decoration: none;
-}
+
 
 #cart-button:hover,
 #profile-button:hover {
@@ -95,10 +83,10 @@ body {
 #cart-total-items {
     background: white;
     color: var(--primary-color);
-    padding: 0.2rem 0.6rem;
     border-radius: 50%;
     font-size: 0.8rem;
     font-weight: bold;
+
 }
 
 /* Off-Canvas Cart */
@@ -272,26 +260,7 @@ body {
         color: var(--primary-color) !important;
     }
     
-    /* Cart and Profile Buttons */
-    #cart-button,
-    #profile-button {
-        background: var(--primary-color);
-        color: white !important;
-        border: none;
-        padding: 0.5rem 1rem;
-        border-radius: 50px;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        transition: var(--transition);
-        text-decoration: none;
-    }
-    
-    #cart-button:hover,
-    #profile-button:hover {
-        background: #0052a3;
-        transform: translateY(-2px);
-    }
+
     
     /* Number of items in cart */
     #cart-total-items {
@@ -301,6 +270,8 @@ body {
         border-radius: 50%;
         font-size: 0.8rem;
         font-weight: bold;
+        width: 27.5625px;
+        height: 27.5625px;
     }
     
     /* Off-Canvas Cart */
