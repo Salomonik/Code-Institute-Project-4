@@ -607,95 +607,119 @@
 
 
 		// Function to update and re-render the cart (ensure it properly updates the quantity)
-		async function updateCart() {
-			try {
-				const response = await fetch('/cart/get-items/');
-				const data = await response.json();
+// Function to update and re-render the cart (ensure it properly updates the quantity)
+async function updateCart() {
+    try {
+        const response = await fetch('/cart/get-items/');
+        const data = await response.json();
 
-				// Debugging: Log the received cart data from the server
-				console.log('Cart data received from server:', data);
+        // Debugging: Log the received cart data from the server
+        console.log('Cart data received from server:', data);
 
-				// Clear the current cart items
-				cartItemsContainer.innerHTML = '';
+        // Clear the current cart items
+        cartItemsContainer.innerHTML = '';
 
-				if (data.items.length === 0) {
-					emptyCartMessage.style.display = 'block';
-					cartSubtotal.textContent = 'Subtotal: $0.00';
-				} else {
-					emptyCartMessage.style.display = 'none';
+        if (data.items.length === 0) {
+            emptyCartMessage.style.display = 'block';
+            cartSubtotal.textContent = 'Subtotal: £0.00';
+        } else {
+            emptyCartMessage.style.display = 'none';
 
-					// Re-render each item in the cart
-					data.items.forEach(item => {
-						const itemElement = document.createElement('div');
-						itemElement.classList.add('cart-item');
+            // Re-render each item in the cart
+            data.items.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.classList.add('cart-item');
 
-						itemElement.innerHTML = `
+                // Debugging: Check the image URL in the console
+                console.log(`Image URL for product ID ${item.product_id}:`, item.image_url);
+
+                itemElement.innerHTML = `
     <div class="cart-item">
         <!-- Left: Product Image -->
-<div class="cart-item-image">
-    <p>{{ item.image_url }}</p>  <!-- This will print the image URL to help debug -->
-    <img src="{{ item.image_url }}" alt="{{ item.name }}">
-</div>
-
+        <div class="cart-item-image">
+            <!-- Display image or placeholder if the URL is not available -->
+            ${item.image_url ? `<img src="${item.image_url}" alt="${item.name}" />` : '<p>No Image Available</p>'}
+        </div>
 
         <!-- Right: Product Details -->
         <div class="cart-item-details">
             <h4 class="product-name">${item.name}</h4>
             <p class="product-category">${item.category ? item.category : 'Unknown Category'}</p>
-            <p class="product-price">$${item.price}</p>
+            <p class="product-price">£${item.price}</p>
 
             <!-- Quantity Controls -->
-				<div class = "cart-one-line">
-					<!-- Remove Button -->
-					<div><button class="remove-item" data-product-id="${item.product_id}">
-                <i class="trash fa fa-trash"></i>
-            </button></div>
+            <div class="cart-one-line">
+                <!-- Remove Button -->
+                <div>
+                    <button class="remove-item" data-product-id="${item.product_id}">
+                        <i class="trash fa fa-trash"></i>
+                    </button>
+                </div>
+
                 <div class="quantity-controls">
                     <button class="decrease-quantity" data-product-id="${item.product_id}">-</button>
                     <input type="number" class="quantity-input" value="${item.quantity}" min="1" data-product-id="${item.product_id}">
                     <button class="increase-quantity" data-product-id="${item.product_id}">+</button>
-                </div></div>
+                </div>
+            </div>
 
             <!-- Subtotal -->
-            <p class="subtotal">Subtotal: $${(item.price * item.quantity).toFixed(2)}</p>
+            <p class="subtotal">Subtotal: £${(item.price * item.quantity).toFixed(2)}</p>
         </div>
-
-
     </div>
                 `;
 
-						// Append item to the cart container
-						cartItemsContainer.appendChild(itemElement);
+                // Append item to the cart container
+                cartItemsContainer.appendChild(itemElement);
 
-						// Add event listeners for quantity change
-						const quantityInput = itemElement.querySelector('.quantity-input');
-						quantityInput.addEventListener('change', (e) => {
-							const newQuantity = parseInt(e.target.value, 10);
-							if (isNaN(newQuantity) || newQuantity <= 0) {
-								e.target.value = 1;
-								showToast('Quantity must be at least 1.', 'error');
-							} else {
-								updateCartQuantity(item.product_id, newQuantity);
-							}
-						});
+                // Add event listeners for quantity change
+                const quantityInput = itemElement.querySelector('.quantity-input');
+                quantityInput.addEventListener('change', (e) => {
+                    const newQuantity = parseInt(e.target.value, 10);
+                    if (isNaN(newQuantity) || newQuantity <= 0) {
+                        e.target.value = 1;
+                        showToast('Quantity must be at least 1.', 'error');
+                    } else {
+                        updateCartQuantity(item.product_id, newQuantity);
+                    }
+                });
 
-						// Add event listeners for removing an item
-						const removeButton = itemElement.querySelector('.remove-item');
-						removeButton.addEventListener('click', () => {
-							removeFromCart(item.product_id);
-						});
-					});
+                // Add event listeners for removing an item
+                const removeButton = itemElement.querySelector('.remove-item');
+                removeButton.addEventListener('click', () => {
+                    removeFromCart(item.product_id);
+                });
 
-					// Update the subtotal with the new total from the server response
-					cartSubtotal.textContent = `Subtotal: $${data.total}`;
-					const totalQuantity = data.items.reduce((sum, item) => sum + item.quantity, 0); // Calculate total quantity
-					document.getElementById('cart-total-items').textContent = totalQuantity;  // Update cart icon
-				}
-			} catch (error) {
-				console.error('Error updating cart:', error);
-				showToast('Error updating cart', 'error');
-			}
-		}
+                // Add event listeners for increase and decrease quantity buttons
+                const decreaseButton = itemElement.querySelector('.decrease-quantity');
+                const increaseButton = itemElement.querySelector('.increase-quantity');
+
+                decreaseButton.addEventListener('click', () => {
+                    const newQuantity = parseInt(quantityInput.value, 10) - 1;
+                    if (newQuantity >= 1) {
+                        quantityInput.value = newQuantity;
+                        updateCartQuantity(item.product_id, newQuantity);
+                    }
+                });
+
+                increaseButton.addEventListener('click', () => {
+                    const newQuantity = parseInt(quantityInput.value, 10) + 1;
+                    quantityInput.value = newQuantity;
+                    updateCartQuantity(item.product_id, newQuantity);
+                });
+            });
+
+            // Update the subtotal with the new total from the server response
+            cartSubtotal.textContent = `Subtotal: £${parseFloat(data.total).toFixed(2)}`;
+            const totalQuantity = data.items.reduce((sum, item) => sum + item.quantity, 0); // Calculate total quantity
+            document.getElementById('cart-total-items').textContent = totalQuantity;  // Update cart icon
+        }
+    } catch (error) {
+        console.error('Error updating cart:', error);
+        showToast('Error updating cart', 'error');
+    }
+}
+
 
 
 
@@ -796,78 +820,89 @@
 		}
 
 
-		document.querySelectorAll('.decrease-quantity').forEach(button => {
-			button.addEventListener('click', async function () {
-				const input = this.nextElementSibling;  // Pobierz pole input po kliknięciu przycisku minus
-				let currentValue = parseInt(input.value);
-				let minValue = parseInt(input.min);
+// Zmniejszenie ilości
+document.querySelectorAll('.decrease-quantity').forEach(button => {
+    button.addEventListener('click', function () {
+        const input = this.nextElementSibling;  // Pobierz pole input po kliknięciu przycisku minus
+        let currentValue = parseInt(input.value);
 
-				if (currentValue > minValue) {
-					input.value = currentValue - 1;
-				}
-			});
-		});
+        console.log(`Decreasing quantity for product ID: ${input.dataset.productId} Current value: ${currentValue}`);
 
-		// + and - buttons functionality
+        if (currentValue > 1) {  // Upewnij się, że ilość nie spadnie poniżej 1
+            input.value = currentValue - 1;
+            updateCartQuantity(input.dataset.productId, input.value);  // Aktualizuj koszyk w bazie
+        } else {
+            console.log('Quantity cannot be less than 1.');
+        }
+    });
+});
 
-		document.querySelectorAll('.increase-quantity').forEach(button => {
-			button.addEventListener('click', async function () {
-				const input = this.previousElementSibling;  // Pobierz pole input po kliknięciu przycisku plus
-				let currentValue = parseInt(input.value);
-				const productId = this.dataset.productId;  // Pobierz ID produktu
+// Zwiększenie ilości
+document.querySelectorAll('.increase-quantity').forEach(button => {
+    button.addEventListener('click', function () {
+        const input = this.previousElementSibling;  // Pobierz pole input po kliknięciu przycisku plus
+        let currentValue = parseInt(input.value);
+        
+        console.log(`Increasing quantity for product ID: ${input.dataset.productId} Current value: ${currentValue}`);
 
-				try {
-					// Wyślij zapytanie Ajax, aby sprawdzić ilość dostępnego stocku
-					const response = await fetch(`/cart/check-stock/${productId}/`);
-					const data = await response.json();
+        input.value = currentValue + 1;
+        updateCartQuantity(input.dataset.productId, input.value);  // Aktualizuj koszyk w bazie
+    });
+});
 
-					if (response.ok) {
-						const availableStock = parseInt(data.stock);  // Pobierz ilość stocku z odpowiedzi
+// Funkcja aktualizująca ilość w bazie danych i aktualizująca subtotal
+async function updateCartQuantity(productId, newQuantity) {
+    console.log(`Sending request to update quantity of product ID: ${productId} to ${newQuantity}`);
+    
+    try {
+        const response = await fetch(`/cart/update/${productId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken(),  // Wykorzystaj token CSRF do zabezpieczenia
+            },
+            body: JSON.stringify({ quantity: newQuantity })  // Wyślij nową ilość do backendu
+        });
 
-						if (currentValue < availableStock) {
-							input.value = currentValue + 1;
-						} else {
-							alert('Nie możesz dodać więcej niż dostępne w magazynie.');
-						}
-					} else {
-						console.error('Błąd podczas sprawdzania stocku.');
-					}
-				} catch (error) {
-					console.error('Wystąpił błąd:', error);
-				}
-			});
-		});
+        const data = await response.json();
 
-		function updateQuantityInCart(productId, newQuantity) {
-			fetch(`/cart/update/${productId}/`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'X-CSRFToken': getCsrfToken()
-				},
-				body: JSON.stringify({ quantity: newQuantity })
-			})
-				.then(response => response.json())
-				.then(data => {
-					if (data.status === 'error') {
-						alert(data.message);  // Wyświetl komunikat o błędzie, jeśli stock jest przekroczony
-					} else {
-						// Możesz zaktualizować ilość i subtotal w interfejsie użytkownika, jeśli potrzeba
-					}
-				})
-				.catch(error => {
-					console.error('Error updating quantity:', error);
-				});
-		}
+        if (response.ok) {
+            console.log('Cart updated successfully!', data);
+            // Zaktualizuj subtotal na stronie
+            updateSubtotal(data.total_price);
 
-		// Pobieranie tokenu CSRF
-		function getCsrfToken() {
-			return document.querySelector('[name=csrfmiddlewaretoken]').value;
-		}
+            // Możesz dodać tu dodatkową logikę, aby np. odświeżyć podsumowanie koszyka
+        } else {
+            console.log('Error updating cart', data.message);
+            alert(data.message);
+        }
+    } catch (error) {
+        console.error('Error updating cart:', error);
+    }
+}
 
+// Funkcja do aktualizacji subtotalu
+function updateSubtotal(totalPrice) {
+    const subtotalElement = document.querySelector('#cart-subtotal span:last-child');
+    
+    console.log(`Updating subtotal to: $${totalPrice}`);
+    subtotalElement.textContent = `£${parseFloat(totalPrice).toFixed(2)}`;  // Formatowanie do 2 miejsc po przecinku
+}
 
+// Funkcja pobierająca token CSRF
+function getCsrfToken() {
+    return document.querySelector('[name=csrfmiddlewaretoken]').value;
+}
 
+// Debugowanie otwierania koszyka
+document.getElementById('cart-button').addEventListener('click', function() {
+    console.log('Cart button clicked, opening cart...');
+    openCart();
+});
 
+function getCsrfToken() {
+    return document.querySelector('[name=csrfmiddlewaretoken]').value;
+}
 
 	</script>
 
