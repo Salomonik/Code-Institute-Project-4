@@ -3,90 +3,131 @@
 {% block title %}Checkout{% endblock %}
 
 {% block content %}
-<div class="checkout-container">
-	<h1>Checkout</h1>
+<div class="checkout-container container mt-5">
+    <div class="row">
+        <!-- Left side: Address form -->
+        <div class="col-md-6">
+            <h1>Checkout</h1>
 
-	<form method="POST">
-		{% csrf_token %}
-		{{ form.as_p }}
+            <form method="POST" id="address-form">
+                {% csrf_token %}
+                {{ form.as_p }}
 
-		<h2>Order Summary</h2>
-		<ul>
-			{% for item in cart_items %}
-			<li>{{ item.product.name }} - Quantity: {{ item.quantity }} - ${{ item.get_total_price }}</li>
-			{% endfor %}
-		</ul>
-		<p><strong>Total:</strong> ${{ total }}</p>
+                <h2>Order Summary</h2>
+                <ul>
+                    {% for item in cart_items %}
+                    <li>{{ item.product.name }} - Quantity: {{ item.quantity }} - ${{ item.get_total_price }}</li>
+                    {% endfor %}
+                </ul>
+                <p><strong>Total:</strong> ${{ total }}</p>
 
-		<button type="submit" class="btn btn-primary">Place Order</button>
-	</form>
+                <button type="submit" class="btn btn-primary">Place Order</button>
+            </form>
+        </div>
+
+        <!-- Right side: Stripe payment form -->
+        <div class="col-md-6">
+            <h2>Payment Details</h2>
+
+            <!-- Stripe payment form (Elements) -->
+            <form id="payment-form">
+                <div id="card-element"><!-- Stripe will inject Card element here --></div>
+                <button id="checkout-button" class="btn btn-success mt-3">Pay with Card</button>
+            </form>
+
+            <!-- Stripe Error messages -->
+            <div id="card-errors" role="alert" class="mt-2 text-danger"></div>
+        </div>
+    </div>
 </div>
 
+<!-- Google Maps API for address autocomplete -->
 <script
     src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initAutocomplete"
     async defer>
 </script>
-	function initAutocomplete() {
-		var autocomplete = new google.maps.places.Autocomplete(
-			document.getElementById('id_street_address1'),
-			{ types: ['address'] }
-		);
-		autocomplete.setFields(['address_component']);
-		autocomplete.addListener('place_changed', function () {
-			var place = autocomplete.getPlace();
-			var components = place.address_components;
+<script>
+    function initAutocomplete() {
+        var autocomplete = new google.maps.places.Autocomplete(
+            document.getElementById('id_street_address1'),
+            { types: ['address'] }
+        );
+        autocomplete.setFields(['address_component']);
+        autocomplete.addListener('place_changed', function () {
+            var place = autocomplete.getPlace();
+            var components = place.address_components;
 
-			// Poniżej ustawiasz pola autouzupełnienia
-			components.forEach(function (component) {
-				var types = component.types;
-				if (types.includes('locality')) {
-					document.getElementById('id_city').value = component.long_name;
-				}
-				if (types.includes('administrative_area_level_1')) {
-					document.getElementById('id_county').value = component.long_name;
-				}
-				if (types.includes('postal_code')) {
-					document.getElementById('id_postal_code').value = component.long_name;
-				}
-				if (types.includes('country')) {
-					document.getElementById('id_country').value = component.short_name;
-				}
-			});
-		});
-	}
+            // Automatically fill in fields based on selected address
+            components.forEach(function (component) {
+                var types = component.types;
+                if (types.includes('locality')) {
+                    document.getElementById('id_city').value = component.long_name;
+                }
+                if (types.includes('administrative_area_level_1')) {
+                    document.getElementById('id_county').value = component.long_name;
+                }
+                if (types.includes('postal_code')) {
+                    document.getElementById('id_postal_code').value = component.long_name;
+                }
+                if (types.includes('country')) {
+                    document.getElementById('id_country').value = component.short_name;
+                }
+            });
+        });
+    }
 </script>
+
+<!-- Stripe.js -->
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-    var stripe = Stripe('{{ stripe_pub_key }}');  // Use the Stripe publishable key
+    var stripe = Stripe('{{ stripe_pub_key }}');  // Use your Stripe publishable key
+    var elements = stripe.elements();
+    var cardElement = elements.create('card');  // Create the card element for Stripe
+    cardElement.mount('#card-element');  // Mount the card element to the div
 
+    // Handle payment form submission
+    var paymentForm = document.getElementById('payment-form');
     var checkoutButton = document.getElementById('checkout-button');
+    var cardErrors = document.getElementById('card-errors');
 
-    checkoutButton.addEventListener('click', function (event) {
-        event.preventDefault();  // Prevent form submission
+    paymentForm.addEventListener('submit', function(event) {
+        event.preventDefault();
 
-        fetch("{% url 'checkout' %}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}',
-            },
-            body: JSON.stringify({
-                total: {{ total }}
-            })
-        })
-        .then(function (response) {
-            return response.json();
-        })
-        .then(function (session) {
-            return stripe.redirectToCheckout({ sessionId: session.id });
-        })
-        .then(function (result) {
+        stripe.createPaymentMethod({
+            type: 'card',
+            card: cardElement,
+        }).then(function(result) {
             if (result.error) {
-                alert(result.error.message);
+                // Display error in #card-errors
+                cardErrors.textContent = result.error.message;
+            } else {
+                // Send payment method ID to your server for further processing
+                fetch("{% url 'checkout:checkout' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                    body: JSON.stringify({
+                        payment_method_id: result.paymentMethod.id,  // Stripe payment method ID
+                        total: {{ total }}
+                    })
+                })
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(session) {
+                    return stripe.redirectToCheckout({ sessionId: session.id });
+                })
+                .then(function(result) {
+                    if (result.error) {
+                        cardErrors.textContent = result.error.message;
+                    }
+                })
+                .catch(function(error) {
+                    console.error("Error:", error);
+                });
             }
-        })
-        .catch(function (error) {
-            console.error("Error:", error);
         });
     });
 </script>

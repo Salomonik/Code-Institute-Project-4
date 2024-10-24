@@ -48,13 +48,15 @@ def add_to_cart(request, product_id):
                 cart[product_id_str] = {
                     'name': product.name,
                     'price': str(product.price),
-                    'quantity': quantity
+                    'quantity': quantity,
+                    'image_url': product.image.url if product.image else ''
                 }
             request.session['cart'] = cart
 
         return JsonResponse({'status': 'success', 'message': 'Product added to cart'})
     
     return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
+
 
 def cart_detail(request):
     """Wyświetl zawartość koszyka"""
@@ -71,7 +73,8 @@ def cart_detail(request):
             quantity = item_data['quantity']
             cart_items.append({
                 'product': product,
-                'quantity': quantity
+                'quantity': quantity,
+                'image_url': item_data['image_url']  # Ensure image_url is passed to the context
             })
             total += Decimal(item_data['price']) * quantity
 
@@ -79,6 +82,7 @@ def cart_detail(request):
         'cart_items': cart_items,
         'total': total
     })
+
 
 def remove_from_cart(request, product_id):
     """Usuń produkt z koszyka"""
@@ -173,31 +177,36 @@ def update_cart(request, product_id):
 
 
 
+# Ensure image_url is correctly passed
 def get_cart_items(request):
     """Pobierz aktualną zawartość koszyka w formacie JSON"""
     if request.user.is_authenticated:
-        # Dla zalogowanego użytkownika
+        # For authenticated users
         cart = Cart.objects.get(user=request.user)
         items = []
         total = Decimal('0.00')
         
         for item in cart.cartitem_set.select_related('product').all():
+            category_name = item.product.category.name if item.product.category else 'Unknown Category'
             items.append({
                 'product_id': item.product.id,
                 'name': item.product.name,
                 'price': str(item.product.price),
                 'quantity': item.quantity,
+                'category': category_name,  # Include category name
+                'image_url': item.product.image.url if item.product.image else '',  # Include image URL
                 'total': str(item.product.price * item.quantity)
             })
             total += item.product.price * item.quantity
     else:
-        # Dla niezalogowanego użytkownika (koszyk w sesji)
+        # For session-based cart (unauthenticated users)
         cart = request.session.get('cart', {})
         items = []
         total = Decimal('0.00')
         
         for product_id, item_data in cart.items():
             product = get_object_or_404(Product, id=int(product_id))
+            category_name = product.category.name if product.category else 'Unknown Category'
             quantity = item_data['quantity']
             price = Decimal(item_data['price'])
             item_total = price * quantity
@@ -207,6 +216,8 @@ def get_cart_items(request):
                 'name': item_data['name'],
                 'price': str(price),
                 'quantity': quantity,
+                'category': category_name,  # Include category name
+                'image_url': product.image.url if product.image else '',  # Include image URL
                 'total': str(item_total)
             })
             total += item_total
@@ -215,6 +226,9 @@ def get_cart_items(request):
         'items': items,
         'total': str(total)
     })
+
+
+
     
  
 def remove_from_cart(request, product_id):

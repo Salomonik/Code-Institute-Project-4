@@ -12,6 +12,8 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css">
 	<link rel="icon" href="{% static 'images/favicon.ico' %}" />
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
 </head>
 
 <body>
@@ -74,9 +76,8 @@
 						<li class="nav-item dropdown">
 							{% if not user.is_authenticated %}
 							<!-- Niezalogowany użytkownik -->
-							<a class="btn btn-primary rounded-pill d-flex align-items-center gap-2" href="#"
-								data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
-								aria-controls="offcanvasRight">
+							<a class="btn btn-primary" href="#" data-bs-toggle="offcanvas"
+								data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
 								<i class="fa-solid fa-user"></i>
 							</a>
 							{% else %}
@@ -167,32 +168,40 @@
 		</div>
 
 
-		<!-- Off-Canvas Cart Container -->
-
 		<!-- Cart Off-Canvas Container -->
 		<div id="cart-off-canvas" class="off-canvas">
 			<div class="cart-header">
 				<h2>Shopping Cart</h2>
 				<button id="close-cart" class="close-btn">&times;</button>
 			</div>
-		
-			<!-- Kontener na dynamicznie ładowane elementy koszyka -->
+
+			<!-- Cart Items Container -->
 			<div id="cart-items-container">
-				<!-- Elementy koszyka będą tutaj dodawane przez JavaScript -->
+				<!-- Empty Cart Message -->
+				{% if not cart_items %}
+				<p id="empty-cart-message">Your cart is empty.</p>
+				{% endif %}
+
+
+				<!-- If there are cart items, they'll be inserted here by JavaScript -->
 			</div>
-		
-			<!-- Wiadomość o pustym koszyku -->
-			<p id="empty-cart-message" style="display: none;">Your cart is empty.</p>
-		
-			<!-- **Nowy element Subtotal** -->
-			<p id="cart-subtotal">Subtotal: $0.00</p>  <!-- Tutaj zostanie wyświetlona suma koszyka -->
-		
-			<!-- Stopka koszyka z sumą i przyciskiem checkout -->
-			<a href="{% url 'checkout:checkout' %}" class="btn btn-primary">Proceed to Checkout</a>
+
+			<!-- Cart Footer -->
+			<div class="cart-footer">
+				<!-- Subtotal -->
+				<p id="cart-subtotal">
+					<span>Subtotal:</span>
+					<span>£{{ total|floatformat:2 }}</span>
+				</p>
+
+				<!-- Action Buttons -->
+				<a href="{% url 'checkout:checkout' %}" class="btn btn-primary btn-checkout">Check Out</a>
+			</div>
 		</div>
 
-		<!-- Overlay, który pojawia się przy otwartym koszyku -->
+		<!-- Overlay -->
 		<div id="cart-overlay" class="overlay"></div>
+
 
 
 		<!-- Toast Container -->
@@ -460,46 +469,53 @@
 
 		// Function to render cart items in the DOM (dynamically)
 		function renderCartItems(items) {
+			const cartItemsContainer = document.getElementById('cart-items-container');
+
+			// Clear existing items
+			cartItemsContainer.innerHTML = '';
+
+			// If no items, show the empty cart message
+			if (items.length === 0) {
+				document.getElementById('empty-cart-message').style.display = 'block';
+				document.getElementById('cart-subtotal').textContent = 'Subtotal: £0.00';
+				return;
+			} else {
+				document.getElementById('empty-cart-message').style.display = 'none';
+			}
+
+			// Render each item
 			items.forEach(item => {
 				const itemElement = document.createElement('div');
 				itemElement.classList.add('cart-item');
-
 				itemElement.innerHTML = `
+            <div class="cart-item-image">
+                <img src="${item.image_url}" alt="${item.name}">
+            </div>
             <div class="cart-item-details">
                 <h4>${item.name}</h4>
+                <p class="product-category">${item.category}</p>
                 <p>$${item.price}</p>
-                <input type="number" class="quantity-input" value="${item.quantity}" min="1" data-product-id="${item.product_id}">
+				<div>
+					<button class="remove-item" data-product-id="${item.product_id}">
+                <i class="trash fa fa-trash"></i>
+            </button>
+                <div class="quantity-controls">
+                    <button class="decrease-quantity" data-product-id="${item.product_id}">-</button>
+                    <input type="number" class="quantity-input" value="${item.quantity}" min="1" data-product-id="${item.product_id}">
+                    <button class="increase-quantity" data-product-id="${item.product_id}">+</button>
+                </div></div>
                 <p class="subtotal">Subtotal: $${(item.price * item.quantity).toFixed(2)}</p>
             </div>
-            <button class="remove-item" data-product-id="${item.product_id}">&times;</button>
+            <button class="remove-item" data-product-id="${item.product_id}">
+                <i class="trash fa fa-trash"></i>
+            </button>
         `;
 
-				// Append item to the cart container
+				// Append item to cart
 				cartItemsContainer.appendChild(itemElement);
-
-				// Add event listener for quantity change
-				const quantityInput = itemElement.querySelector('.quantity-input');
-
-				// Use debounce to delay the update until the user finishes changing the quantity
-				quantityInput.addEventListener('input', debounce((e) => {
-					const newQuantity = parseInt(e.target.value, 10);  // Parse the new quantity as an integer
-
-					if (isNaN(newQuantity) || newQuantity <= 0) {
-						// If quantity is invalid or zero, remove the item
-						removeFromCart(item.product_id);
-					} else {
-						// Otherwise, update the quantity
-						updateCartQuantity(item.product_id, newQuantity);
-					}
-				}, 500));  // 500ms delay before the change is processed
-
-				// Add event listener for removing the item
-				const removeButton = itemElement.querySelector('.remove-item');
-				removeButton.addEventListener('click', () => {
-					removeFromCart(item.product_id); // Remove the item from cart
-				});
 			});
 		}
+
 
 
 		document.querySelectorAll('.quantity-input').forEach(input => {
@@ -614,13 +630,38 @@
 						itemElement.classList.add('cart-item');
 
 						itemElement.innerHTML = `
-                    <div class="cart-item-details">
-                        <h4>${item.name}</h4>
-                        <p>$${item.price}</p>
-                        <input type="number" class="quantity-input" value="${item.quantity}" min="1" data-product-id="${item.product_id}">
-                        <p class="subtotal">Subtotal: $${(item.price * item.quantity).toFixed(2)}</p>
-                    </div>
-                    <button class="remove-item" data-product-id="${item.product_id}">&times;</button>
+    <div class="cart-item">
+        <!-- Left: Product Image -->
+<div class="cart-item-image">
+    <p>{{ item.image_url }}</p>  <!-- This will print the image URL to help debug -->
+    <img src="{{ item.image_url }}" alt="{{ item.name }}">
+</div>
+
+
+        <!-- Right: Product Details -->
+        <div class="cart-item-details">
+            <h4 class="product-name">${item.name}</h4>
+            <p class="product-category">${item.category ? item.category : 'Unknown Category'}</p>
+            <p class="product-price">$${item.price}</p>
+
+            <!-- Quantity Controls -->
+				<div class = "cart-one-line">
+					<!-- Remove Button -->
+					<div><button class="remove-item" data-product-id="${item.product_id}">
+                <i class="trash fa fa-trash"></i>
+            </button></div>
+                <div class="quantity-controls">
+                    <button class="decrease-quantity" data-product-id="${item.product_id}">-</button>
+                    <input type="number" class="quantity-input" value="${item.quantity}" min="1" data-product-id="${item.product_id}">
+                    <button class="increase-quantity" data-product-id="${item.product_id}">+</button>
+                </div></div>
+
+            <!-- Subtotal -->
+            <p class="subtotal">Subtotal: $${(item.price * item.quantity).toFixed(2)}</p>
+        </div>
+
+
+    </div>
                 `;
 
 						// Append item to the cart container
@@ -753,6 +794,50 @@
 				console.error('Błąd podczas pobierania stanu koszyka:', error);
 			}
 		}
+
+
+		document.querySelectorAll('.decrease-quantity').forEach(button => {
+    button.addEventListener('click', async function () {
+        const input = this.nextElementSibling;  // Pobierz pole input po kliknięciu przycisku minus
+        let currentValue = parseInt(input.value);
+        let minValue = parseInt(input.min);
+
+        if (currentValue > minValue) {
+            input.value = currentValue - 1;
+        }
+    });
+});
+
+// + and - buttons functionality
+
+document.querySelectorAll('.increase-quantity').forEach(button => {
+    button.addEventListener('click', async function () {
+        const input = this.previousElementSibling;  // Pobierz pole input po kliknięciu przycisku plus
+        let currentValue = parseInt(input.value);
+        const productId = this.dataset.productId;  // Pobierz ID produktu
+
+        try {
+            // Wyślij zapytanie Ajax, aby sprawdzić ilość dostępnego stocku
+            const response = await fetch(`/cart/check-stock/${productId}/`);
+            const data = await response.json();
+
+            if (response.ok) {
+                const availableStock = parseInt(data.stock);  // Pobierz ilość stocku z odpowiedzi
+
+                if (currentValue < availableStock) {
+                    input.value = currentValue + 1;
+                } else {
+                    alert('Nie możesz dodać więcej niż dostępne w magazynie.');
+                }
+            } else {
+                console.error('Błąd podczas sprawdzania stocku.');
+            }
+        } catch (error) {
+            console.error('Wystąpił błąd:', error);
+        }
+    });
+});
+
 
 
 
