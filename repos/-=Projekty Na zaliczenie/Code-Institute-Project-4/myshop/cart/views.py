@@ -249,3 +249,6 @@ def remove_from_cart(request, product_id):
 
         # Zwracanie zaktualizowanej zawartości koszyka
         return get_cart_items(request)  
+    
+    
+    

@@ -797,46 +797,73 @@
 
 
 		document.querySelectorAll('.decrease-quantity').forEach(button => {
-    button.addEventListener('click', async function () {
-        const input = this.nextElementSibling;  // Pobierz pole input po kliknięciu przycisku minus
-        let currentValue = parseInt(input.value);
-        let minValue = parseInt(input.min);
+			button.addEventListener('click', async function () {
+				const input = this.nextElementSibling;  // Pobierz pole input po kliknięciu przycisku minus
+				let currentValue = parseInt(input.value);
+				let minValue = parseInt(input.min);
 
-        if (currentValue > minValue) {
-            input.value = currentValue - 1;
-        }
-    });
-});
+				if (currentValue > minValue) {
+					input.value = currentValue - 1;
+				}
+			});
+		});
 
-// + and - buttons functionality
+		// + and - buttons functionality
 
-document.querySelectorAll('.increase-quantity').forEach(button => {
-    button.addEventListener('click', async function () {
-        const input = this.previousElementSibling;  // Pobierz pole input po kliknięciu przycisku plus
-        let currentValue = parseInt(input.value);
-        const productId = this.dataset.productId;  // Pobierz ID produktu
+		document.querySelectorAll('.increase-quantity').forEach(button => {
+			button.addEventListener('click', async function () {
+				const input = this.previousElementSibling;  // Pobierz pole input po kliknięciu przycisku plus
+				let currentValue = parseInt(input.value);
+				const productId = this.dataset.productId;  // Pobierz ID produktu
 
-        try {
-            // Wyślij zapytanie Ajax, aby sprawdzić ilość dostępnego stocku
-            const response = await fetch(`/cart/check-stock/${productId}/`);
-            const data = await response.json();
+				try {
+					// Wyślij zapytanie Ajax, aby sprawdzić ilość dostępnego stocku
+					const response = await fetch(`/cart/check-stock/${productId}/`);
+					const data = await response.json();
 
-            if (response.ok) {
-                const availableStock = parseInt(data.stock);  // Pobierz ilość stocku z odpowiedzi
+					if (response.ok) {
+						const availableStock = parseInt(data.stock);  // Pobierz ilość stocku z odpowiedzi
 
-                if (currentValue < availableStock) {
-                    input.value = currentValue + 1;
-                } else {
-                    alert('Nie możesz dodać więcej niż dostępne w magazynie.');
-                }
-            } else {
-                console.error('Błąd podczas sprawdzania stocku.');
-            }
-        } catch (error) {
-            console.error('Wystąpił błąd:', error);
-        }
-    });
-});
+						if (currentValue < availableStock) {
+							input.value = currentValue + 1;
+						} else {
+							alert('Nie możesz dodać więcej niż dostępne w magazynie.');
+						}
+					} else {
+						console.error('Błąd podczas sprawdzania stocku.');
+					}
+				} catch (error) {
+					console.error('Wystąpił błąd:', error);
+				}
+			});
+		});
+
+		function updateQuantityInCart(productId, newQuantity) {
+			fetch(`/cart/update/${productId}/`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': getCsrfToken()
+				},
+				body: JSON.stringify({ quantity: newQuantity })
+			})
+				.then(response => response.json())
+				.then(data => {
+					if (data.status === 'error') {
+						alert(data.message);  // Wyświetl komunikat o błędzie, jeśli stock jest przekroczony
+					} else {
+						// Możesz zaktualizować ilość i subtotal w interfejsie użytkownika, jeśli potrzeba
+					}
+				})
+				.catch(error => {
+					console.error('Error updating quantity:', error);
+				});
+		}
+
+		// Pobieranie tokenu CSRF
+		function getCsrfToken() {
+			return document.querySelector('[name=csrfmiddlewaretoken]').value;
+		}
 
 
 
