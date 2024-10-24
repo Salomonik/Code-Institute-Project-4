@@ -177,7 +177,6 @@ def update_cart(request, product_id):
 
 
 
-# Ensure image_url is correctly passed
 def get_cart_items(request):
     """Pobierz aktualną zawartość koszyka w formacie JSON"""
     if request.user.is_authenticated:
@@ -185,7 +184,7 @@ def get_cart_items(request):
         cart = Cart.objects.get(user=request.user)
         items = []
         total = Decimal('0.00')
-        
+
         for item in cart.cartitem_set.select_related('product').all():
             category_name = item.product.category.name if item.product.category else 'Unknown Category'
             items.append({
@@ -195,7 +194,8 @@ def get_cart_items(request):
                 'quantity': item.quantity,
                 'category': category_name,  # Include category name
                 'image_url': item.product.image.url if item.product.image else '',  # Include image URL
-                'total': str(item.product.price * item.quantity)
+                'total': str(item.product.price * item.quantity),
+                'stock': item.product.stock  # Include the stock value
             })
             total += item.product.price * item.quantity
     else:
@@ -203,14 +203,14 @@ def get_cart_items(request):
         cart = request.session.get('cart', {})
         items = []
         total = Decimal('0.00')
-        
+
         for product_id, item_data in cart.items():
             product = get_object_or_404(Product, id=int(product_id))
             category_name = product.category.name if product.category else 'Unknown Category'
             quantity = item_data['quantity']
             price = Decimal(item_data['price'])
             item_total = price * quantity
-            
+
             items.append({
                 'product_id': product_id,
                 'name': item_data['name'],
@@ -218,7 +218,8 @@ def get_cart_items(request):
                 'quantity': quantity,
                 'category': category_name,  # Include category name
                 'image_url': product.image.url if product.image else '',  # Include image URL
-                'total': str(item_total)
+                'total': str(item_total),
+                'stock': product.stock  # Include the stock value
             })
             total += item_total
 
@@ -226,6 +227,7 @@ def get_cart_items(request):
         'items': items,
         'total': str(total)
     })
+
 
 
 
