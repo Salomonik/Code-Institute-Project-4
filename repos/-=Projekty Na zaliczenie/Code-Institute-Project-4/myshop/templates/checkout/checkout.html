@@ -1,386 +1,317 @@
 {% extends 'base.html' %}
+{% csrf_token %}
 
 {% block title %}Checkout{% endblock %}
 
 {% block content %}
 <div class="checkout-container container mt-5">
-    <div class="row">
-        <!-- Left side: Contact, Delivery, and Payment form -->
-        <div class="col-md-7">
-            <h2>Contact Information</h2>
-            <form method="POST" id="checkout-form">
-                {% csrf_token %}
+	<div class="row">
+		<!-- Left side: Contact, Delivery, and Payment form -->
+		<div class="col-md-7">
+			<h2>Contact Information</h2>
+			<form method="POST" id="checkout-form">
+				{% csrf_token %}
 
-                <!-- Contact Section -->
-                <div class="mb-3">
-                    <label for="contact_email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="contact_email" name="email" placeholder="Email" required>
-                </div>
+				<!-- Contact Section -->
+				<div class="mb-3">
+					<label for="email" class="form-label">Email</label>
+					<input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
+				</div>
 
-                <!-- Delivery Section -->
-                <h3>Delivery Details</h3>
-                
-                <!-- Name Fields -->
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="first_name" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="first_name" name="first_name" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="last_name" class="form-label">Last Name</label>
-                        <input type="text" class="form-control" id="last_name" name="last_name" required>
-                    </div>
-                </div>
+				<!-- Delivery Section -->
+				<h3>Delivery</h3>
+				<div class="mb-3">
+					<label for="country" class="form-label">Country/Region</label>
+					<select class="form-select" id="country" name="country" required>
+						<option value="GB">United Kingdom</option>
+						<option value="PL">Poland</option>
+					</select>
 
-                <!-- Phone -->
-                <div class="mb-3">
-                    <label for="phone" class="form-label">Phone Number</label>
-                    <input type="tel" class="form-control" id="phone" name="phone" 
-                           placeholder="e.g., +44 7911 123456" required>
-                </div>
+				</div>
 
-                <!-- Address Fields -->
-                <div class="mb-3">
-                    <label for="country" class="form-label">Country/Region</label>
-                    <select class="form-select" id="country" name="country" required>
-                        <option value="">Select a country</option>
-                        <option value="GB">United Kingdom</option>
-                        <option value="PL">Poland</option>
-                        <!-- Add more countries as needed -->
-                    </select>
-                </div>
+				<div class="row">
+					<div class="col-md-6 mb-3">
+						<label for="first_name" class="form-label">First Name</label>
+						<input type="text" class="form-control" id="first_name" name="first_name" required>
+					</div>
+					<div class="col-md-6 mb-3">
+						<label for="last_name" class="form-label">Last Name</label>
+						<input type="text" class="form-control" id="last_name" name="last_name" required>
+					</div>
+				</div>
 
-                <div class="mb-3">
-                    <label for="address_line1" class="form-label">Street Address</label>
-                    <input type="text" class="form-control mb-2" id="address_line1" 
-                           name="address_line1" placeholder="Street and house number" required>
-                    <input type="text" class="form-control" id="address_line2" 
-                           name="address_line2" placeholder="Apartment, suite, unit etc. (optional)">
-                </div>
+				<div class="mb-3">
+					<label for="address" class="form-label">Address</label>
+					<input type="text" class="form-control" id="address" name="address" placeholder="Street Address"
+						required>
+				</div>
 
-                <div class="mb-3">
-                    <label for="city" class="form-label">City</label>
-                    <input type="text" class="form-control" id="city" name="city" required>
-                </div>
+				<div class="mb-3">
+					<label for="city" class="form-label">City</label>
+					<input type="text" class="form-control" id="city" name="city" required>
+				</div>
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="state" class="form-label">State/Province/Region</label>
-                        <input type="text" class="form-control" id="state" name="state">
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="postcode" class="form-label">Postcode</label>
-                        <input type="text" class="form-control" id="postcode" name="postcode" required>
-                    </div>
-                </div>
+				<div class="row">
+					<div class="col-md-6 mb-3">
+						<label for="postcode" class="form-label">Postcode</label>
+						<input type="text" class="form-control" id="postcode" name="postcode" required>
+					</div>
+					<div class="col-md-6 mb-3">
+						<label for="phone" class="form-label">Phone</label>
+						<input type="tel" class="form-control" id="phone" name="phone" placeholder="Phone Number"
+							required>
+					</div>
+				</div>
 
-                <!-- Delivery Options -->
-                <div class="mb-4">
-                    <h4>Delivery Method</h4>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="delivery_method" 
-                               id="standard_delivery" value="standard" checked>
-                        <label class="form-check-label" for="standard_delivery">
-                            Standard Delivery (3-5 working days) - £3.99
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="delivery_method" 
-                               id="express_delivery" value="express">
-                        <label class="form-check-label" for="express_delivery">
-                            Express Delivery (1-2 working days) - £6.99
-                        </label>
-                    </div>
-                </div>
+				<!-- Payment Section -->
+				<h3>Payment</h3>
+				<div class="form-check mb-3">
+					<input class="form-check-input" type="radio" name="payment_method" id="credit_card"
+						value="credit_card" checked>
+					<label class="form-check-label" for="credit_card">Credit Card</label>
+				</div>
 
-                <!-- Payment Section -->
-                <h3>Payment Details</h3>
-                <div class="form-check mb-3">
-                    <input class="form-check-input" type="radio" name="payment_method" 
-                           id="credit_card" value="credit_card" checked>
-                    <label class="form-check-label" for="credit_card">Credit/Debit Card</label>
-                </div>
+				<!-- Stripe payment form -->
+				<div id="card-element" class="mb-3">
+					<!-- Stripe will inject the Card element here -->
+				</div>
+				<button type="submit" class="btn btn-primary">Pay Now</button>
 
-                <div id="card-element" class="mb-3">
-                    <!-- Stripe will inject the Card element here -->
-                </div>
+				<!-- Error Display -->
+				<div id="card-errors" role="alert" class="text-danger mt-2"></div>
+			</form>
+		</div>
 
-                <div class="mb-3 form-check">
-                    <input type="checkbox" class="form-check-input" id="save_info" name="save_info">
-                    <label class="form-check-label" for="save_info">
-                        Save this information for next time
-                    </label>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Complete Order</button>
-
-                <div id="card-errors" role="alert" class="text-danger mt-2"></div>
-            </form>
-        </div>
-
-        <!-- Right side: Order Summary -->
-        <div class="col-md-5">
-            <div class="card">
-                <div class="card-body">
-                    <h3 class="card-title">Order Summary</h3>
-                    <div class="order-summary">
-                        <ul class="list-group mb-3">
-                            {% for item in cart_items %}
-                            <li class="list-group-item d-flex justify-content-between lh-sm">
-                                <div class="d-flex">
-                                    <div class="order-item-img me-3">
-                                        <img src="{{ item.product.image.url }}" 
-                                             alt="{{ item.product.name }}" 
-                                             class="img-thumbnail" 
-                                             style="width: 75px; height: 75px; object-fit: cover;">
-                                    </div>
-                                    <div>
-                                        <h6 class="my-0">{{ item.product.name }}</h6>
-                                        <small class="text-muted">Quantity: {{ item.quantity }}</small>
-                                    </div>
-                                </div>
-                                <span class="text-muted">£{{ item.get_total_price }}</span>
-                            </li>
-                            {% endfor %}
-                        </ul>
-
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">Price Details</h5>
-                                <ul class="list-unstyled">
-                                    <li class="d-flex justify-content-between mb-2">
-                                        <span>Subtotal</span>
-                                        <strong>£{{ subtotal }}</strong>
-                                    </li>
-                                    <li class="d-flex justify-content-between mb-2">
-                                        <span>Delivery</span>
-                                        <strong id="delivery_cost">£3.99</strong>
-                                    </li>
-                                    {% if discount %}
-                                    <li class="d-flex justify-content-between mb-2 text-success">
-                                        <span>Discount</span>
-                                        <strong>-£{{ discount }}</strong>
-                                    </li>
-                                    {% endif %}
-                                    <hr>
-                                    <li class="d-flex justify-content-between mb-2">
-                                        <span class="fw-bold">Total</span>
-                                        <strong class="fw-bold" id="total_price">
-                                            £{{ total|add:"3.99" }}
-                                        </strong>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <!-- Promo Code -->
-                        <div class="card mt-3">
-                            <div class="card-body">
-                                <form id="promo-form" class="d-flex gap-2">
-                                    <input type="text" class="form-control" 
-                                           id="promo_code" name="promo_code" 
-                                           placeholder="Promo code">
-                                    <button type="submit" class="btn btn-outline-primary">
-                                        Apply
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+		<!-- Right side: Order Summary -->
+		<div class="col-md-5">
+			<h2>Order Summary</h2>
+			<div class="order-summary">
+				<ul class="list-group mb-3">
+					{% for item in cart_items %}
+					<li class="list-group-item d-flex justify-content-between lh-condensed">
+						<div class="order-item-img">
+							<img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="img-thumbnail"
+								style="width: 75px; height: 75px;">
+						</div>
+						<div class="order-item-details ms-3">
+							<h6 class="my-0">{{ item.product.name }}</h6>
+							<small class="text-muted">Quantity: {{ item.quantity }}</small>
+						</div>
+						<span class="text-muted">£{{ item.get_total_price }}</span>
+					</li>
+					{% endfor %}
+				</ul>
+				<ul class="list-group mb-3">
+					<li class="list-group-item d-flex justify-content-between">
+						<span>Subtotal</span>
+						<strong>£{{ total }}</strong>
+					</li>
+					<li class="list-group-item d-flex justify-content-between">
+						<span>Shipping</span>
+						<strong>Enter shipping address</strong>
+					</li>
+					<li class="list-group-item d-flex justify-content-between">
+						<span>Total</span>
+						<strong>£{{ total }}</strong>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
 </div>
+
 
 {% block extra_js %}
 <!-- Google Maps API -->
 <script>
-    function loadGoogleMapsScript() {
-        const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&libraries=places&callback=initAutocomplete`;
-        script.async = true;
-        script.defer = true;
-        document.head.appendChild(script);
-    }
+	function loadGoogleMapsScript() {
+		const script = document.createElement('script');
+		script.src = https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&libraries=places&callback=initAutocomplete;
+		script.async = true;
+		script.defer = true;
+		document.head.appendChild(script);
+	}
 
-    document.addEventListener('DOMContentLoaded', loadGoogleMapsScript);
+	document.addEventListener('DOMContentLoaded', loadGoogleMapsScript);
 </script>
 
 <script>
-    function initAutocomplete() {
-        const addressInput = document.getElementById('address_line1');
-        if (!addressInput) return;
+	// Define initAutocomplete in the global scope
+	function initAutocomplete() {
+		const addressInput = document.getElementById('address_line1');
+		if (!addressInput) return;
 
-        const autocomplete = new google.maps.places.Autocomplete(addressInput, {
-            types: ['address']
-        });
-        
-        autocomplete.setFields(['address_component']);
-        autocomplete.addListener('place_changed', function() {
-            const place = autocomplete.getPlace();
-            if (!place.address_components) return;
+		const autocomplete = new google.maps.places.Autocomplete(addressInput, {
+			types: ['address']
+		});
 
-            // Clear previous values
-            document.getElementById('city').value = '';
-            document.getElementById('state').value = '';
-            document.getElementById('postcode').value = '';
-            document.getElementById('country').value = '';
+		autocomplete.setFields(['address_component']);
+		autocomplete.addListener('place_changed', function () {
+			const place = autocomplete.getPlace();
+			if (!place.address_components) return;
 
-            // Fill in fields based on selected address
-            place.address_components.forEach(component => {
-                const componentType = component.types[0];
-                switch (componentType) {
-                    case 'street_number':
-                        const route = place.address_components.find(
-                            comp => comp.types[0] === 'route'
-                        );
-                        if (route) {
-                            addressInput.value = `${component.long_name} ${route.long_name}`;
-                        }
-                        break;
-                    case 'locality':
-                        document.getElementById('city').value = component.long_name;
-                        break;
-                    case 'administrative_area_level_1':
-                        document.getElementById('state').value = component.long_name;
-                        break;
-                    case 'postal_code':
-                        document.getElementById('postcode').value = component.long_name;
-                        break;
-                    case 'country':
-                        const countrySelect = document.getElementById('country');
-                        if (countrySelect) {
-                            countrySelect.value = component.short_name;
-                        }
-                        break;
-                }
-            });
-        });
-    }
+			// Clear previous values
+			document.getElementById('city').value = '';
+			document.getElementById('state').value = '';
+			document.getElementById('postcode').value = '';
+			document.getElementById('country').value = '';
 
-    // Handle delivery method change
-    document.querySelectorAll('input[name="delivery_method"]').forEach(radio => {
-        radio.addEventListener('change', function() {
-            const deliveryCost = this.value === 'standard' ? 3.99 : 6.99;
-            const subtotal = {{ subtotal|default:0 }};
-            
-            document.getElementById('delivery_cost').textContent = `£${deliveryCost.toFixed(2)}`;
-            document.getElementById('total_price').textContent = 
-                `£${(subtotal + deliveryCost).toFixed(2)}`;
-        });
-    });
+			// Fill in fields based on selected address
+			place.address_components.forEach(component => {
+				const componentType = component.types[0];
+				switch (componentType) {
+					case 'street_number':
+						const route = place.address_components.find(
+							comp => comp.types[0] === 'route'
+						);
+						if (route) {
+							addressInput.value = ${ component.long_name } ${ route.long_name };
+						}
+						break;
+					case 'locality':
+						document.getElementById('city').value = component.long_name;
+						break;
+					case 'administrative_area_level_1':
+						document.getElementById('state').value = component.long_name;
+						break;
+					case 'postal_code':
+						document.getElementById('postcode').value = component.long_name;
+						break;
+					case 'country':
+						const countrySelect = document.getElementById('country');
+						if (countrySelect) {
+							countrySelect.value = component.short_name;
+						}
+						break;
+				}
+			});
+		});
+	}
+
+	// Load Google Maps script
+	function loadGoogleMapsScript() {
+		const script = document.createElement('script');
+		script.src = https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&libraries=places&callback=initAutocomplete;
+		script.async = true;
+		script.defer = true;
+		document.head.appendChild(script);
+	}
+
+	// Call function to load the Google Maps script
+	document.addEventListener('DOMContentLoaded', loadGoogleMapsScript);
 </script>
+
+<script>const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+	fetch('/checkout/', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+			'X-CSRFToken': csrftoken,
+		},
+		body: JSON.stringify(data)
+	})</script>
+
+
 
 <!-- Stripe Integration -->
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-    if (window.location.protocol !== 'https:' && 
-        window.location.hostname !== 'localhost' && 
-        window.location.hostname !== '127.0.0.1') {
-        console.error('Stripe.js requires HTTPS in production');
-    }
+	document.addEventListener("DOMContentLoaded", function () {
+		const stripe = Stripe('{{ stripe_pub_key }}');
+		const elements = stripe.elements();
+		const cardElement = elements.create('card', {
+			style: {
+				base: {
+					fontSize: '16px',
+					color: '#32325d',
+					'::placeholder': {
+						color: '#aab7c4'
+					}
+				},
+				invalid: {
+					color: '#fa755a',
+					iconColor: '#fa755a'
+				}
+			}
+		});
 
-    const stripe = Stripe('{{ stripe_pub_key }}');
-    const elements = stripe.elements();
-    const cardElement = elements.create('card', {
-        style: {
-            base: {
-                fontSize: '16px',
-                color: '#32325d',
-                '::placeholder': {
-                    color: '#aab7c4'
-                }
-            },
-            invalid: {
-                color: '#fa755a',
-                iconColor: '#fa755a'
-            }
-        }
-    });
-    
-    cardElement.mount('#card-element');
+		cardElement.mount('#card-element');
 
-    const form = document.getElementById('checkout-form');
-    const cardErrors = document.getElementById('card-errors');
+		const form = document.getElementById('checkout-form');
+		const cardErrors = document.getElementById('card-errors');
 
-    form.addEventListener('submit', async function(event) {
-        event.preventDefault();
+		form.addEventListener('submit', async function (event) {
+			event.preventDefault();
+			const submitButton = form.querySelector('button[type="submit"]');
+			submitButton.disabled = true;
 
-        // Disable the submit button to prevent double submission
-        const submitButton = form.querySelector('button[type="submit"]');
-        submitButton.disabled = true;
+			try {
+				const result = await stripe.createPaymentMethod({
+					type: 'card',
+					card: cardElement,
+					billing_details: {
+						name: `${form.first_name.value} ${form.last_name.value}`,
+						email: form.email.value,
+						phone: form.phone.value,
+						address: {
+							line1: form.address.value,
+							city: form.city.value,
+							state: form.state ? form.state.value : "",
+							postal_code: form.postcode.value,
+							country: form.country.value
+						}
+					}
+				});
 
-        try {
-            const result = await stripe.createPaymentMethod({
-                type: 'card',
-                card: cardElement,
-                billing_details: {
-                    name: `${form.first_name.value} ${form.last_name.value}`,
-                    email: form.email.value,
-                    phone: form.phone.value,
-                    address: {
-                        line1: form.address_line1.value,
-                        line2: form.address_line2.value,
-                        city: form.city.value,
-                        state: form.state.value,
-                        postal_code: form.postcode.value,
-                        country: form.country.value
-                    }
-                }
-            });
+				if (result.error) {
+					cardErrors.textContent = result.error.message;
+					submitButton.disabled = false;
+					return;
+				}
 
-            if (result.error) {
-                cardErrors.textContent = result.error.message;
-                submitButton.disabled = false;
-                return;
-            }
+				const response = await fetch("{% url 'checkout:checkout' %}", {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'X-CSRFToken': '{{ csrf_token }}',
+					},
+					body: JSON.stringify({
+						payment_method_id: result.paymentMethod.id,
+						order_data: {
+							first_name: form.first_name.value,
+							last_name: form.last_name.value,
+							email: form.email.value,
+							phone: form.phone.value,
+							address: form.address.value,
+							city: form.city.value,
+							postcode: form.postcode.value,
+							country: form.country.value
+						}
+					})
+				});
 
-            const response = await fetch("{% url 'checkout:checkout' %}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}',
-                },
-                body: JSON.stringify({
-                    payment_method_id: result.paymentMethod.id,
-                    delivery_method: form.querySelector('input[name="delivery_method"]:checked').value,
-                    save_info: form.save_info.checked,
-                    order_data: {
-                        first_name: form.first_name.value,
-                        last_name: form.last_name.value,
-                        email: form.email.value,
-                        phone: form.phone.value,
-                        address_line1: form.address_line1.value,
-                        address_line2: form.address_line2.value,
-                        city: form.city.value,
-                        state: form.state.value,
-                        postcode: form.postcode.value,
-                        country: form.country.value
-                    }
-                })
-            });
+				if (!response.ok) {
+					throw new Error('Network response was not ok');
+				}
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
+				const session = await response.json();
+				if (session.error) {
+					throw new Error(session.error);
+				}
 
-            const session = await response.json();
-            if (session.error) {
-                throw new Error(session.error);
-            }
+				window.location.href = session.success_url;
 
-            if (session.requires_action) {
-                const { error } = await stripe.handleCardAction(session.payment_intent_client_secret);
-                if (error) {
-                    throw error;
-                }
-            }
+			} catch (error) {
+				cardErrors.textContent = error.message;
+				submitButton.disabled = false;
+			}
+		});
+	});
 
-            // Redirect to success page
-            window.location.href = session.success_url;
+</scrip >
 
-        } catch (error) {
-            cardErrors.textContent = error.message;
-            console.error('Error:', error);
-            submitButton.
+
+		{% endblock %}
+
+	{% endblock %}

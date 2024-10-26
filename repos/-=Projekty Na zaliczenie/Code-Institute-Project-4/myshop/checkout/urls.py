@@ -4,7 +4,7 @@ from . import views
 app_name = 'checkout'
 
 urlpatterns = [
-    path('checkout/', views.checkout, name='checkout'),
-    path('checkout/success/', views.checkout_success, name='checkout_success'),
-    path('checkout/cancel/', views.checkout_cancel, name='checkout_cancel'),  # Cancel page in case of payment failure
+    path('', views.checkout, name='checkout'),  # główna strona checkout
+    path('success/', views.checkout_success, name='checkout_success'),
+    path('cancel/', views.checkout_cancel, name='checkout_cancel'),  # strona anulowania
 ]
