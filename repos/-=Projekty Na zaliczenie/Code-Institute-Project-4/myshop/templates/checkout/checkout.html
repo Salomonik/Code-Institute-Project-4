@@ -1,3 +1,5 @@
+<!-- checkout/templates/checkout/checkout_page.html -->
+
 {% extends 'base.html' %}
 
 {% block title %}Checkout{% endblock %}
@@ -10,6 +12,7 @@
             <h2>Contact Information</h2>
             <form method="POST" id="checkout-form">
                 {% csrf_token %}
+                
                 <!-- Contact Section -->
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
@@ -115,8 +118,6 @@
                         <strong>£{{ total }}</strong>
                     </li>
                 </ul>
-
-
             </div>
         </div>
     </div>
@@ -130,7 +131,7 @@
 <script>
     function initAutocomplete() {
         var autocomplete = new google.maps.places.Autocomplete(
-            document.getElementById('id_street_address1'),
+            document.getElementById('address'),  // Updated to 'address' for consistency
             { types: ['address'] }
         );
         autocomplete.setFields(['address_component']);
@@ -142,16 +143,13 @@
             components.forEach(function (component) {
                 var types = component.types;
                 if (types.includes('locality')) {
-                    document.getElementById('id_city').value = component.long_name;
-                }
-                if (types.includes('administrative_area_level_1')) {
-                    document.getElementById('id_county').value = component.long_name;
+                    document.getElementById('city').value = component.long_name;
                 }
                 if (types.includes('postal_code')) {
-                    document.getElementById('id_postal_code').value = component.long_name;
+                    document.getElementById('postcode').value = component.long_name;
                 }
                 if (types.includes('country')) {
-                    document.getElementById('id_country').value = component.short_name;
+                    document.getElementById('country').value = component.short_name;
                 }
             });
         });
@@ -167,8 +165,7 @@
     cardElement.mount('#card-element');  // Mount the card element to the div
 
     // Handle payment form submission
-    var paymentForm = document.getElementById('payment-form');
-    var checkoutButton = document.getElementById('checkout-button');
+    var paymentForm = document.getElementById('checkout-form');
     var cardErrors = document.getElementById('card-errors');
 
     paymentForm.addEventListener('submit', function(event) {
