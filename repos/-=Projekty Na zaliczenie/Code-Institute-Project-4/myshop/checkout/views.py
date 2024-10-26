@@ -94,3 +94,9 @@ def checkout_success(request):
 # Cancel view in case the payment is canceled
 def checkout_cancel(request):
     return render(request, 'checkout/cancel.html')
+
+def checkout_view(request):
+    context = {
+        'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,
+    }
+    return render(request, 'checkout/checkout_page.html', context)
