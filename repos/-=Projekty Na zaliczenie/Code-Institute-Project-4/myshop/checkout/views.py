@@ -28,7 +28,21 @@ from django.views.decorators.csrf import csrf_exempt
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
-@csrf_exempt  # Dla testów (usuń to w produkcji, jeśli nie jest potrzebne)
+import json
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.db import transaction
+from django.http import JsonResponse
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from .models import Order, OrderItem
+from cart.models import CartItem
+from .forms import CheckoutForm
+import stripe
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
+@csrf_exempt  # For testing purposes, remove in production if CSRF protection is required
 @login_required
 def checkout(request):
     print("Request method:", request.method)  # Debugging method type
@@ -36,7 +50,6 @@ def checkout(request):
     cart_items = CartItem.objects.filter(cart__user=request.user)
     total = sum(item.product.price * item.quantity for item in cart_items)
     
-    # Check if cart is empty
     if not cart_items.exists():
         print("Error: Cart is empty")
         return JsonResponse({'error': 'Your cart is empty.'}, status=400)
@@ -48,8 +61,10 @@ def checkout(request):
             data = json.loads(request.body)
             print("Received JSON data:", data)  # Debugging JSON data
             
-            # Validate the form data
-            form = CheckoutForm(data)
+            # Extract 'order_data' from JSON and pass it to the form
+            form_data = data.get('order_data', {})
+            form = CheckoutForm(form_data)
+
             if not form.is_valid():
                 print("Invalid form data:", form.errors)  # Debugging form errors
                 return JsonResponse({
@@ -57,8 +72,8 @@ def checkout(request):
                     'errors': form.errors
                 }, status=400)
 
+            # Proceed with transaction creation, order items, and Stripe session
             with transaction.atomic():
-                # Create an order
                 order = Order.objects.create(user=request.user, total=total)
                 print("Order created:", order.id)  # Debugging order creation
 
@@ -71,12 +86,10 @@ def checkout(request):
                             'error': f'Not enough stock for {product.name}.'
                         }, status=400)
 
-                    # Update product stock
                     product.stock -= cart_item.quantity
                     product.save()
                     print(f"Stock updated for {product.name}: {product.stock}")  # Debugging stock update
 
-                    # Create an order item
                     OrderItem.objects.create(
                         order=order,
                         product=product,
@@ -84,7 +97,6 @@ def checkout(request):
                     )
                     print(f"OrderItem created for {product.name}")  # Debugging order item creation
 
-                # Clear cart
                 cart_items.delete()
                 print("Cart items deleted")  # Debugging cart clear
 
@@ -147,6 +159,7 @@ def checkout(request):
         'stripe_pub_key': settings.STRIPE_PUBLISHABLE_KEY,
         'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,
     })
+
 
 
 def checkout_success(request):
