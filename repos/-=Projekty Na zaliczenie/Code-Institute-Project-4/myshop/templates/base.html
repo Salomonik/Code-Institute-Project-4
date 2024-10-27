@@ -277,46 +277,70 @@
 
 	<!-- JavaScript to handle forms -->
 	<script>
-document.addEventListener('DOMContentLoaded', function () {
-	const showRegisterLink = document.getElementById('show-register');
-	const showLoginLink = document.getElementById('show-login');
-	const loginForm = document.getElementById('login-form');
-	const registerForm = document.getElementById('register-form');
-	const offcanvasElement = document.getElementById('offcanvasRight');
-	const offcanvas = new bootstrap.Offcanvas(offcanvasElement);
-	const offcanvasRegLog = document.getElementById('offcanvasRightLabel'); // Correct ID reference with quotes
+		document.addEventListener('DOMContentLoaded', function () {
+			// Get elements by ID
+			const showRegisterLink = document.getElementById('show-register');
+			const showLoginLink = document.getElementById('show-login');
+			const loginForm = document.getElementById('login-form');
+			const registerForm = document.getElementById('register-form');
+			const offcanvasElement = document.getElementById('offcanvasRight');
+			const offcanvasRegLog = document.getElementById('offcanvasRightLabel'); // Header label in offcanvas
 
+			// Log initial elements to confirm they're detected correctly
+			console.log('Initial Elements:', {
+				showRegisterLink,
+				showLoginLink,
+				loginForm,
+				registerForm,
+				offcanvasElement,
+				offcanvasRegLog
+			});
 
-	// Confirm elements exist before proceeding
-	if (showRegisterLink && showLoginLink && loginForm && registerForm && offcanvasRegLog) {
+			// Check if offcanvas element is defined and initialize it
+			let offcanvas;
+			if (offcanvasElement) {
+				offcanvas = new bootstrap.Offcanvas(offcanvasElement);
+				console.log("Bootstrap Offcanvas initialized successfully.");
+			} else {
+				console.error("Offcanvas element not found. Check the ID 'offcanvasRight'.");
+			}
 
-		// Toggle to show Register form and update header text
-		showRegisterLink.addEventListener('click', function (e) {
-			e.preventDefault();
-			console.log('Switching to Register form'); // Log action
-			loginForm.style.display = 'none';
-			registerForm.style.display = 'block';
-			offcanvasRegLog.textContent = 'Register';
+			// Confirm all required elements exist before adding event listeners
+			if (showRegisterLink && showLoginLink && loginForm && registerForm && offcanvas && offcanvasRegLog) {
+				console.log("All required elements are found.");
+
+				// Toggle to show Register form and update header text
+				showRegisterLink.addEventListener('click', function (e) {
+					e.preventDefault();
+					console.log('Switching to Register form'); // Log action
+					loginForm.style.display = 'none';
+					registerForm.style.display = 'block';
+					offcanvasRegLog.textContent = 'Register';
+
+					// Show the offcanvas
+					offcanvas.show();
+				});
+
+				// Toggle to show Login form and update header text
+				showLoginLink.addEventListener('click', function (e) {
+					e.preventDefault();
+					console.log('Switching to Login form'); // Log action
+					loginForm.style.display = 'block';
+					registerForm.style.display = 'none';
+					offcanvasRegLog.textContent = 'Login';
+
+					// Show the offcanvas
+					offcanvas.show();
+				});
+			} else {
+				console.error('One or more elements were not found. Check IDs and HTML structure.');
+			}
 		});
-
-		// Toggle to show Login form and update header text
-		showLoginLink.addEventListener('click', function (e) {
-			e.preventDefault();
-			console.log('Switching to Login form'); // Log action
-			loginForm.style.display = 'block';
-			registerForm.style.display = 'none';
-			offcanvasRegLog.textContent = 'Login';
-		});
-
-	} else {
-		console.error('One or more elements were not found. Check IDs and HTML structure.');
-	}
-});
 
 
 
 		// Function to handle form submissions
-		function handleFormSubmit(form, url) {
+		function handleFormSubmit(form, url, offcanvas) {
 			if (!form) return;
 
 			form.addEventListener('submit', async function (event) {
@@ -374,7 +398,7 @@ document.addEventListener('DOMContentLoaded', function () {
 							data.message || 'Logged in successfully!';
 						successToast.show();
 
-						offcanvas.hide();
+						if (offcanvas) offcanvas.hide();
 
 						setTimeout(() => {
 							window.location.href = data.redirect_url || '/';
@@ -395,7 +419,7 @@ document.addEventListener('DOMContentLoaded', function () {
 							});
 						}
 
-						// Pokaż ogólny komunikat błędu jeśli jest
+						// Display a general error message if it exists
 						if (data.message) {
 							const errorDiv = document.createElement('div');
 							errorDiv.className = 'alert alert-danger mt-3';
@@ -415,6 +439,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			});
 		}
 
+
 		// Initialize form handlers
 		const loginFormElement = document.querySelector('#login-form form');
 		const registerFormElement = document.querySelector('#register-form form');
@@ -427,7 +452,7 @@ document.addEventListener('DOMContentLoaded', function () {
 			console.log('Register form found, action URL:', registerFormElement.action); // Debug log
 			handleFormSubmit(registerFormElement, registerFormElement.action);
 		}
-		
+
 
 
 		// Główne elementy DOM
