@@ -179,6 +179,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'salomonik@gmail.com'
 EMAIL_HOST_PASSWORD = 'prff vglc aynd zsqz'  # Use the App Password you generated
+DEFAULT_FROM_EMAIL = 'salomonik@gmail.com'
 
 
 

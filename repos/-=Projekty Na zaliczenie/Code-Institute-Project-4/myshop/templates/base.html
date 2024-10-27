@@ -13,6 +13,9 @@
 	<link rel="icon" href="{% static 'images/favicon.ico' %}" />
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+	<!-- Bootstrap JavaScript -->
+
+
 
 </head>
 
@@ -88,7 +91,7 @@
 							</a>
 							<ul class="dropdown-menu dropdown-menu-end list-unstyled" aria-labelledby="userDropdown">
 								<li>
-									<a class="dropdown-item" href="{% url 'profile' %}">Profile</a>
+									<a class="dropdown-item" href="{% url 'accounts:profile' %}">Profile</a>
 								</li>
 								<li>
 									<form method="POST" action="{% url 'accounts:logout' %}" style="margin: 0;">

@@ -10,6 +10,7 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),  # Własny widok do obsługi AJAX
     path('logout/', views.logout_view, name='logout'),  # Własny widok do obsługi AJAX
     path('register/', views.register_view, name='register'),  # Własny widok do obsługi AJAX
+    path('profile/', views.profile, name='profile'),
 
     # Ścieżki do resetowania hasła
     path('password_reset/', 

@@ -3,6 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect, render
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from checkout.models import Order
 
 def login_view(request):
     if request.method == 'POST':
@@ -45,3 +47,12 @@ def logout_view(request):
             return JsonResponse({'success': True, 'redirect_url': '/'})
         return redirect('/')
     return JsonResponse({'error': 'GET method not allowed'}, status=405)
+
+@login_required
+def profile(request):
+    # Pobranie wszystkich zamówień zalogowanego użytkownika
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    
+    return render(request, 'accounts/profile.html', {
+        'orders': orders
+    })

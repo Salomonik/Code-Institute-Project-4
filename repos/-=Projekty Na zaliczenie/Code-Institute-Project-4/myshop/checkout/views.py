@@ -1,33 +1,4 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.db import transaction
-from django.contrib import messages
-from .models import Order, OrderItem
-from cart.models import CartItem
-from .forms import CheckoutForm
-import stripe
-import json
-from django.http import JsonResponse
-from django.conf import settings
-from django.views.decorators.csrf import csrf_exempt
-
-stripe.api_key = settings.STRIPE_SECRET_KEY
-
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.db import transaction
-from django.contrib import messages
-from .models import Order, OrderItem
-from cart.models import CartItem
-from .forms import CheckoutForm
-import stripe
-import json
-from django.http import JsonResponse
-from django.conf import settings
-from django.views.decorators.csrf import csrf_exempt
-
-stripe.api_key = settings.STRIPE_SECRET_KEY
-
+from django.core.mail import send_mail
 import json
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -131,6 +102,33 @@ def checkout(request):
                     customer_email=request.user.email
                 )
                 print("Stripe session created:", session.id)  # Debugging Stripe session
+
+                # Build the order details for the email
+                order_items = OrderItem.objects.filter(order=order)
+                items_description = "\n".join([
+                    f"{item.product.name} (Quantity: {item.quantity}) - £{item.product.price * item.quantity}"
+                    for item in order_items
+                ])
+                
+                # Create the full message with order details
+                email_message = (
+                    f"Thank you for your order!\n\n"
+                    f"Your order number is #{order.id}.\n\n"
+                    f"Order details:\n"
+                    f"{items_description}\n\n"
+                    f"Total amount: £{order.total}\n\n"
+                    f"We hope you enjoy your purchase!"
+                )
+
+                # Send confirmation email with order details
+                send_mail(
+                    subject=f'Order Confirmation - Order #{order.id}',
+                    message=email_message,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[request.user.email],
+                    fail_silently=False,
+                )
+
 
                 return JsonResponse({'id': session.id})
 
