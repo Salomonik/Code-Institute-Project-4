@@ -57,7 +57,7 @@ body {
 
 #cart-button:hover,
 #profile-button:hover {
-    background: #0052a3;
+    background: var(--primary-color);
     transform: translateY(-2px);
     color: white !important;
     text-decoration: none;
@@ -520,6 +520,41 @@ body {
     font-size: 0.8rem;
     font-weight: bold;
 }
+
+
+.btn-icon {
+    width: 40px; /* lub inna odpowiednia szerokość */
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    transition: var(--transition);
+    font-size: 1rem; /* dopasowanie rozmiaru ikon */
+}
+
+.btn-icon:hover {
+    background-color: #0052a3;
+    transform: translateY(-2px);
+    color: white;
+}
+
+.btn-icon .badge {
+    background: white;
+    color: var(--primary-color);
+    font-size: 0.7rem;
+    font-weight: bold;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    padding: 0.2rem 0.5rem;
+    border-radius: 50%;
+}
+
 
 /* Off-Canvas Cart */
 .off-canvas {

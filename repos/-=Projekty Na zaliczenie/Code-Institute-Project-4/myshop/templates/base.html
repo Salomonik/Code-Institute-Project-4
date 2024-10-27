@@ -45,8 +45,8 @@
 				</button>
 
 				<!-- Navbar links -->
-				<div class="collapse navbar-collapse" id="navbarNav">
-					<ul class="navbar-nav ms-auto list-unstyled"> <!-- Dodano klasę list-unstyled -->
+				<div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+					<ul class="navbar-nav list-unstyled"> <!-- Dodano klasę list-unstyled -->
 						<!-- Home Link -->
 						<li class="nav-item">
 							<a class="nav-link" href="{% url 'home' %}">Home</a>
@@ -74,46 +74,77 @@
 						<li class="nav-item">
 							<a class="nav-link" href="{% url 'contact' %}">Contact</a>
 						</li>
+					</ul>
 
+
+
+					
+
+
+
+
+					<div class="d-flex align-items-center gap-3">
+						<!-- Search form -->
+						<form class="flex-grow-1" role="search">
+							<div class="position-relative">
+								<input class="form-control rounded-pill" type="search" placeholder="Search for products" aria-label="Search">
+								<button class="btn position-absolute top-50 end-0 translate-middle-y me-2" type="submit">
+									<i class="fas fa-search text-muted"></i>
+								</button>
+							</div>
+						</form>
+					
 						<!-- User Authentication -->
-						<li class="nav-item dropdown">
+						<div class="nav-item">
 							{% if not user.is_authenticated %}
-							<!-- Niezalogowany użytkownik -->
-							<a class="btn btn-primary" href="#" data-bs-toggle="offcanvas"
-								data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+							<a class="btn" href="#" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
 								<i class="fa-solid fa-user"></i>
 							</a>
 							{% else %}
-							<!-- Zalogowany użytkownik -->
-							<a class="btn btn-primary" href="#" id="userDropdown" role="button"
-								data-bs-toggle="dropdown" aria-expanded="false">
-								<i class="fa-solid fa-user"></i>
-							</a>
-							<ul class="dropdown-menu dropdown-menu-end list-unstyled" aria-labelledby="userDropdown">
-								<li>
-									<a class="dropdown-item" href="{% url 'accounts:profile' %}">Profile</a>
-								</li>
-								<li>
-									<form method="POST" action="{% url 'accounts:logout' %}" style="margin: 0;">
-										{% csrf_token %}
-										<button type="submit" class="dropdown-item">Logout</button>
-									</form>
-								</li>
-							</ul>
+							<div class="dropdown">
+								<a class="btn" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+									<i class="fa-solid fa-user"></i>
+								</a>
+								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+									<li><a class="dropdown-item" href="{% url 'accounts:profile' %}">Profile</a></li>
+									<li>
+										<form method="POST" action="{% url 'accounts:logout' %}" class="m-0">
+											{% csrf_token %}
+											<button type="submit" class="dropdown-item">Logout</button>
+										</form>
+									</li>
+								</ul>
+							</div>
 							{% endif %}
-						</li>
-
-						<!-- Cart Button -->
-						<li class="nav-item position-relative">
-							<button id="cart-button" class="btn btn-primary">
-								<i class="fas fa-shopping-cart"></i>
-								<span id="cart-total-items" class="badge rounded-circle ">0</span>
+						</div>
+					
+					
+						<!-- Cart -->
+						<div class="nav-item position-relative">
+							<button id="cart-button" class="btn">
+								<i class="fa-solid fa-cart-shopping"></i>
+								<span id="cart-total-items" class="position-absolute top-0 start-100 translate-middle badge rounded-pill">
+									0
+								</span>
 							</button>
-						</li>
-					</ul>
+						</div>
+					</div>
+
+
+
+
+
+
+
+
+
+
 				</div>
 			</div>
 		</nav>
+
+
+
 
 
 		<!-- Offcanvas for Login/Register -->
