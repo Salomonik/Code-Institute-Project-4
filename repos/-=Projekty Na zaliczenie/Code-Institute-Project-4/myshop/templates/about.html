@@ -1,8 +1,24 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}About Us{% endblock %}
+{% block title %}Home{% endblock %}
 
 {% block content %}
-<h1>About Us</h1>
-<p>Welcome to our shop. Learn more about our story and what we offer.</p>
+<div class="container m-5 ">
+    <div class="row align-items-center " >
+		<div class="col-md-6 ps-5">
+			<h1>Your Destination for Premium Papercraft Art</h1>
+			<p>Welcome to <strong>Crafted Nature</strong>, where we transform paper into art with passion, precision, and unparalleled quality. Specializing in premium papercraft, we are dedicated to creating pieces that bring creativity and elegance into every detail.</p>
+
+			<p>Founded on the belief that paper holds endless potential, our team of artisans and designers combines traditional techniques with innovative methods to craft stunning, high-quality works. From intricate designs to custom projects, each creation is made with the utmost care and dedication to excellence.</p>
+		  
+			<p>Whether you’re looking for custom décor, unique gifts, or elegant paper installations, <strong>Crafted Nature</strong> is here to bring your vision to life. Join us in exploring the endless possibilities of papercraft, and experience art like never before.</p>
+		  
+			<p>Thank you for choosing us to add a touch of handcrafted beauty to your world.</p>
+		</div>
+        <div class="col-md-6 overflow-hidden banner">
+            <img src="{% static 'images/aboutus.webp' %}" class="img-fluid rounded-image" alt="art images">
+        </div>
+    </div>
+</div>
 {% endblock %}
