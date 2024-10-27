@@ -43,8 +43,12 @@ import stripe
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 @csrf_exempt  # For testing purposes, remove in production if CSRF protection is required
-@login_required
 def checkout(request):
+    if not request.user.is_authenticated:
+        # Przekaż zmienną do szablonu, aby wyświetlić panel logowania
+        return render(request, 'checkout/checkout.html', {
+            'show_login_prompt': True
+        })
     print("Request method:", request.method)  # Debugging method type
 
     cart_items = CartItem.objects.filter(cart__user=request.user)

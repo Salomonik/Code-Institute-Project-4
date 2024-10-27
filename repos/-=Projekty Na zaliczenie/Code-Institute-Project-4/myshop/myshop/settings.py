@@ -188,3 +188,8 @@ STRIPE_SECRET_KEY = 'sk_test_51QDBKRA2HSKZ7VdwP2NeKBu9RUrHxSedDEStGHJluPtMXlSye4
 STRIPE_PUBLISHABLE_KEY = 'pk_test_51QDBKRA2HSKZ7VdwmQzbjmQMcdr8uZumf0GZaZ9z2jn1nUMU8tnOcvSH4r5FZjrmMV1zvdzd5CluDOnvcZAFMn9100YYHUBVwB'  # Your Publishable Key
 
 GOOGLE_MAPS_API_KEY = 'AIzaSyC49O87Yy1No5fCuJM2sg3ooWOrQYh1kY8'
+
+
+LOGIN_URL = '/login/'  # Ścieżka do widoku logowania
+LOGIN_REDIRECT_URL = '/checkout/'  # Ścieżka powrotu do kasy po zalogowaniu
+

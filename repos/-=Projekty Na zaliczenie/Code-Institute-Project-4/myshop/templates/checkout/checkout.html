@@ -283,6 +283,18 @@
 </script>
 
 
+{% if show_login_prompt %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Otwórz panel offcanvas z logowaniem
+        var offcanvasElement = new bootstrap.Offcanvas(document.getElementById('offcanvasRight'));
+        offcanvasElement.show();
+    });
+</script>
+{% endif %}
+
+
+
 {% endblock %}
 
 {% endblock %}
