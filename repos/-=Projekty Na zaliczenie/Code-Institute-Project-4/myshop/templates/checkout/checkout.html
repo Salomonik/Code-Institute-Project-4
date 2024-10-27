@@ -65,16 +65,8 @@
 
 				<!-- Payment Section -->
 				<h3>Payment</h3>
-				<div class="form-check mb-3">
-					<input class="form-check-input" name="payment_method" id="credit_card" value="credit_card" checked>
-					<label class="form-check-label" for="credit_card">Credit Card</label>
-				</div>
 
-				<!-- Stripe payment form -->
-				<div id="card-element" class="mb-3">
-					<!-- Stripe will inject the Card element here -->
-				</div>
-				<button type="submit" class="btn btn-primary">Pay Now</button>
+				<button type="submit" class="btn btn-primary">Payment</button>
 
 				<!-- Error Display -->
 				<div id="card-errors" role="alert" class="text-danger mt-2"></div>
@@ -231,19 +223,6 @@
 <script>
 	document.addEventListener("DOMContentLoaded", function () {
 		const stripe = Stripe('{{ stripe_pub_key }}');
-		const elements = stripe.elements();
-		const cardElement = elements.create('card', {
-			style: {
-				base: {
-					fontSize: '16px',
-					color: '#32325d',
-					'::placeholder': { color: '#aab7c4' }
-				},
-				invalid: { color: '#fa755a', iconColor: '#fa755a' }
-			}
-		});
-
-		cardElement.mount('#card-element');
 
 		// Retrieve CSRF token from the form
 		const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -257,38 +236,14 @@
 			submitButton.disabled = true;
 
 			try {
-				// Create the Stripe payment method
-				const result = await stripe.createPaymentMethod({
-					type: 'card',
-					card: cardElement,
-					billing_details: {
-						name: `${form.first_name.value} ${form.last_name.value}`,
-						email: form.email.value,
-						phone: form.phone.value,
-						address: {
-							line1: form.address.value,
-							city: form.city.value,
-							postal_code: form.postcode.value,
-							country: form.country.value
-						}
-					}
-				});
-
-				if (result.error) {
-					cardErrors.textContent = result.error.message;
-					submitButton.disabled = false;
-					return;
-				}
-
-				// Send payment information to server
+				// Send order data to server
 				const response = await fetch("{% url 'checkout:checkout' %}", {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
-						'X-CSRFToken': csrftoken  // Pass CSRF token in headers
+						'X-CSRFToken': csrftoken
 					},
 					body: JSON.stringify({
-						payment_method_id: result.paymentMethod.id,
 						order_data: {
 							first_name: form.first_name.value,
 							last_name: form.last_name.value,
@@ -311,7 +266,12 @@
 					throw new Error(session.error);
 				}
 
-				window.location.href = session.success_url;
+				// Redirect to Stripe Checkout using the session ID
+				const result = await stripe.redirectToCheckout({ sessionId: session.id });
+
+				if (result.error) {
+					cardErrors.textContent = result.error.message;
+				}
 
 			} catch (error) {
 				cardErrors.textContent = error.message;
