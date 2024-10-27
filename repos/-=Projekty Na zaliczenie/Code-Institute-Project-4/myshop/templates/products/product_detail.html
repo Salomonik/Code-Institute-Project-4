@@ -3,24 +3,54 @@
 {% block title %}{{ product.name }}{% endblock %}
 
 {% block content %}
-<h1>{{ product.name }}</h1>
-<p><strong>Price:</strong> ${{ product.price }}</p>
+<div class="container py-5">
+    <div class="row">
+        <!-- Image on the left side -->
+        <div class="col-md-6">
+            <div class="product-image text-center">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded">
+                {% else %}
+                <img src="https://via.placeholder.com/400" alt="Placeholder Image" class="img-fluid rounded">
+                {% endif %}
+            </div>
+        </div>
 
-<!-- Zamiast formularza, użyjemy przycisku z dynamicznymi atrybutami -->
-<button class="add-to-cart" 
-        data-product-id="{{ product.id }}" 
-        data-stock="{{ product.stock }}">
-    Add to Cart
-</button>
+        <!-- Product information on the right side -->
+        <div class="col-md-6">
+            <h2 class="mb-3">{{ product.name }}</h2>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                <!-- Display product categories as tags -->
+                {% for category in product.categories.all %}
+                <span class="badge bg-secondary">{{ category.name }}</span>
+                {% endfor %}
+            </div>
 
-<p><strong>Description:</strong> {{ product.description }}</p>
+            <p class="fs-4 text-primary"><strong>${{ product.price }}</strong></p>
+            <hr class="dashed-line my-4">
 
-{% if product.image %}
-<img src="{{ product.image.url }}" alt="{{ product.name }}" width="300px">
-{% endif %}
 
-<p><strong>Stock:</strong> {{ product.stock }}</p>
 
-<a href="{% url 'products:product_list' %}">Back to Products</a>
 
+            <!-- Add to Cart buttons -->
+            <button class="add-to-cart btn btn-warning w-25 py-2 mb-5" data-product-id="{{ product.id }}"
+                data-stock="{{ product.stock }}">
+                <i class="fas fa-shopping-cart"></i> Add to Cart
+            </button>
+
+           
+
+
+            <!-- Stock availability information -->
+            <p class="mt-4"><strong>Stock:</strong> {{ product.stock }}</p>
+
+            <!-- Product description -->
+            <p class="mt-4"><strong>Description:</strong> {{ product.description }}</p>
+
+            <!-- Back to Products link -->
+            <button class="btn btn-outline-secondary btn-light mt-3" onclick="window.location.href='{% url 'products:product_list' %}'">Back to Products</button>
+
+        </div>
+    </div>
+</div>
 {% endblock %}

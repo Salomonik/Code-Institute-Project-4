@@ -905,3 +905,7 @@ input[type="number"] {
 .banner, .rounded-image {
     border-radius: 5%;
 }
+
+.dashed-line {
+    border-top: 2px dashed #ccc;
+}
