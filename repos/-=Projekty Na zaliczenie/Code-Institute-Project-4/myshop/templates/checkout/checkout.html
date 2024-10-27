@@ -129,7 +129,7 @@
 <script>
 	// Define initAutocomplete in the global scope
 	function initAutocomplete() {
-		const addressInput = document.getElementById('address_line1');
+		const addressInput = document.getElementById('address');
 		if (!addressInput) return;
 
 		const autocomplete = new google.maps.places.Autocomplete(addressInput, {
@@ -182,7 +182,7 @@
 	// Load Google Maps script
 	function loadGoogleMapsScript() {
 		const script = document.createElement('script');
-		script.src = `https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&libraries=places&callback=initAutocomplete`;
+		script.src = `https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&libraries=places&callback=initAutocomplete`;
 		script.async = true;
 		script.defer = true;
 		document.head.appendChild(script);
@@ -191,6 +191,7 @@
 	// Call function to load the Google Maps script
 	document.addEventListener('DOMContentLoaded', loadGoogleMapsScript);
 </script>
+
 
 <script>
 	const response = await fetch("{% url 'checkout:checkout' %}", {
