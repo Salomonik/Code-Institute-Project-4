@@ -8,33 +8,33 @@
 	{% if orders %}
 	<div class="accordion" id="ordersAccordion">
 		{% for order in orders %}
-		<div class="accordion-item">
-			<h2 class="accordion-header" id="heading{{ order.id }}">
-				<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-					data-bs-target="#collapse{{ order.id }}" aria-expanded="false"
-					aria-controls="collapse{{ order.id }}">
-					Order #{{ order.id }} - {{ order.created_at|date:"Y-m-d H:i" }} - Total: £{{ order.total }}
-				</button>
-			</h2>
-			<div id="collapse{{ order.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ order.id }}"
-				data-bs-parent="#ordersAccordion">
-				<div class="accordion-body">
-					<h5>Order Details</h5>
-					<ul class="list-group mb-3">
-						{% for item in order.orderitem_set.all %}
-						<li class="list-group-item d-flex justify-content-between align-items-center">
-							{{ item.product.name }} (Quantity: {{ item.quantity }})
-							<span>£{{ item.total_price }}</span>
-						</li>
-						{% endfor %}
-					</ul>
-
-					<p><strong>Total:</strong> £{{ order.total }}</p>
+			<div class="accordion-item">
+				<h2 class="accordion-header" id="heading{{ order.id }}">
+					<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ order.id }}" aria-expanded="false" aria-controls="collapse{{ order.id }}">
+						Order #{{ order.id }} - {{ order.created_at|date:"Y-m-d H:i" }} - Total: £{{ order.total }}
+					</button>
+				</h2>
+				<div id="collapse{{ order.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ order.id }}" data-bs-parent="#ordersAccordion">
+					<div class="accordion-body">
+						<h5>Order Details</h5>
+						<ul class="list-group mb-3">
+							{% for entry in order.items_with_total %}
+								<li class="list-group-item d-flex justify-content-between align-items-center">
+									{{ entry.item.product.name }} (Quantity: {{ entry.item.quantity }})
+									<span>£{{ entry.total_price }}</span>
+								</li>
+							{% endfor %}
+						</ul>
+						<p><strong>Total:</strong> £{{ order.total }}</p>
+					</div>
 				</div>
 			</div>
-		</div>
+		{% empty %}
+			<p>No orders found.</p>
 		{% endfor %}
 	</div>
+	
+
 	{% else %}
 	<p>You have no orders yet.</p>
 	{% endif %}

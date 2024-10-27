@@ -4,7 +4,7 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from checkout.models import Order
+from checkout.models import Order, OrderItem
 
 def login_view(request):
     if request.method == 'POST':
@@ -51,8 +51,18 @@ def logout_view(request):
 @login_required
 def profile(request):
     orders = Order.objects.filter(user=request.user).order_by('-created_at')
+
+    # Dla każdego zamówienia obliczamy całkowitą cenę dla elementów
+    for order in orders:
+        order.items_with_total = [
+            {
+                'item': item,
+                'total_price': item.product.price * item.quantity
+            }
+            for item in order.items.all()  # użycie 'items' zamiast 'orderitem_set'
+        ]
+
     return render(request, 'accounts/profile.html', {
         'orders': orders
     })
-
 
