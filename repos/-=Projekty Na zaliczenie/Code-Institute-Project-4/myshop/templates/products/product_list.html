@@ -3,36 +3,50 @@
 {% block title %}Product List{% endblock %}
 
 {% block content %}
-    <h1>Product List</h1>
-	    <!-- Filtering by category -->
-		<div class="filter-options">
-			<label>Filter by category:</label>
-			<ul>
-				<li><a href="?">All Categories</a></li>
-				{% for category in categories %}
-					<li><a href="?category={{ category.slug }}">{{ category.name }}</a></li>
-				{% endfor %}
-			</ul>
-		</div>
-    <!-- Sorting options -->
-    <div class="sort-options">
-        <label>Sort by:</label>
-        <a href="?sort=name">Name</a> |
-        <a href="?sort=price">Price (Low to High)</a> |
-        <a href="?sort=price_desc">Price (High to Low)</a> |
-        <a href="?sort=date">Newest</a>
+<div class="container">
+    <h1 class="my-4 text-center">Product List</h1>
+
+    <!-- Filtering by category -->
+    <div class="filter-options mb-4 text-center">
+        <label class="form-label">Filter by category:</label>
+        <ul class="list-inline">
+            <li class="list-inline-item"><a href="?" class="btn btn-link">All Categories</a></li>
+            {% for category in categories %}
+                <li class="list-inline-item"><a href="?category={{ category.slug }}" class="btn btn-link">{{ category.name }}</a></li>
+            {% endfor %}
+        </ul>
     </div>
-    <ul>
+
+    <!-- Sorting options -->
+    <div class="sort-options mb-4 text-center">
+        <label class="form-label">Sort by:</label>
+        <a href="?sort=name" class="btn btn-outline-secondary btn-sm">Name</a>
+        <a href="?sort=price" class="btn btn-outline-secondary btn-sm">Price (Low to High)</a>
+        <a href="?sort=price_desc" class="btn btn-outline-secondary btn-sm">Price (High to Low)</a>
+        <a href="?sort=date" class="btn btn-outline-secondary btn-sm">Newest</a>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="row">
         {% for product in products %}
-            <li>
-                <a href="{% url 'products:product_detail' product.id %}">{{ product.name }}</a>
-                    <strong>{{ product.name }}</strong>
-                </a> - ${{ product.price }} <br>
-                {{ product.description }} <br>
-                {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}" width="200px">
-                {% endif %}
-            </li>
+            <div class="col-md-4 mb-5 d-flex justify-content-center">
+                <div class="card text-center border-0" style="width: 18rem;">
+                    <!-- Link na zdjęciu -->
+                    <a href="{% url 'products:product_detail' product.id %}">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" class="card-img-top rounded-4" alt="{{ product.name }}" style="border-radius: 0;">
+                        {% else %}
+                            <img src="https://via.placeholder.com/200" class="card-img-top" alt="Placeholder Image" style="border-radius: 0;">
+                        {% endif %}
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title mt-3">{{ product.name }}</h5>
+                        <p class="card-text text-muted">{{ product.category }}</p>
+                        <p class="card-text">£{{ product.price }}</p>
+                    </div>
+                </div>
+            </div>
         {% endfor %}
-    </ul>
+    </div>
+</div>
 {% endblock %}
