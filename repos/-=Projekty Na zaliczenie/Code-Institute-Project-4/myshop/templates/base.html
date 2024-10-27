@@ -78,7 +78,7 @@
 
 
 
-					
+
 
 
 
@@ -87,22 +87,26 @@
 						<!-- Search form -->
 						<form class="flex-grow-1" role="search">
 							<div class="position-relative">
-								<input class="form-control rounded-pill" type="search" placeholder="Search for products" aria-label="Search">
-								<button class="btn position-absolute top-50 end-0 translate-middle-y me-2" type="submit">
+								<input class="form-control rounded-pill" type="search" placeholder="Search for products"
+									aria-label="Search">
+								<button class="btn position-absolute top-50 end-0 translate-middle-y me-2"
+									type="submit">
 									<i class="fas fa-search text-muted"></i>
 								</button>
 							</div>
 						</form>
-					
+
 						<!-- User Authentication -->
 						<div class="nav-item">
 							{% if not user.is_authenticated %}
-							<a class="btn" href="#" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+							<a class="btn" href="#" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+								aria-controls="offcanvasRight">
 								<i class="fa-solid fa-user"></i>
 							</a>
 							{% else %}
 							<div class="dropdown">
-								<a class="btn" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+								<a class="btn" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
+									aria-expanded="false">
 									<i class="fa-solid fa-user"></i>
 								</a>
 								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
@@ -117,13 +121,14 @@
 							</div>
 							{% endif %}
 						</div>
-					
-					
+
+
 						<!-- Cart -->
 						<div class="nav-item position-relative">
 							<button id="cart-button" class="btn">
 								<i class="fa-solid fa-cart-shopping"></i>
-								<span id="cart-total-items" class="position-absolute top-0 start-100 translate-middle badge rounded-pill">
+								<span id="cart-total-items"
+									class="position-absolute top-0 start-100 translate-middle badge rounded-pill">
 									0
 								</span>
 							</button>
@@ -150,7 +155,7 @@
 		<!-- Offcanvas for Login/Register -->
 		<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
 			<div class="offcanvas-header">
-				<h5 id="offcanvasRightLabel">REGISTER</h5>
+				<h5 id="offcanvasRightLabel">Register</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
 			</div>
 			<div class="offcanvas-body">
@@ -159,18 +164,21 @@
 					<form method="POST" action="{% url 'accounts:register' %}">
 						{% csrf_token %}
 						<div class="mb-3">
-							<label for="username" class="form-label">Username</label>
-							<input type="text" class="form-control" id="username" name="username" required>
+							<label for="username" class="form-label"></label>
+							<input type="text" class="form-control" id="username" name="username"
+								placeholder="Username *" required>
 						</div>
 						<div class="mb-3">
-							<label for="email" class="form-label">Email</label>
-							<input type="email" class="form-control" id="email" name="email" required>
+							<label for="email" class="form-label"></label>
+							<input type="email" class="form-control" id="email" name="email" placeholder="Email *"
+								required>
 						</div>
 						<div class="mb-3">
 							<label for="password" class="form-label">Password</label>
-							<input type="password" class="form-control" id="password" name="password" required>
+							<input type="password" class="form-control" id="password" name="password"
+								placeholder="Password *" required>
 						</div>
-						<button type="submit" class="btn btn-primary">Register</button>
+						<button type="submit" class="btn btn-primary rounded-pill">Register</button>
 					</form>
 					<div class="mt-3">
 						<a href="#" id="show-login">Already have an account? Login here</a>
@@ -182,17 +190,19 @@
 					<form method="POST" action="{% url 'accounts:login' %}">
 						{% csrf_token %}
 						<div class="mb-3">
-							<label for="login-email" class="form-label">Email *</label>
-							<input type="email" class="form-control" id="login-email" name="email" required>
+							<label for="login-email" class="form-label"></label>
+							<input type="email" class="form-control" id="login-email" name="email" placeholder="Email *"
+								required>
 						</div>
 						<div class="mb-3">
-							<label for="login-password" class="form-label">Password *</label>
-							<input type="password" class="form-control" id="login-password" name="password" required>
+							<label for="login-password" class="form-label"></label>
+							<input type="password" class="form-control" id="login-password" name="password"
+								placeholder="Password *" required>
 						</div>
 						<div class="mb-3">
 							<a href="{% url 'accounts:password_reset' %}">Forgot your password?</a>
 						</div>
-						<button type="submit" class="btn btn-primary">Sign In</button>
+						<button type="submit" class="btn btn-primary rounded-pill">Sign In</button>
 					</form>
 					<div class="mt-3">
 						<a href="#" id="show-register">New customer? Create your account</a>
@@ -267,142 +277,157 @@
 
 	<!-- JavaScript to handle forms -->
 	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-			const showRegisterLink = document.getElementById('show-register');
-			const showLoginLink = document.getElementById('show-login');
-			const loginForm = document.getElementById('login-form');
-			const registerForm = document.getElementById('register-form');
-			const offcanvasElement = document.getElementById('offcanvasRight');
-			const offcanvas = new bootstrap.Offcanvas(offcanvasElement);
+document.addEventListener('DOMContentLoaded', function () {
+	const showRegisterLink = document.getElementById('show-register');
+	const showLoginLink = document.getElementById('show-login');
+	const loginForm = document.getElementById('login-form');
+	const registerForm = document.getElementById('register-form');
+	const offcanvasElement = document.getElementById('offcanvasRight');
+	const offcanvas = new bootstrap.Offcanvas(offcanvasElement);
+	const offcanvasRegLog = document.getElementById('offcanvasRightLabel'); // Correct ID reference with quotes
+
+
+	// Confirm elements exist before proceeding
+	if (showRegisterLink && showLoginLink && loginForm && registerForm && offcanvasRegLog) {
+
+		// Toggle to show Register form and update header text
+		showRegisterLink.addEventListener('click', function (e) {
+			e.preventDefault();
+			console.log('Switching to Register form'); // Log action
+			loginForm.style.display = 'none';
+			registerForm.style.display = 'block';
+			offcanvasRegLog.textContent = 'Register';
+		});
+
+		// Toggle to show Login form and update header text
+		showLoginLink.addEventListener('click', function (e) {
+			e.preventDefault();
+			console.log('Switching to Login form'); // Log action
+			loginForm.style.display = 'block';
+			registerForm.style.display = 'none';
+			offcanvasRegLog.textContent = 'Login';
+		});
+
+	} else {
+		console.error('One or more elements were not found. Check IDs and HTML structure.');
+	}
+});
 
 
 
-			// Toggle between login and register forms
-			showRegisterLink?.addEventListener('click', function (e) {
-				e.preventDefault();
-				loginForm.style.display = 'none';
-				registerForm.style.display = 'block';
-			});
+		// Function to handle form submissions
+		function handleFormSubmit(form, url) {
+			if (!form) return;
 
-			showLoginLink?.addEventListener('click', function (e) {
-				e.preventDefault();
-				loginForm.style.display = 'block';
-				registerForm.style.display = 'none';
-			});
+			form.addEventListener('submit', async function (event) {
+				event.preventDefault();
+				console.log('Form submitted to URL:', url); // Debug log
 
-			// Function to handle form submissions
-			function handleFormSubmit(form, url) {
-				if (!form) return;
+				// Clear previous errors
+				form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+				form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+				const alertDiv = form.querySelector('.alert');
+				if (alertDiv) alertDiv.remove();
 
-				form.addEventListener('submit', async function (event) {
-					event.preventDefault();
-					console.log('Form submitted to URL:', url); // Debug log
+				const submitButton = form.querySelector('button[type="submit"]');
+				submitButton.disabled = true;
 
-					// Clear previous errors
-					form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-					form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
-					const alertDiv = form.querySelector('.alert');
-					if (alertDiv) alertDiv.remove();
+				try {
+					const formData = new FormData(form);
+					// Log form data for debugging
+					for (let pair of formData.entries()) {
+						console.log(pair[0] + ': ' + pair[1]);
+					}
 
-					const submitButton = form.querySelector('button[type="submit"]');
-					submitButton.disabled = true;
+					const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+					console.log('CSRF Token present:', !!csrfToken); // Debug log
 
+					if (!csrfToken) {
+						throw new Error('CSRF token not found');
+					}
+
+					const response = await fetch(url, {
+						method: 'POST',
+						headers: {
+							'X-CSRFToken': csrfToken,
+							'X-Requested-With': 'XMLHttpRequest',
+						},
+						body: formData
+					});
+
+					console.log('Response status:', response.status); // Debug log
+					// Log raw response for debugging
+					const responseText = await response.text();
+					console.log('Raw response:', responseText);
+
+					let data;
 					try {
-						const formData = new FormData(form);
-						// Log form data for debugging
-						for (let pair of formData.entries()) {
-							console.log(pair[0] + ': ' + pair[1]);
-						}
+						data = JSON.parse(responseText);
+					} catch (e) {
+						console.error('JSON parse error:', e);
+						throw new Error('Invalid JSON response from server');
+					}
 
-						const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
-						console.log('CSRF Token present:', !!csrfToken); // Debug log
+					if (response.ok && data.success) {
+						const successToast = new bootstrap.Toast(document.getElementById('successToast'));
+						document.querySelector('#successToast .toast-body').textContent =
+							data.message || 'Logged in successfully!';
+						successToast.show();
 
-						if (!csrfToken) {
-							throw new Error('CSRF token not found');
-						}
+						offcanvas.hide();
 
-						const response = await fetch(url, {
-							method: 'POST',
-							headers: {
-								'X-CSRFToken': csrfToken,
-								'X-Requested-With': 'XMLHttpRequest',
-							},
-							body: formData
-						});
-
-						console.log('Response status:', response.status); // Debug log
-						// Log raw response for debugging
-						const responseText = await response.text();
-						console.log('Raw response:', responseText);
-
-						let data;
-						try {
-							data = JSON.parse(responseText);
-						} catch (e) {
-							console.error('JSON parse error:', e);
-							throw new Error('Invalid JSON response from server');
-						}
-
-						if (response.ok && data.success) {
-							const successToast = new bootstrap.Toast(document.getElementById('successToast'));
-							document.querySelector('#successToast .toast-body').textContent =
-								data.message || 'Logged in successfully!';
-							successToast.show();
-
-							offcanvas.hide();
-
-							setTimeout(() => {
-								window.location.href = data.redirect_url || '/';
-							}, 1000);
-						} else {
-							submitButton.disabled = false;
-
-							if (data.errors) {
-								Object.entries(data.errors).forEach(([field, errors]) => {
-									const inputElement = form.querySelector(`[name="${field}"]`);
-									if (inputElement) {
-										inputElement.classList.add('is-invalid');
-										const errorElement = document.createElement('div');
-										errorElement.className = 'invalid-feedback';
-										errorElement.textContent = Array.isArray(errors) ? errors[0] : errors;
-										inputElement.parentNode.appendChild(errorElement);
-									}
-								});
-							}
-
-							// Pokaż ogólny komunikat błędu jeśli jest
-							if (data.message) {
-								const errorDiv = document.createElement('div');
-								errorDiv.className = 'alert alert-danger mt-3';
-								errorDiv.textContent = data.message;
-								form.insertBefore(errorDiv, form.firstChild);
-							}
-						}
-					} catch (error) {
-						console.error('Detailed error:', error); // Detailed error logging
+						setTimeout(() => {
+							window.location.href = data.redirect_url || '/';
+						}, 1000);
+					} else {
 						submitButton.disabled = false;
 
-						const errorDiv = document.createElement('div');
-						errorDiv.className = 'alert alert-danger mt-3';
-						errorDiv.textContent = 'An error occurred: ' + error.message;
-						form.insertBefore(errorDiv, form.firstChild);
+						if (data.errors) {
+							Object.entries(data.errors).forEach(([field, errors]) => {
+								const inputElement = form.querySelector(`[name="${field}"]`);
+								if (inputElement) {
+									inputElement.classList.add('is-invalid');
+									const errorElement = document.createElement('div');
+									errorElement.className = 'invalid-feedback';
+									errorElement.textContent = Array.isArray(errors) ? errors[0] : errors;
+									inputElement.parentNode.appendChild(errorElement);
+								}
+							});
+						}
+
+						// Pokaż ogólny komunikat błędu jeśli jest
+						if (data.message) {
+							const errorDiv = document.createElement('div');
+							errorDiv.className = 'alert alert-danger mt-3';
+							errorDiv.textContent = data.message;
+							form.insertBefore(errorDiv, form.firstChild);
+						}
 					}
-				});
-			}
+				} catch (error) {
+					console.error('Detailed error:', error); // Detailed error logging
+					submitButton.disabled = false;
 
-			// Initialize form handlers
-			const loginFormElement = document.querySelector('#login-form form');
-			const registerFormElement = document.querySelector('#register-form form');
+					const errorDiv = document.createElement('div');
+					errorDiv.className = 'alert alert-danger mt-3';
+					errorDiv.textContent = 'An error occurred: ' + error.message;
+					form.insertBefore(errorDiv, form.firstChild);
+				}
+			});
+		}
 
-			if (loginFormElement) {
-				console.log('Login form found, action URL:', loginFormElement.action); // Debug log
-				handleFormSubmit(loginFormElement, loginFormElement.action);
-			}
-			if (registerFormElement) {
-				console.log('Register form found, action URL:', registerFormElement.action); // Debug log
-				handleFormSubmit(registerFormElement, registerFormElement.action);
-			}
-		});
+		// Initialize form handlers
+		const loginFormElement = document.querySelector('#login-form form');
+		const registerFormElement = document.querySelector('#register-form form');
+
+		if (loginFormElement) {
+			console.log('Login form found, action URL:', loginFormElement.action); // Debug log
+			handleFormSubmit(loginFormElement, loginFormElement.action);
+		}
+		if (registerFormElement) {
+			console.log('Register form found, action URL:', registerFormElement.action); // Debug log
+			handleFormSubmit(registerFormElement, registerFormElement.action);
+		}
+		
 
 
 		// Główne elementy DOM
