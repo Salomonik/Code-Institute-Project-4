@@ -1,8 +1,19 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<h1>Welcome to My Shop!</h1>
-<p>This is the homepage.</p>
+<div class="container m-5 ">
+    <div class="row align-items-center " >
+        <div class="col-md-6 overflow-hidden banner">
+            <img src="{% static 'images/banner.webp' %}" class="img-fluid rounded-image" alt="art images">
+        </div>
+        <div class="col-md-6 ps-5">
+            <h1 class="main-text">Life’s <span class="highlight">better</span> when you live it with <span class="highlight">art.</span></h1>
+            <p>Transform your space in one easy step with our premium art prints. Expertly framed, ready to hang as soon as it reaches your door.</p>
+            <button href="#" class=" btn-custom rounded-pill">Shop our latest prints</button>
+        </div>
+    </div>
+</div>
 {% endblock %}
