@@ -4,37 +4,49 @@
 {% block title %}Contact Us{% endblock %}
 
 {% block content %}
-
-<div class="container m-5">
-  <div class="row align-items-center">
-    <div class="col-md-6 ps-5">
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
       <h1 class="text-center mb-4">Contact Us</h1>
-      <p class="text-center mb-5">If you have any questions, feel free to reach out to us via the contact form below or at our email address.</p>
+      <p class="text-center mb-5">
+        If you have any questions, feel free to reach out to us via the contact form below or at our email address.
+      </p>
 
-      <!-- Django form start -->
-      <form method="post">
+      {% if form.errors %}
+        <div class="alert alert-danger">
+          <ul>
+            {% for field, errors in form.errors.items %}
+              <li>{{ field.label }}: {{ errors|join:", " }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      <form method="post" action="{% url 'contact' %}">
         {% csrf_token %}
+        
         <div class="form-group">
-          <label for="id_name">Name:</label>
+          {{ form.name.label_tag }}
           {{ form.name }}
         </div>
-        <div class="form-group">
-          <label for="id_email">Email:</label>
+
+        <div class="form-group mt-3">
+          {{ form.email.label_tag }}
           {{ form.email }}
         </div>
-        <div class="form-group">
-          <label for="id_message">Message:</label>
+
+        <div class="form-group mt-3">
+          {{ form.message.label_tag }}
           {{ form.message }}
         </div>
-        <button type="submit" class="btn btn-primary btn-block mt-3 w-25 text-center">Send</button>
+
+        <button type="submit" class="btn btn-primary btn-block mt-4 w-100">Send</button>
       </form>
-      <!-- Django form end -->
 
     </div>
-    <div class="col-md-6 overflow-hidden banner">
-      <img src="{% static 'images/contact.webp' %}" class="img-fluid rounded-image" alt="art images">
+    <div class="col-md-6 d-none d-md-block">
+      <img src="{% static 'images/contact.webp' %}" class="img-fluid rounded" alt="Contact image">
     </div>
   </div>
 </div>
-
 {% endblock %}

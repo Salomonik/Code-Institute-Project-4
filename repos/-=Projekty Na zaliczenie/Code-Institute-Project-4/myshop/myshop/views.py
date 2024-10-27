@@ -1,7 +1,15 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.contrib.auth import login, get_user_model, authenticate
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.models import User
+from django.contrib import messages  # For displaying messages to the user
+from accounts.forms import UserRegisterForm
+from django import forms
+from django.contrib.auth.backends import ModelBackend
+from .forms import ContactForm
 from django.core.mail import send_mail
 from django.conf import settings
-from .forms import ContactForm
 
 # Home page view
 def home(request):
@@ -19,32 +27,40 @@ def contact(request):
 def profile(request):
     return render(request, 'profile.html')
 
-
 def contact_view(request):
-    # Check if the form was submitted via POST
     if request.method == 'POST':
+        print("Form submission detected (POST request).")
         form = ContactForm(request.POST)
-        # Validate the form data
         if form.is_valid():
-            # Extract cleaned form data
+            print("Form is valid. Processing form data...")
+            
             name = form.cleaned_data['name']
             email = form.cleaned_data['email']
             message = form.cleaned_data['message']
             
-            # Prepare the email content
-            subject = f'Message from {name}'
-            email_message = f"From: {name} <{email}>\n\n{message}"
             
-            # Send the email
+            subject = f"New Contact Form Submission from {name}"
+            email_message = f"From: {name} <{email}>\n\nMessage:\n{message}"
+            recipient_list = ['salomonik@gmail.com']
+
+            # Send email
             send_mail(
                 subject,
                 email_message,
                 settings.DEFAULT_FROM_EMAIL,
-                ['your_email@example.com'],  # Replace with your email address
+                recipient_list,
+                fail_silently=False,
             )
-            # Render a success page after email is sent
+            print("Email sent successfully.")
+
+            # Render success page or redirect
             return render(request, 'contact_success.html')
+        else:
+            print("Form is not valid. Errors:", form.errors)
     else:
-        # Render the form if no data was submitted
+        print("GET request detected. Initializing an empty form.")
         form = ContactForm()
+
+    print("Rendering contact.html template with form.")
     return render(request, 'contact.html', {'form': form})
+
