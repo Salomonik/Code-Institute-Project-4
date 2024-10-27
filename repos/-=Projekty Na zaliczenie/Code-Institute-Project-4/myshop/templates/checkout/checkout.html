@@ -66,8 +66,7 @@
 				<!-- Payment Section -->
 				<h3>Payment</h3>
 				<div class="form-check mb-3">
-					<input class="form-check-input" type="radio" name="payment_method" id="credit_card"
-						value="credit_card" checked>
+					<input class="form-check-input" name="payment_method" id="credit_card" value="credit_card" checked>
 					<label class="form-check-label" for="credit_card">Credit Card</label>
 				</div>
 
@@ -165,7 +164,7 @@
 							comp => comp.types[0] === 'route'
 						);
 						if (route) {
-							addressInput.value = ${ component.long_name } ${ route.long_name };
+							addressInput.value = `${component.long_name} ${route.long_name}`;
 						}
 						break;
 					case 'locality':
@@ -191,7 +190,7 @@
 	// Load Google Maps script
 	function loadGoogleMapsScript() {
 		const script = document.createElement('script');
-		script.src = https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&libraries=places&callback=initAutocomplete;
+		script.src = `https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&libraries=places&callback=initAutocomplete`;
 		script.async = true;
 		script.defer = true;
 		document.head.appendChild(script);
@@ -201,16 +200,29 @@
 	document.addEventListener('DOMContentLoaded', loadGoogleMapsScript);
 </script>
 
-<script>const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-
-	fetch('/checkout/', {
+<script>
+	const response = await fetch("{% url 'checkout:checkout' %}", {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
-			'X-CSRFToken': csrftoken,
+			'X-CSRFToken': '{{ csrf_token }}',
 		},
-		body: JSON.stringify(data)
-	})</script>
+		body: JSON.stringify({
+			payment_method_id: result.paymentMethod.id,
+			order_data: {
+				first_name: form.first_name.value,
+				last_name: form.last_name.value,
+				email: form.email.value,
+				phone: form.phone.value,
+				address: form.address.value,
+				city: form.city.value,
+				postcode: form.postcode.value,
+				country: form.country.value
+			}
+		})
+	});
+
+</script>
 
 
 
@@ -225,18 +237,16 @@
 				base: {
 					fontSize: '16px',
 					color: '#32325d',
-					'::placeholder': {
-						color: '#aab7c4'
-					}
+					'::placeholder': { color: '#aab7c4' }
 				},
-				invalid: {
-					color: '#fa755a',
-					iconColor: '#fa755a'
-				}
+				invalid: { color: '#fa755a', iconColor: '#fa755a' }
 			}
 		});
 
 		cardElement.mount('#card-element');
+
+		// Retrieve CSRF token from the form
+		const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
 		const form = document.getElementById('checkout-form');
 		const cardErrors = document.getElementById('card-errors');
@@ -247,6 +257,7 @@
 			submitButton.disabled = true;
 
 			try {
+				// Create the Stripe payment method
 				const result = await stripe.createPaymentMethod({
 					type: 'card',
 					card: cardElement,
@@ -257,7 +268,6 @@
 						address: {
 							line1: form.address.value,
 							city: form.city.value,
-							state: form.state ? form.state.value : "",
 							postal_code: form.postcode.value,
 							country: form.country.value
 						}
@@ -270,11 +280,12 @@
 					return;
 				}
 
+				// Send payment information to server
 				const response = await fetch("{% url 'checkout:checkout' %}", {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
-						'X-CSRFToken': '{{ csrf_token }}',
+						'X-CSRFToken': csrftoken  // Pass CSRF token in headers
 					},
 					body: JSON.stringify({
 						payment_method_id: result.paymentMethod.id,
@@ -308,10 +319,9 @@
 			}
 		});
 	});
+</script>
 
-</scrip >
 
+{% endblock %}
 
-		{% endblock %}
-
-	{% endblock %}
+{% endblock %}
