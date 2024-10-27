@@ -1,26 +1,37 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Contact Us{% endblock %}
 
 {% block content %}
-<div class="container m-5 justify-content-center">
-  <h1 class="text-center mb-4">Contact Us</h1>
-  <p class="text-center mb-5">If you have any questions, feel free to reach out to us via the contact form below or at our email address.</p>
-  
-  <form>
-    <div class="form-group">
-      <label for="name">Name:</label>
-      <input type="text" class="form-control" id="name" placeholder="Enter your name">
-    </div>
-    <div class="form-group">
-      <label for="email">Email:</label>
-      <input type="email" class="form-control" id="email" placeholder="Enter your email">
-    </div>
-    <div class="form-group">
-      <label for="message">Message:</label>
-      <textarea class="form-control" id="message" rows="4" placeholder="Enter your message"></textarea>
-    </div>
-    <button type="submit" class="btn btn-primary btn-block mt-3 w-25 text-center">Send</button>
-  </form>
+
+<div class="container m-5 ">
+  <div class="row align-items-center " >
+  <div class="col-md-6 ps-5">
+    <h1 class="text-center mb-4">Contact Us</h1>
+    <p class="text-center mb-5">If you have any questions, feel free to reach out to us via the contact form below or at our email address.</p>
+    
+    <form>
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" class="form-control" id="name" placeholder="Enter your name">
+      </div>
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" class="form-control" id="email" placeholder="Enter your email">
+      </div>
+      <div class="form-group">
+        <label for="message">Message:</label>
+        <textarea class="form-control" id="message" rows="4" placeholder="Enter your message"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block mt-3 w-25 text-center">Send</button>
+    </form>
+  </div>
+      <div class="col-md-6 overflow-hidden banner">
+          <img src="{% static 'images/contact.webp' %}" class="img-fluid rounded-image" alt="art images">
+      </div>
+  </div>
 </div>
+
+
 {% endblock %}
