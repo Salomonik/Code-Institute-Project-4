@@ -51,12 +51,8 @@ def logout_view(request):
 @login_required
 def profile(request):
     orders = Order.objects.filter(user=request.user).order_by('-created_at')
-    
-    for order in orders:
-        for item in order.orderitem_set.all():
-            item.total_price = item.product.price * item.quantity
-    
     return render(request, 'accounts/profile.html', {
         'orders': orders
     })
+
 
