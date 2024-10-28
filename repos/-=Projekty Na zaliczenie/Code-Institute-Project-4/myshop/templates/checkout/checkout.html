@@ -87,20 +87,21 @@
                     </li>
                     {% endfor %}
                 </ul>
-                <ul class="list-group mb-3">
-                    <li class="list-group-item d-flex justify-content-between">
-                        <span>Subtotal</span>
-                        <strong>£{{ total }}</strong>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between">
-                        <span>Shipping</span>
-                        <strong id="shipping-cost">£0.00</strong>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between">
-                        <span>Total</span>
-                        <strong id="total-amount">£{{ total }}</strong>
-                    </li>
-                </ul>
+				<ul class="list-group mb-3">
+					<li class="list-group-item d-flex justify-content-between">
+						<span>Subtotal</span>
+						<strong>£{{ total|floatformat:2 }}</strong>
+					</li>
+					<li class="list-group-item d-flex justify-content-between">
+						<span>Shipping</span>
+						<strong id="shipping-cost">£0.00</strong> <!-- Initializes with zero -->
+					</li>
+					<li class="list-group-item d-flex justify-content-between">
+						<span>Total</span>
+						<strong id="total-amount">£{{ total|floatformat:2 }}</strong>
+					</li>
+				</ul>
+				
             </div>
         </div>
     </div>
@@ -109,28 +110,33 @@
 
 {% block extra_js %}
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const countrySelect = document.getElementById("country");
-        const shippingCostElement = document.getElementById("shipping-cost");
-        const totalAmountElement = document.getElementById("total-amount");
-        const subtotal = parseFloat("{{ total }}");
+ document.addEventListener("DOMContentLoaded", function () {
+		const countrySelect = document.getElementById("country");
+		const shippingCostElement = document.getElementById("shipping-cost");
+		const totalAmountElement = document.getElementById("total-amount");
+		let subtotal = parseFloat("{{ total }}");  // Parse subtotal from Django context
 
-        function updateShippingCost() {
-            let shippingCost = 0;
-            if (countrySelect.value === "PL") {
-                shippingCost = 5;
-            }
+		// Function to update the shipping cost and total amount
+		function updateShippingCost() {
+			let shippingCost = 0;
 
-            // Update the displayed shipping cost and total
-            shippingCostElement.textContent = `£${shippingCost.toFixed(2)}`;
-            const calculatedTotal = subtotal + shippingCost;
-            totalAmountElement.textContent = `£${calculatedTotal.toFixed(2)}`;
-        }
+			// Set shipping cost based on country
+			if (countrySelect.value === "PL") {
+				shippingCost = 5.00; // Shipping cost for Poland
+			}
 
-        // Initialize the shipping cost and add event listener for changes
-        updateShippingCost();
-        countrySelect.addEventListener("change", updateShippingCost);
-    });
+			// Update the displayed shipping cost and total amount
+			shippingCostElement.textContent = `£${shippingCost.toFixed(2)}`;
+			const totalWithShipping = subtotal + shippingCost;
+			totalAmountElement.textContent = `£${totalWithShipping.toFixed(2)}`;
+		}
+
+		// Initialize the shipping cost and total on page load
+		updateShippingCost();
+
+		// Add event listener to update cost when country selection changes
+		countrySelect.addEventListener("change", updateShippingCost);
+	});
 </script>
 
 <!-- Stripe Integration -->
