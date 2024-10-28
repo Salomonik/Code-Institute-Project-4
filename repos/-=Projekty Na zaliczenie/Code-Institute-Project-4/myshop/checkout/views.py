@@ -76,6 +76,34 @@ def checkout(request):
                 customer_email=request.user.email
             )
 
+                # Prepare order details for email
+            order_items = OrderItem.objects.filter(order=order)
+            items_description = "\n".join([
+                    f"{item.product.name} (Quantity: {item.quantity}) - £{item.product.price * item.quantity}"
+                    for item in order_items
+                ])
+                
+                # Create email message with shipping details
+            email_message = (
+                    f"Thank you for your order!\n\n"
+                    f"Your order number is #{order.id}.\n\n"
+                    f"Order details:\n"
+                    f"{items_description}\n\n"
+                    f"Shipping Cost: £{shipping_cost:.2f}\n"
+                    f"Total Amount (including shipping): £{total_with_shipping:.2f}\n\n"
+                    f"We hope you enjoy your purchase!"
+                )
+
+                # Send confirmation email with order details
+            send_mail(
+                    subject=f'Order Confirmation - Order #{order.id}',
+                    message=email_message,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[request.user.email],
+                    fail_silently=False,
+                )
+
+
             return JsonResponse({'id': session.id})
 
     # Render checkout page for GET requests
