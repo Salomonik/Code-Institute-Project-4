@@ -1,2 +1,4 @@
 # Sensitive environment variables
 .env
+*.pyc
+__pycache__/
