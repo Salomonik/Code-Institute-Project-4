@@ -17,7 +17,7 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env.bool('DEBUG', default=False)
 
 
-ALLOWED_HOSTS = ['twoja-domena.herokuapp.com', 'localhost', '127.0.0.1', '.herokuapp.com']
+ALLOWED_HOSTS = ['https://milestone-project-4-jp-01c67f637dac.herokuapp.com/', 'localhost', '127.0.0.1', '.herokuapp.com']
 
 
 # Aplikacje
