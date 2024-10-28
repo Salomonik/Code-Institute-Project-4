@@ -6,26 +6,33 @@
 <div class="container">
     
 
-    <!-- Filtering by category -->
-    <div class="filter-options mb-4">
-        <div class="d-flex justify-content-center flex-wrap gap-2">
+    <div class="container mt-4">
+        <!-- Filter by Category Section -->
+        <div class="filter-options mb-4">
             <h5 class="text-center mb-3">Filter by Category:</h5>
-            <a href="?" class="btn btn-outline-secondary">All Categories</a>
-            {% for category in categories %}
-            <a href="?category={{ category.slug }}" class="btn btn-outline-secondary">{{ category.name }}</a>
-            {% endfor %}
+            <div class="d-flex justify-content-center flex-wrap gap-2">
+                <!-- All Categories Button -->
+                <a href="?" class="btn btn-outline-secondary btn-sm">All Categories</a>
+                <!-- Loop through categories for filter buttons -->
+                {% for category in categories %}
+                    <a href="?category={{ category.slug }}" class="btn btn-outline-secondary btn-sm">{{ category.name }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    
+        <!-- Sorting Options Section -->
+        <div class="sort-options mb-4">
+            <h5 class="text-center mb-3">Sort by:</h5>
+            <div class="d-flex justify-content-center flex-wrap gap-2">
+                <!-- Sorting Buttons -->
+                <a href="?sort=name" class="btn btn-outline-secondary btn-sm">Name</a>
+                <a href="?sort=price" class="btn btn-outline-secondary btn-sm">Price (Low to High)</a>
+                <a href="?sort=price_desc" class="btn btn-outline-secondary btn-sm">Price (High to Low)</a>
+                <a href="?sort=date" class="btn btn-outline-secondary btn-sm">Newest</a>
+            </div>
         </div>
     </div>
-
-
-    <!-- Sorting options -->
-    <div class="sort-options mb-4 text-center">
-        <label class="form-label">Sort by:</label>
-        <a href="?sort=name" class="btn btn-outline-secondary btn-sm">Name</a>
-        <a href="?sort=price" class="btn btn-outline-secondary btn-sm">Price (Low to High)</a>
-        <a href="?sort=price_desc" class="btn btn-outline-secondary btn-sm">Price (High to Low)</a>
-        <a href="?sort=date" class="btn btn-outline-secondary btn-sm">Newest</a>
-    </div>
+    
 
     <!-- Product Grid -->
     <div class="row">
