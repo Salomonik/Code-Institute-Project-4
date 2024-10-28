@@ -66,12 +66,12 @@ def contact_view(request):
     return render(request, 'contact.html', {'form': form})
 
 def search_products(request):
-    query = request.GET.get('q')  # Get the query from the search bar
+    query = request.GET.get('q')  # query from the search bar
     products = []
 
     if query:
-        # Filter products based on the query (adjust fields as needed)
-        products = Product.objects.filter(name__icontains=query)  # Searching by product name
+        # Filter products based on the query
+        products = Product.objects.filter(name__icontains=query)
 
     return render(request, 'search_results.html', {'query': query, 'products': products})
 

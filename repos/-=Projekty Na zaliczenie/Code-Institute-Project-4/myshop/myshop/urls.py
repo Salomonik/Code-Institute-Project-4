@@ -15,7 +15,7 @@ urlpatterns = [
     path('accounts/', include('accounts.urls', namespace='accounts')),
     path('cart/', include('cart.urls', namespace='cart')),
     path('checkout/', include('checkout.urls', namespace='checkout')),
-    
+    path('search/', views.search_products, name='search_products'),   
 
 ]
 
