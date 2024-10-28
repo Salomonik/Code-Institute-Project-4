@@ -99,13 +99,13 @@
 						<!-- User Authentication -->
 						<div class="nav-item">
 							{% if not user.is_authenticated %}
-							<a class="btn" href="#" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+							<a class="btn" id="profile-button" href="#" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
 								aria-controls="offcanvasRight">
 								<i class="fa-solid fa-user"></i>
 							</a>
 							{% else %}
 							<div class="dropdown">
-								<a class="btn" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
+								<a class="btn btn-custom" id="profile-button" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
 									aria-expanded="false">
 									<i class="fa-solid fa-user"></i>
 								</a>
@@ -134,16 +134,6 @@
 							</button>
 						</div>
 					</div>
-
-
-
-
-
-
-
-
-
-
 				</div>
 			</div>
 		</nav>

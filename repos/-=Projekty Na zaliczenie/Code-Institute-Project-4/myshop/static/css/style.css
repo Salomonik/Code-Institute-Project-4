@@ -175,7 +175,7 @@
 
 /* Cart Button */
 
-
+#profile-button,
 #cart-button:hover,
 #profile-button:hover {
     background: var(--primary-color);

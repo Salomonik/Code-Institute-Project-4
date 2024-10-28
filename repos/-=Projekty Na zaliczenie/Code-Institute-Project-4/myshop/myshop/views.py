@@ -10,6 +10,7 @@ from django.contrib.auth.backends import ModelBackend
 from .forms import ContactForm
 from django.core.mail import send_mail
 from django.conf import settings
+from products.models import Product
 
 # Home page view
 def home(request):
@@ -63,4 +64,14 @@ def contact_view(request):
 
     print("Rendering contact.html template with form.")
     return render(request, 'contact.html', {'form': form})
+
+def search_products(request):
+    query = request.GET.get('q')  # Get the query from the search bar
+    products = []
+
+    if query:
+        # Filter products based on the query (adjust fields as needed)
+        products = Product.objects.filter(name__icontains=query)  # Searching by product name
+
+    return render(request, 'search_results.html', {'query': query, 'products': products})
 
