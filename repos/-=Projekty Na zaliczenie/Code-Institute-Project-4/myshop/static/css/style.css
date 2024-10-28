@@ -182,7 +182,7 @@
 
 /* Cart Button */
 
-#profile-button,
+
 #cart-button:hover,
 #profile-button:hover {
     background: var(--primary-color);
@@ -976,6 +976,22 @@ input[type="number"] {
 
 
 /* home page */
+
+button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    color: #fff;
+    background-color: var(--accent-color);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: darken(var(--accent-color), 10%);
+}
+
 
 .btn-custom {
     color: #ff5a33;
