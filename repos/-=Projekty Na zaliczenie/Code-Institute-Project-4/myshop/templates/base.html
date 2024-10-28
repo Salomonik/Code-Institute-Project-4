@@ -309,8 +309,8 @@
 
 				<!-- Information Links Section -->
 				<div class="col-md-6">
-					<h5 class="mb-4 fw-bold text-end" style="color: #7d7d7d ;">Information</h5>
-					<ul class="list-unstyled text-end">
+					<h5 class="mb-4 fw-bold text-start" style="color: #7d7d7d ;">Information</h5>
+					<ul class="list-unstyled text-start">
 						<li><a href="{% url 'contact' %}" class="text-muted text-decoration-none">Contact Us</a></li>
 						<li><a href="{% url 'about' %}" class="text-muted text-decoration-none">About Us</a></li>
 					</ul>
@@ -502,7 +502,7 @@
 
 
 
-		// Główne elementy DOM
+		// DOM elements
 		const cartButton = document.getElementById('cart-button');
 		const cartOffCanvas = document.getElementById('cart-off-canvas');
 		const cartOverlay = document.getElementById('cart-overlay');
@@ -514,20 +514,19 @@
 
 		fetchCartDataOnPageLoad();
 
-		// Funkcje pomocnicze
 		function formatPrice(price) {
-			return `$${parseFloat(price).toFixed(2)}`;
+			return `£${parseFloat(price).toFixed(2)}`;
 		}
 
-		// Otwieranie i zamykanie koszyka
+		// open close cart
 		function openCart() {
 			cartOffCanvas.classList.add('show');
 			cartOverlay.style.display = 'block';
 			document.body.style.overflow = 'hidden';
-			updateCart(); // Dynamicznie aktualizujemy zawartość koszyka
+			updateCart();
 		}
 
-		// Funkcja do zamykania koszyka
+		// Function to close cart
 		function closeCart() {
 			cartOffCanvas.classList.remove('show');
 			cartOverlay.style.display = 'none';
@@ -539,13 +538,15 @@
 			cartTotalItemsElement.textContent = totalItems;  // Aktualizuje wyświetlaną liczbę produktów
 		}
 
+
+
 		// Function to fetch cart data when the page loads (added for initial load update)
 		async function fetchCartDataOnPageLoad() {
 			try {
 				const response = await fetch('/cart/get-items/'); // Fetch the current cart items
 				const data = await response.json();
 
-				// NEW: Calculate the total number of items in the cart and update the display
+				// Calculate the total number of items in the cart and update the display
 				const totalItems = data.items.reduce((total, item) => total + item.quantity, 0);
 				updateCartTotalItems(totalItems);  // Update the number of items in the cart button
 			} catch (error) {
@@ -553,41 +554,6 @@
 			}
 		}
 
-		// // Funkcja renderująca elementy koszyka
-		// function renderCartItems(items) {
-		// 	const cartItemsContainer = document.getElementById('cart-items-container');
-		// 	cartItemsContainer.innerHTML = '';  // Wyczyść zawartość przed dodaniem nowych elementów
-
-		// 	items.forEach(item => {
-		// 		const itemElement = document.createElement('div');
-		// 		itemElement.classList.add('cart-item');
-		// 		itemElement.innerHTML = `
-		//     <div class="cart-item-details">
-		//         <h4>${item.name}</h4>
-		//         <div class="price-quantity">
-		//             <span class="price">$${item.price}</span>
-		//             <div class="quantity-controls">
-		//                 <input type="number" class="quantity-input" value="${item.quantity}" min="1" data-product-id="${item.product_id}">
-		//             </div>
-		//         </div>
-		//         <span class="subtotal">Subtotal: $${item.total}</span>
-		//     </div>
-		//     <button class="remove-item" data-product-id="${item.product_id}">&times;</button>
-		// `;
-
-		// 		cartItemsContainer.appendChild(itemElement);
-
-		// 		// Dodaj event listener do przycisku usuwania
-		// 		itemElement.querySelector('.remove-item').addEventListener('click', () => {
-		// 			removeFromCart(item.product_id);
-		// 		});
-
-		// 		// Dodaj event listener do zmiany ilości
-		// 		itemElement.querySelector('.quantity-input').addEventListener('change', (e) => {
-		// 			updateCartQuantity(item.product_id, e.target.value);
-		// 		});
-		// 	});
-		// }
 
 		// Debounce function to prevent rapid firing of updates while the user is typing
 		function debounce(func, delay) {
@@ -635,7 +601,7 @@
                     <input type="number" class="quantity-input" value="${item.quantity}" min="1" data-product-id="${item.product_id}">
                     <button class="increase-quantity" data-product-id="{{ item.product_id }}" data-stock="{{ item.stock }}">+</button>
                 </div></div>
-                <p class="subtotal">Subtotal: $${(item.price * item.quantity).toFixed(2)}</p>
+                <p class="subtotal">Subtotal: £${(item.price * item.quantity).toFixed(2)}</p>
             </div>
             <button class="remove-item" data-product-id="${item.product_id}">
                 <i class="trash fa fa-trash"></i>
@@ -713,7 +679,7 @@
 				const response = await fetch(`/cart/remove/${productId}/`, {
 					method: 'POST',
 					headers: {
-						'X-CSRFToken': getCsrfToken(),  // Make sure CSRF token is included
+						'X-CSRFToken': getCsrfToken(),
 						'Content-Type': 'application/json'
 					}
 				});
@@ -728,7 +694,7 @@
 				console.log(`Product ID ${productId} removed successfully:`, data);
 
 				showToast('Item removed from cart');
-				await updateCart();  // Refresh the cart after removing the item
+				await updateCart();  // Refresh cart
 			} catch (error) {
 				console.error('Error removing from cart:', error);
 				showToast('Error removing item from cart', 'error');
@@ -737,7 +703,7 @@
 
 
 
-		// Function to update and re-render the cart (ensure it properly updates the quantity)
+
 		// Function to update and re-render the cart (ensure it properly updates the quantity)
 		async function updateCart() {
 			try {
@@ -790,7 +756,7 @@
                             </div>
 
                             <!-- Subtotal -->
-                            <p class="subtotal">Subtotal: $${(item.price * item.quantity).toFixed(2)}</p>
+                            <p class="subtotal">Subtotal: £${(item.price * item.quantity).toFixed(2)}</p>
                         </div>
                     </div>
                 `;
@@ -845,7 +811,7 @@
 					});
 
 					// Update the subtotal with the new total from the server response
-					cartSubtotal.textContent = `Subtotal: $${data.total}`;
+					cartSubtotal.textContent = `Subtotal: £${data.total}`;
 					const totalQuantity = data.items.reduce((sum, item) => sum + item.quantity, 0); // Calculate total quantity
 					document.getElementById('cart-total-items').textContent = totalQuantity;  // Update cart icon
 				}
@@ -893,7 +859,7 @@
 		}
 
 
-		// Dodawanie produktu do koszyka
+		// add to cart
 		async function addToCart(productId, quantity = 1, stock = 0) {
 			if (quantity > stock) {
 				showToast(`Only ${stock} items available in stock`, 'error');
@@ -914,7 +880,7 @@
 					const data = await response.json();
 					showToast('Product added to cart successfully!');
 					await updateCart();
-					openCart(); // Otwórz koszyk po dodaniu produktu
+					openCart();
 				} else {
 					const errorData = await response.json();
 					showToast(errorData.message, 'error');
@@ -925,18 +891,19 @@
 			}
 		}
 
-		// Dodanie obsługi walidacji dla przycisku "Add to Cart"
+		// validation for "Add to Cart"
 		document.querySelectorAll('.add-to-cart').forEach(button => {
 			button.addEventListener('click', (e) => {
 				const productId = e.target.dataset.productId;
-				const stock = e.target.dataset.stock; // Zdobądź ilość dostępnego stocku
-				const quantity = 1; // Przykład, możesz dynamicznie ustawić ilość z pola
+				const stock = e.target.dataset.stock;
+				const quantity = 1;
 				addToCart(productId, quantity, stock);
 			});
 		});
 
 
-		// Funkcja do wyświetlania toastów
+
+		// Function to show toast
 		function showToast(message, type = 'success') {
 			const toast = new bootstrap.Toast(document.getElementById('successToast'));
 			const toastBody = document.querySelector('.toast-body');
@@ -949,7 +916,7 @@
 		closeCartBtn.addEventListener('click', closeCart);
 		cartOverlay.addEventListener('click', closeCart);
 
-		// Inicjalizacja
+		// Init
 		document.addEventListener('DOMContentLoaded', () => {
 			// Dodaj obsługę kliknięcia dla wszystkich przycisków "Add to Cart"
 			document.querySelectorAll('.add-to-cart').forEach(button => {
@@ -1028,9 +995,6 @@
 			});
 		});
 
-
-
-		// Function to dynamically update the quantity of an item in the cart
 		// Function to dynamically update the quantity of an item in the cart
 		async function updateCartQuantity(productId, newQuantity, stock) {
 			// Ensure newQuantity is valid
@@ -1077,24 +1041,61 @@
 			}
 		}
 
-		// Funkcja do aktualizacji subtotalu
+		// Function to update subtotal
 		function updateSubtotal(totalPrice) {
 			const subtotalElement = document.querySelector('#cart-subtotal span:last-child');
 
-			console.log(`Updating subtotal to: $${totalPrice}`);
-			subtotalElement.textContent = `£${parseFloat(totalPrice).toFixed(2)}`;  // Formatowanie do 2 miejsc po przecinku
+			console.log(`Updating subtotal to: £${totalPrice}`);
+			subtotalElement.textContent = `£${parseFloat(totalPrice).toFixed(2)}`;
 		}
 
-		// Funkcja pobierająca token CSRF
+		// Function to get token
 		function getCsrfToken() {
 			return document.querySelector('[name=csrfmiddlewaretoken]').value;
 		}
 
-		// Debugowanie otwierania koszyka
+		// Debug
 		document.getElementById('cart-button').addEventListener('click', function () {
 			console.log('Cart button clicked, opening cart...');
 			openCart();
 		});
+
+
+		document.addEventListener('DOMContentLoaded', function () {
+    const checkoutBtn = document.querySelector('.btn-checkout'); // Upewnij się, że `checkoutBtn` odpowiada Twojemu przyciskowi Check Out.
+
+    if (checkoutBtn) { // Sprawdź, czy przycisk istnieje
+        checkoutBtn.addEventListener('click', async function (e) {
+            e.preventDefault();  // Zapobiega domyślnemu działaniu
+            console.log('Checkout button clicked. Starting to check cart contents.'); // Debug log
+
+            try {
+                // Sprawdź, czy są produkty w koszyku
+                const response = await fetch('/cart/get-items/');
+                console.log('Response from server received:', response); // Debug log
+                const data = await response.json();
+
+                console.log('Cart data:', data); // Debug log - wyświetlenie zawartości koszyka
+
+                if (data.items && data.items.length === 0) {
+                    // Wyświetl komunikat, jeśli koszyk jest pusty
+                    console.log('Cart is empty. Showing toast notification.'); // Debug log
+                    showToast('Your cart is empty. Add items before proceeding to checkout.', 'error');
+                } else {
+                    // Przejdź do checkout, jeśli koszyk zawiera produkty
+                    console.log('Cart has items. Redirecting to checkout page.'); // Debug log
+                    window.location.href = '/checkout/';
+                }
+            } catch (error) {
+                console.error('Error checking cart contents:', error); // Detailed error log
+                showToast('An error occurred. Please try again.', 'error');
+            }
+        });
+    } else {
+        console.error('Checkout button not found. Ensure it exists in the HTML with class="btn-checkout".'); // Debug log
+    }
+});
+
 
 
 
