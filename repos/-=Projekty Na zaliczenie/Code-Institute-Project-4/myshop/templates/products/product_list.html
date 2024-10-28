@@ -30,12 +30,13 @@
     <!-- Product Grid -->
     <div class="row">
         {% for product in products %}
+        {% if category.name != "Uncategorized" %}
         <div class="col-md-4 mb-5 d-flex justify-content-center">
-            <div class="card text-center border-0" style="width: 18rem;">
+            <div class="card text-center border-bottom-0" style="width: 18rem;">
                 <!-- Link na zdjęciu -->
                 <a href="{% url 'products:product_detail' product.id %}">
                     {% if product.image %}
-                    <img src="{{ product.image.url }}" class="card-img-top rounded-4" alt="{{ product.name }}"
+                    <img src="{{ product.image.url }}" class="card-img-top rounded-1" alt="{{ product.name }}"
                         style="border-radius: 0;">
                     {% else %}
                     <img src="https://via.placeholder.com/200" class="card-img-top" alt="Placeholder Image"
@@ -43,12 +44,13 @@
                     {% endif %}
                 </a>
                 <div class="card-body">
-                    <h5 class="card-title mt-3">{{ product.name }}</h5>
+                    <h5 class="card-title mt-2">{{ product.name }}</h5>
                     <p class="card-text text-muted">{{ product.category }}</p>
                     <p class="card-text">£{{ product.price }}</p>
                 </div>
             </div>
         </div>
+        {% endif %}
         {% endfor %}
     </div>
 </div>

@@ -2,6 +2,9 @@ from django.shortcuts import render, get_object_or_404
 from .models import Product, Category
 
 # View to list all products on the main page
+from django.shortcuts import render, get_object_or_404
+from .models import Category, Product
+
 def product_list(request):
     sort_by = request.GET.get('sort', 'name')
     category_slug = request.GET.get('category')
@@ -13,6 +16,9 @@ def product_list(request):
     else:
         products = Product.objects.all()
 
+    # Exclude "Uncategorised" category in menu categories
+    categories = Category.objects.exclude(name="Uncategorized")
+
     # Apply sorting
     if sort_by == 'price':
         products = products.order_by('price')
@@ -23,8 +29,8 @@ def product_list(request):
     else:
         products = products.order_by('name')
 
-    categories = Category.objects.all()  # Get all categories for the filter menu
     return render(request, 'products/product_list.html', {'products': products, 'categories': categories})
+
 
 
 # View to display product details
