@@ -2,11 +2,10 @@
 
 {% block content %}
 <div class="container mt-5">
-	<h2>Your Profile</h2>
 	<h3>Your Orders</h3>
 
 	{% if orders %}
-	<div class="accordion" id="ordersAccordion">
+	<div class="accordion m-5" id="ordersAccordion">
 		{% for order in orders %}
 			<div class="accordion-item">
 				<h2 class="accordion-header" id="heading{{ order.id }}">
