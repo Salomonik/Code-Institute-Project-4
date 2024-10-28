@@ -5,296 +5,196 @@
 
 {% block content %}
 <div class="checkout-container container mt-5">
-	<div class="row">
-		<!-- Left side: Contact, Delivery, and Payment form -->
-		<div class="col-md-7">
-			<h2>Contact Information</h2>
-			<form method="POST" id="checkout-form">
-				{% csrf_token %}
+    <div class="row">
+        <!-- Left side: Contact, Delivery, and Payment form -->
+        <div class="col-md-7">
+            <h2>Contact Information</h2>
+            <form method="POST" id="checkout-form">
+                {% csrf_token %}
 
-				<!-- Contact Section -->
-				<div class="mb-3">
-					<label for="email" class="form-label">Email</label>
-					<input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
-				</div>
+                <!-- Contact Section -->
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
+                </div>
 
-				<!-- Delivery Section -->
-				<h3>Delivery</h3>
-				<div class="mb-3">
-					<label for="country" class="form-label">Country/Region</label>
-					<select class="form-select" id="country" name="country" required>
-						<option value="GB">United Kingdom</option>
-						<option value="PL">Poland</option>
-					</select>
+                <!-- Delivery Section -->
+                <h3>Delivery</h3>
+                <div class="mb-3">
+                    <label for="country" class="form-label">Country/Region</label>
+                    <select class="form-select" id="country" name="country" required>
+                        <option value="GB">United Kingdom</option>
+                        <option value="PL">Poland</option>
+                    </select>
+                </div>
 
-				</div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="first_name" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="first_name" name="first_name" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="last_name" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="last_name" name="last_name" required>
+                    </div>
+                </div>
 
-				<div class="row">
-					<div class="col-md-6 mb-3">
-						<label for="first_name" class="form-label">First Name</label>
-						<input type="text" class="form-control" id="first_name" name="first_name" required>
-					</div>
-					<div class="col-md-6 mb-3">
-						<label for="last_name" class="form-label">Last Name</label>
-						<input type="text" class="form-control" id="last_name" name="last_name" required>
-					</div>
-				</div>
+                <div class="mb-3">
+                    <label for="address" class="form-label">Address</label>
+                    <input type="text" class="form-control" id="address" name="address" placeholder="Street Address" required>
+                </div>
 
-				<div class="mb-3">
-					<label for="address" class="form-label">Address</label>
-					<input type="text" class="form-control" id="address" name="address" placeholder="Street Address"
-						required>
-				</div>
+                <div class="mb-3">
+                    <label for="city" class="form-label">City</label>
+                    <input type="text" class="form-control" id="city" name="city" required>
+                </div>
 
-				<div class="mb-3">
-					<label for="city" class="form-label">City</label>
-					<input type="text" class="form-control" id="city" name="city" required>
-				</div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="postcode" class="form-label">Postcode</label>
+                        <input type="text" class="form-control" id="postcode" name="postcode" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="phone" class="form-label">Phone</label>
+                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="Phone Number" required>
+                    </div>
+                </div>
 
-				<div class="row">
-					<div class="col-md-6 mb-3">
-						<label for="postcode" class="form-label">Postcode</label>
-						<input type="text" class="form-control" id="postcode" name="postcode" required>
-					</div>
-					<div class="col-md-6 mb-3">
-						<label for="phone" class="form-label">Phone</label>
-						<input type="tel" class="form-control" id="phone" name="phone" placeholder="Phone Number"
-							required>
-					</div>
-				</div>
+                <!-- Payment Section -->
+                <h3>Payment</h3>
+                <button type="submit" class="btn btn-primary">Payment</button>
 
-				<!-- Payment Section -->
-				<h3>Payment</h3>
+                <!-- Error Display -->
+                <div id="card-errors" role="alert" class="text-danger mt-2"></div>
+            </form>
+        </div>
 
-				<button type="submit" class="btn btn-primary">Payment</button>
-
-				<!-- Error Display -->
-				<div id="card-errors" role="alert" class="text-danger mt-2"></div>
-			</form>
-		</div>
-
-		<!-- Right side: Order Summary -->
-		<div class="col-md-5">
-			<h2>Order Summary</h2>
-			<div class="order-summary">
-				<ul class="list-group mb-3">
-					{% for item in cart_items %}
-					<li class="list-group-item d-flex justify-content-between lh-condensed">
-						<div class="order-item-img">
-							<img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="img-thumbnail"
-								style="width: 75px; height: 75px;">
-						</div>
-						<div class="order-item-details ms-3">
-							<h6 class="my-0">{{ item.product.name }}</h6>
-							<small class="text-muted">Quantity: {{ item.quantity }}</small>
-						</div>
-						<span class="text-muted">£{{ item.get_total_price }}</span>
-					</li>
-					{% endfor %}
-				</ul>
-				<ul class="list-group mb-3">
-					<li class="list-group-item d-flex justify-content-between">
-						<span>Subtotal</span>
-						<strong>£{{ total }}</strong>
-					</li>
-					<li class="list-group-item d-flex justify-content-between">
-						<span>Shipping</span>
-						<strong>Enter shipping address</strong>
-					</li>
-					<li class="list-group-item d-flex justify-content-between">
-						<span>Total</span>
-						<strong>£{{ total }}</strong>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</div>
+        <!-- Right side: Order Summary -->
+        <div class="col-md-5">
+            <h2>Order Summary</h2>
+            <div class="order-summary">
+                <ul class="list-group mb-3">
+                    {% for item in cart_items %}
+                    <li class="list-group-item d-flex justify-content-between lh-condensed">
+                        <div class="order-item-img">
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="img-thumbnail" style="width: 75px; height: 75px;">
+                        </div>
+                        <div class="order-item-details ms-3">
+                            <h6 class="my-0">{{ item.product.name }}</h6>
+                            <small class="text-muted">Quantity: {{ item.quantity }}</small>
+                        </div>
+                        <span class="text-muted">£{{ item.get_total_price }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <ul class="list-group mb-3">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Subtotal</span>
+                        <strong>£{{ total }}</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Shipping</span>
+                        <strong id="shipping-cost">£0.00</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Total</span>
+                        <strong id="total-amount">£{{ total }}</strong>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
 
 
 {% block extra_js %}
-<!-- Google Maps API -->
 <script>
-	function loadGoogleMapsScript() {
-		const script = document.createElement('script');
-		script.src = https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&libraries=places&callback=initAutocomplete;
-		script.async = true;
-		script.defer = true;
-		document.head.appendChild(script);
-	}
+    document.addEventListener("DOMContentLoaded", function () {
+        const countrySelect = document.getElementById("country");
+        const shippingCostElement = document.getElementById("shipping-cost");
+        const totalAmountElement = document.getElementById("total-amount");
+        const subtotal = parseFloat("{{ total }}");
 
-	document.addEventListener('DOMContentLoaded', loadGoogleMapsScript);
+        function updateShippingCost() {
+            let shippingCost = 0;
+            if (countrySelect.value === "PL") {
+                shippingCost = 5;
+            }
+
+            // Update the displayed shipping cost and total
+            shippingCostElement.textContent = `£${shippingCost.toFixed(2)}`;
+            const calculatedTotal = subtotal + shippingCost;
+            totalAmountElement.textContent = `£${calculatedTotal.toFixed(2)}`;
+        }
+
+        // Initialize the shipping cost and add event listener for changes
+        updateShippingCost();
+        countrySelect.addEventListener("change", updateShippingCost);
+    });
 </script>
-
-<script>
-	// Define initAutocomplete in the global scope
-	function initAutocomplete() {
-		const addressInput = document.getElementById('address');
-		if (!addressInput) return;
-
-		const autocomplete = new google.maps.places.Autocomplete(addressInput, {
-			types: ['address']
-		});
-
-		autocomplete.setFields(['address_component']);
-		autocomplete.addListener('place_changed', function () {
-			const place = autocomplete.getPlace();
-			if (!place.address_components) return;
-
-			// Clear previous values
-			document.getElementById('city').value = '';
-			document.getElementById('state').value = '';
-			document.getElementById('postcode').value = '';
-			document.getElementById('country').value = '';
-
-			// Fill in fields based on selected address
-			place.address_components.forEach(component => {
-				const componentType = component.types[0];
-				switch (componentType) {
-					case 'street_number':
-						const route = place.address_components.find(
-							comp => comp.types[0] === 'route'
-						);
-						if (route) {
-							addressInput.value = `${component.long_name} ${route.long_name}`;
-						}
-						break;
-					case 'locality':
-						document.getElementById('city').value = component.long_name;
-						break;
-					case 'administrative_area_level_1':
-						document.getElementById('state').value = component.long_name;
-						break;
-					case 'postal_code':
-						document.getElementById('postcode').value = component.long_name;
-						break;
-					case 'country':
-						const countrySelect = document.getElementById('country');
-						if (countrySelect) {
-							countrySelect.value = component.short_name;
-						}
-						break;
-				}
-			});
-		});
-	}
-
-	// Load Google Maps script
-	function loadGoogleMapsScript() {
-		const script = document.createElement('script');
-		script.src = `https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&libraries=places&callback=initAutocomplete`;
-		script.async = true;
-		script.defer = true;
-		document.head.appendChild(script);
-	}
-
-	// Call function to load the Google Maps script
-	document.addEventListener('DOMContentLoaded', loadGoogleMapsScript);
-</script>
-
-
-<script>
-	const response = await fetch("{% url 'checkout:checkout' %}", {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			'X-CSRFToken': '{{ csrf_token }}',
-		},
-		body: JSON.stringify({
-			payment_method_id: result.paymentMethod.id,
-			order_data: {
-				first_name: form.first_name.value,
-				last_name: form.last_name.value,
-				email: form.email.value,
-				phone: form.phone.value,
-				address: form.address.value,
-				city: form.city.value,
-				postcode: form.postcode.value,
-				country: form.country.value
-			}
-		})
-	});
-
-</script>
-
-
 
 <!-- Stripe Integration -->
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-	document.addEventListener("DOMContentLoaded", function () {
-		const stripe = Stripe('{{ stripe_pub_key }}');
+    document.addEventListener("DOMContentLoaded", function () {
+        const stripe = Stripe('{{ stripe_pub_key }}');
+        const form = document.getElementById('checkout-form');
+        const cardErrors = document.getElementById('card-errors');
 
-		// Retrieve CSRF token from the form
-		const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        form.addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const submitButton = form.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
 
-		const form = document.getElementById('checkout-form');
-		const cardErrors = document.getElementById('card-errors');
+            try {
+                const response = await fetch("{% url 'checkout:checkout' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        order_data: {
+                            first_name: form.first_name.value,
+                            last_name: form.last_name.value,
+                            email: form.email.value,
+                            phone: form.phone.value,
+                            address: form.address.value,
+                            city: form.city.value,
+                            postcode: form.postcode.value,
+                            country: form.country.value
+                        }
+                    })
+                });
 
-		form.addEventListener('submit', async function (event) {
-			event.preventDefault();
-			const submitButton = form.querySelector('button[type="submit"]');
-			submitButton.disabled = true;
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
 
-			try {
-				// Send order data to server
-				const response = await fetch("{% url 'checkout:checkout' %}", {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						'X-CSRFToken': csrftoken
-					},
-					body: JSON.stringify({
-						order_data: {
-							first_name: form.first_name.value,
-							last_name: form.last_name.value,
-							email: form.email.value,
-							phone: form.phone.value,
-							address: form.address.value,
-							city: form.city.value,
-							postcode: form.postcode.value,
-							country: form.country.value
-						}
-					})
-				});
+                const session = await response.json();
+                if (session.error) {
+                    throw new Error(session.error);
+                }
 
-				if (!response.ok) {
-					throw new Error('Network response was not ok');
-				}
-
-				const session = await response.json();
-				if (session.error) {
-					throw new Error(session.error);
-				}
-
-				// Redirect to Stripe Checkout using the session ID
-				const result = await stripe.redirectToCheckout({ sessionId: session.id });
-
-				if (result.error) {
-					cardErrors.textContent = result.error.message;
-				}
-
-			} catch (error) {
-				cardErrors.textContent = error.message;
-				submitButton.disabled = false;
-			}
-		});
-	});
+                const result = await stripe.redirectToCheckout({ sessionId: session.id });
+                if (result.error) {
+                    cardErrors.textContent = result.error.message;
+                }
+            } catch (error) {
+                cardErrors.textContent = error.message;
+                submitButton.disabled = false;
+            }
+        });
+    });
 </script>
-
 
 {% if show_login_prompt %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Otwórz panel offcanvas z logowaniem
+    document.addEventListener('DOMContentLoaded', function () {
         var offcanvasElement = new bootstrap.Offcanvas(document.getElementById('offcanvasRight'));
         offcanvasElement.show();
     });
 </script>
 {% endif %}
-
-
-
 {% endblock %}
-
 {% endblock %}

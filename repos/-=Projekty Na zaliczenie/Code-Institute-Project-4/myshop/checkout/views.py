@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.http import JsonResponse
 from django.conf import settings
-from django.views.decorators.csrf import csrf_exempt
 from .models import Order, OrderItem
 from cart.models import CartItem
 from .forms import CheckoutForm
@@ -13,7 +12,7 @@ import stripe
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
-@csrf_exempt  # For testing purposes, remove in production if CSRF protection is required
+
 def checkout(request):
     if not request.user.is_authenticated:
         # Przekaż zmienną do szablonu, aby wyświetlić panel logowania
@@ -28,6 +27,14 @@ def checkout(request):
     if not cart_items.exists():
         print("Error: Cart is empty")
         return JsonResponse({'error': 'Your cart is empty.'}, status=400)
+    
+    shipping_cost = 0
+    country = request.POST.get('country')  # Pobierz wybrany kraj z formularza
+
+    if country == 'PL':
+        shipping_cost = 5  # koszt wysyłki do Polski
+
+    total_with_shipping = total + shipping_cost  # suma zamówienia z kosztami wysyłki
 
     if request.method == 'POST':
         print("Processing POST request")  # Debugging POST method
@@ -88,7 +95,7 @@ def checkout(request):
                                     'order_id': order.id
                                 }
                             },
-                            'unit_amount': int(total * 100),
+                            'unit_amount': int(total_with_shipping * 100),
                         },
                         'quantity': 1,
                     }],
@@ -158,6 +165,7 @@ def checkout(request):
         'form': form,
         'cart_items': cart_items,
         'total': total,
+        'shipping_cost': shipping_cost,
         'stripe_pub_key': settings.STRIPE_PUBLISHABLE_KEY,
         'google_maps_api_key': settings.GOOGLE_MAPS_API_KEY,
     })
