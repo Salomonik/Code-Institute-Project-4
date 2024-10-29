@@ -8,7 +8,10 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>{% block title %}My Shop{% endblock %}</title>
+		<title>{% block title %}Welcome to Crafted Nature{% endblock %}</title>
+		<meta name="description" content="Shop for premium handcrafted products. Transform your space with our unique collection.">
+		<meta name="keywords" content="Handcraft, decor, art, paper, online store">
+		<meta name="author" content="Crafted Nature">
 
 		<!-- Stylesheets -->
 		<link rel="stylesheet" href="{% static 'css/style.css' %}" />
@@ -51,13 +54,52 @@
 					<img src="{% static 'images/logo2.webp' %}" alt="Logo" style="height: 40px;">
 				</a>
 
-				<!-- Right Side (Profile & Cart icons on mobile) -->
+
+
+
+
+
+
+
+
+			
+
+
+
+
+
+
+
+
+
+
+
+
+				<!-- Right Side (Profile & Cart icons on mobile)  TUTAJ-->
 				<div class="d-flex align-items-center order-3 d-lg-none">
 					<!-- Profile Icon -->
+					{% if not user.is_authenticated %}
 					<a class="btn" id="profile-button" href="#" data-bs-toggle="offcanvas"
 						data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
 						<i class="fa-solid fa-user"></i>
 					</a>
+					{% else %}
+					<div class="dropdown">
+						<button class="btn" id="profile-button" role="button" data-bs-toggle="dropdown"
+							aria-expanded="false">
+							<i class="fa-solid fa-user"></i>
+						</button>
+						<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+							<li><a class="dropdown-item" href="{% url 'accounts:profile' %}">Profile</a></li>
+							<li>
+								<form method="POST" action="{% url 'accounts:logout' %}" class="m-0">
+									{% csrf_token %}
+									<button type="submit" class="dropdown-item">Logout</button>
+								</form>
+							</li>
+						</ul>
+					</div>
+					{% endif %}
 
 					<!-- Cart Icon -->
 					<button id="cart-button" class="btn cart-button position-relative ms-2">
@@ -71,13 +113,12 @@
 
 				<!-- Center section (Desktop links, hidden on mobile) -->
 				<div class="collapse navbar-collapse d-none d-lg-flex" id="navbarNav">
-					<ul class="navbar-nav mx-auto">
+					<ul class="navbar-nav">
 						<!-- Products Link -->
 						<li class="nav-item">
 							<a class="nav-link" href="{% url 'products:product_list' %}">Products</a>
 						</li>
 
-						<!-- Categories Dropdown -->
 						<!-- Categories Dropdown -->
 						<li class="nav-item dropdown">
 							<a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button"
