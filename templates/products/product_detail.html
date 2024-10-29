@@ -3,7 +3,7 @@
 {% block title %}{{ product.name }}{% endblock %}
 
 {% block content %}
-<div class="container py-5">
+<div class="container py-5 ms-auto">
     <div class="row">
         <!-- Image on the left side -->
         <div class="col-md-6">
@@ -33,7 +33,7 @@
 
 
             <!-- Add to Cart buttons -->
-            <button class="add-to-cart btn btn-warning w-50 py-1 mb-1" data-product-id="{{ product.id }}"
+            <button class="add-to-cart btn btn-warning w-100 py-1 mb-1 rounded-pill" data-product-id="{{ product.id }}"
                 data-stock="{{ product.stock }}">
                 <i class="fas fa-shopping-cart"></i> Add to Cart
             </button>
