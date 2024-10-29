@@ -5,6 +5,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from checkout.models import Order, OrderItem
+from .forms import UserRegisterForm
 
 def login_view(request):
     if request.method == 'POST':
@@ -28,16 +29,18 @@ def login_view(request):
 
 def register_view(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = UserRegisterForm(request.POST)  # Użycie własnego formularza z jednym hasłem
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password'])  # Hasło ustawione za pomocą `set_password`
+            user.save()
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'success': True, 'redirect_url': '/'})
             return redirect('/')
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({'success': False, 'errors': form.errors})
     else:
-        form = UserCreationForm()
+        form = UserRegisterForm()
     return render(request, 'accounts/register.html', {'form': form})
 
 def logout_view(request):

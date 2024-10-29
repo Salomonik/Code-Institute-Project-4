@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% csrf_token %}
 
 {% block title %}Checkout{% endblock %}
 
@@ -143,14 +142,31 @@
 <script src="https://js.stripe.com/v3/"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        console.log("DOM fully loaded and parsed.");  // Debug: potwierdzenie załadowania DOM
+
         const stripe = Stripe('{{ stripe_pub_key }}');
         const form = document.getElementById('checkout-form');
         const cardErrors = document.getElementById('card-errors');
 
         form.addEventListener('submit', async function (event) {
             event.preventDefault();
+            console.log("Form submission started.");  // Debug: początek obsługi wysyłki formularza
+
             const submitButton = form.querySelector('button[type="submit"]');
             submitButton.disabled = true;
+
+            // Debug: wyświetlenie danych formularza przed wysyłką
+            const formData = {
+                first_name: form.first_name.value,
+                last_name: form.last_name.value,
+                email: form.email.value,
+                phone: form.phone.value,
+                address: form.address.value,
+                city: form.city.value,
+                postcode: form.postcode.value,
+                country: form.country.value
+            };
+            console.log("Form data being sent:", formData);
 
             try {
                 const response = await fetch("{% url 'checkout:checkout' %}", {
@@ -159,25 +175,16 @@
                         'Content-Type': 'application/json',
                         'X-CSRFToken': '{{ csrf_token }}'
                     },
-                    body: JSON.stringify({
-                        order_data: {
-                            first_name: form.first_name.value,
-                            last_name: form.last_name.value,
-                            email: form.email.value,
-                            phone: form.phone.value,
-                            address: form.address.value,
-                            city: form.city.value,
-                            postcode: form.postcode.value,
-                            country: form.country.value
-                        }
-                    })
+                    body: JSON.stringify({ order_data: formData })
                 });
 
+                console.log("Response status:", response.status);  // Debug: status odpowiedzi
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
 
                 const session = await response.json();
+                console.log("Stripe session data received:", session);  // Debug: dane sesji Stripe
                 if (session.error) {
                     throw new Error(session.error);
                 }
@@ -185,14 +192,19 @@
                 const result = await stripe.redirectToCheckout({ sessionId: session.id });
                 if (result.error) {
                     cardErrors.textContent = result.error.message;
+                    console.error("Stripe redirection error:", result.error);  // Debug: błąd przekierowania Stripe
                 }
             } catch (error) {
+                console.error("Error during checkout process:", error);  // Debug: błędy podczas przetwarzania
                 cardErrors.textContent = error.message;
                 submitButton.disabled = false;
+            } finally {
+                console.log("Form submission process ended.");  // Debug: zakończenie przetwarzania formularza
             }
         });
     });
 </script>
+
 
 {% if show_login_prompt %}
 <script>

@@ -17,7 +17,7 @@ SECRET_KEY = env('SECRET_KEY')
 DEBUG = env.bool('DEBUG', default=False)
 
 
-ALLOWED_HOSTS = ['https://milestone-project-4-jp-01c67f637dac.herokuapp.com/', 'localhost', '127.0.0.1', '.herokuapp.com']
+ALLOWED_HOSTS = ['milestone-project-4-jp-01c67f637dac.herokuapp.com', 'localhost', '127.0.0.1', '.herokuapp.com']
 
 
 # Aplikacje
@@ -78,6 +78,7 @@ DATABASES = {
         default=env('DATABASE_URL')
     )
 }
+# ACCOUNT_SIGNUP_PASSWORD_VERIFICATION = False
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -134,3 +135,7 @@ LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/checkout/'
 
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+
+
+
+

@@ -4,21 +4,22 @@
 <html lang="en">
 
 <head>
+
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>{% block title %}My Shop{% endblock %}</title>
-		
+
 		<!-- Stylesheets -->
 		<link rel="stylesheet" href="{% static 'css/style.css' %}" />
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-		
+
 		<!-- Favicon -->
 		<link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}" />
 	</head>
-	
+
 </head>
 
 <body>
@@ -32,61 +33,65 @@
 	</div>
 	{% endif %}
 	<header>
-		<!-- Navbar -->
-		<nav class="navbar navbar-expand-lg navbar-light">
-			<div class="container">
-				<!-- Logo -->
-				<a class="navbar-brand" href="{% url 'home' %}">
-					<img src="{% static 'images/logo.webp' %}" alt="Logo" width="120">
-				</a>
 
-				<!-- Toggle button for mobile view -->
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-					aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+		<!-- Navbar for Desktop and Mobile -->
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<div class="container-fluid">
+				<!-- Mobile: Hamburger Menu Icon (left side) -->
+				<button class="navbar-toggler d-lg-none order-1" type="button" data-bs-toggle="offcanvas"
+					data-bs-target="#offcanvasNav" aria-controls="offcanvasNav" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
 				</button>
-
-				<!-- Navbar links -->
-				<div class="collapse navbar-collapse justify-content-between" id="navbarNav">
-					<ul class="navbar-nav list-unstyled"> <!-- Dodano klasę list-unstyled -->
-						<!-- Home Link -->
+		
+				<!-- Logo (centered on mobile, left-aligned on desktop) -->
+				<a class="navbar-brand mx-auto d-lg-none order-2" href="{% url 'home' %}">
+					<img src="{% static 'images/logo.webp' %}" alt="Logo" style="height: 40px;">
+				</a>
+				<a class="navbar-brand d-none d-lg-block" href="{% url 'home' %}">
+					<img src="{% static 'images/logo.webp' %}" alt="Logo" style="height: 40px;">
+				</a>
+		
+				<!-- Right Side (Profile & Cart icons on mobile) -->
+				<div class="d-flex align-items-center order-3 d-lg-none">
+					<!-- Profile Icon -->
+					<a class="btn" id="profile-button" href="#" data-bs-toggle="offcanvas"
+					   data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+						<i class="fa-solid fa-user"></i>
+					</a>
+		
+					<!-- Cart Icon -->
+					<button id="cart-button" class="btn cart-button position-relative ms-2">
+						<i class="fa-solid fa-cart-shopping"></i>
+						<span id="cart-total-items" class="position-absolute top-0 start-100 translate-middle badge rounded-pill">
+							0
+						</span>
+					</button>
+				</div>
+		
+				<!-- Center section (Desktop links, hidden on mobile) -->
+				<div class="collapse navbar-collapse d-none d-lg-flex" id="navbarNav">
+					<ul class="navbar-nav mx-auto">
+						<!-- Products Link -->
 						<li class="nav-item">
 							<a class="nav-link" href="{% url 'products:product_list' %}">Products</a>
 						</li>
-
-						<!-- Kategoria z obrazem po lewej -->
+		
+						<!-- Categories Dropdown -->
 						<li class="nav-item dropdown">
 							<a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button"
-								data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							   data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								Categories
 							</a>
-							<div class="dropdown-menu p-3" aria-labelledby="categoriesDropdown">
-								<div class="d-flex">
-									<!-- Obrazek po lewej stronie -->
-									<div class="me-3">
-										<img src="{% static 'images/icon.webp' %}" alt="Icon" class="img-fluid"
-											style="min-width: 200px; height: 200px; object-fit: cover;">
-									</div>
-									<!-- Lista nazw kategorii -->
-									<div>
-										{% for category in categories %}
-										{% if category.name != "Uncategorised" %}
-										<a class="dropdown-item"
-											href="{% url 'products:category_products' category.slug %}">
-											{{ category.name }}
-										</a>
-										{% endif %}
-										{% endfor %}
-									</div>
-								</div>
+							<div class="dropdown-menu" aria-labelledby="categoriesDropdown">
+								{% for category in categories %}
+								{% if category.name != "Uncategorised" %}
+								<a class="dropdown-item" href="{% url 'products:category_products' category.slug %}">
+									{{ category.name }}
+								</a>
+								{% endif %}
+								{% endfor %}
 							</div>
 						</li>
-
-
-
-
-
-						<!-- About Us and Contact Links -->
 						<li class="nav-item">
 							<a class="nav-link" href="{% url 'about' %}">About Us</a>
 						</li>
@@ -94,71 +99,96 @@
 							<a class="nav-link" href="{% url 'contact' %}">Contact</a>
 						</li>
 					</ul>
-
-
-
-
-
-
-
-
-					<div class="d-flex align-items-center gap-3">
-						<!-- Search form -->
-						<form class="flex-grow-1" role="search" action="{% url 'search_products' %}" method="get">
-							<div class="position-relative">
-								<input class="form-control rounded-pill border-3" type="search" name="q"
-									placeholder="Search for products" aria-label="Search">
-								<button class="btn position-absolute top-50 end-0 translate-middle-y me-2"
-									type="submit">
-									<i class="fas fa-search text-muted"></i>
-								</button>
-							</div>
-						</form>
-
-
-						<!-- User Authentication -->
-						<div class="nav-item position-relative">
-							{% if not user.is_authenticated %}
-							<a class="btn" id="profile-button" href="#" data-bs-toggle="offcanvas"
-								data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
-								<i class="fa-solid fa-user"></i>
-							</a>
-							{% else %}
-							<div class="dropdown">
-								<button class="btn" id="profile-button" role="button" data-bs-toggle="dropdown"
-									aria-expanded="false">
-									<i class="fa-solid fa-user"></i>
-								</button>
-
-								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-									<li><a class="dropdown-item" href="{% url 'accounts:profile' %}">Profile</a></li>
-									<li>
-										<form method="POST" action="{% url 'accounts:logout' %}" class="m-0">
-											{% csrf_token %}
-											<button type="submit" class="dropdown-item">Logout</button>
-										</form>
-									</li>
-								</ul>
-							</div>
-							{% endif %}
-						</div>
-
-
-						<!-- Cart -->
-						<div class="nav-item position-relative">
-							<button id="cart-button" class="btn cart-button">
-								<i class="fa-solid fa-cart-shopping"></i>
-								<span id="cart-total-items"
-									class="position-absolute top-0 start-100 translate-middle badge rounded-pill">
-									0
-								</span>
+				</div>
+		
+				<!-- Right Side: Search bar, Profile, and Cart (visible only on desktop) -->
+				<div class="d-none d-lg-flex align-items-center">
+					<!-- Search bar -->
+					<form class="d-lg-block flex-grow-1" role="search" action="{% url 'search_products' %}" method="get">
+						<div class="position-relative">
+							<input class="form-control rounded-pill border-3" type="search" name="q"
+								   placeholder="Search" aria-label="Search">
+							<button class="btn position-absolute top-50 end-0 translate-middle-y me-2" type="submit">
+								<i class="fas fa-search text-muted"></i>
 							</button>
 						</div>
+					</form>
+		
+					<!-- Profile Icon with dropdown (desktop only) -->
+					<div class="d-flex nav-item position-relative ms-3">
+						{% if not user.is_authenticated %}
+						<a class="btn" id="profile-button" href="#" data-bs-toggle="offcanvas"
+						   data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+							<i class="fa-solid fa-user"></i>
+						</a>
+						{% else %}
+						<div class="dropdown">
+							<button class="btn" id="profile-button" role="button" data-bs-toggle="dropdown"
+									aria-expanded="false">
+								<i class="fa-solid fa-user"></i>
+							</button>
+							<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+								<li><a class="dropdown-item" href="{% url 'accounts:profile' %}">Profile</a></li>
+								<li>
+									<form method="POST" action="{% url 'accounts:logout' %}" class="m-0">
+										{% csrf_token %}
+										<button type="submit" class="dropdown-item">Logout</button>
+									</form>
+								</li>
+							</ul>
+						</div>
+						{% endif %}
+					</div>
+		
+					<!-- Cart Icon (desktop only) -->
+					<div class="d-flex nav-item position-relative ms-3">
+						<button id="cart-button" class="btn cart-button" data-bs-toggle="offcanvas" data-bs-target="#cart-off-canvas" aria-controls="cart-off-canvas">
+							<i class="fa-solid fa-cart-shopping"></i>
+							<span id="cart-total-items" class="position-absolute top-0 start-100 translate-middle badge rounded-pill">
+								0
+							</span>
+						</button>
 					</div>
 				</div>
 			</div>
 		</nav>
-
+		
+		<!-- Offcanvas for Mobile Navigation -->
+		<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNav" aria-labelledby="offcanvasNavLabel">
+			<div class="offcanvas-header">
+				<h5 class="offcanvas-title" id="offcanvasNavLabel">Menu</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+			</div>
+			<div class="offcanvas-body">
+				<!-- Mobile-specific Links here -->
+				<ul class="navbar-nav">
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'products:product_list' %}">Products</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'about' %}">About Us</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'contact' %}">Contact</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#">Categories</a>
+						<ul class="list-unstyled ps-3">
+							{% for category in categories %}
+							{% if category.name != "Uncategorised" %}
+							<li><a class="dropdown-item" href="{% url 'products:category_products' category.slug %}">
+								{{ category.name }}
+							</a></li>
+							{% endif %}
+							{% endfor %}
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		
+	
+		
 
 
 
@@ -224,7 +254,7 @@
 
 
 		<!-- Cart Off-Canvas Container -->
-		<div id="cart-off-canvas" class="off-canvas">
+		<div id="cart-off-canvas" class="offcanvas offcanvas-end">
 			<div class="cart-header">
 				<h2>Shopping Cart</h2>
 				<button id="close-cart" class="close-btn">&times;</button>
@@ -309,14 +339,8 @@
 					</div>
 				</div>
 
-				<!-- Information Links Section -->
-				<div class="col-md-6">
-					<h5 class="mb-4 fw-bold text-start" style="color: #7d7d7d ;">Information</h5>
-					<ul class="list-unstyled text-start">
-						<li><a href="{% url 'contact' %}" class="text-muted text-decoration-none">Contact Us</a></li>
-						<li><a href="{% url 'about' %}" class="text-muted text-decoration-none">About Us</a></li>
-					</ul>
-				</div>
+
+
 			</div>
 		</div>
 	</footer>
@@ -1064,39 +1088,39 @@
 
 
 		document.addEventListener('DOMContentLoaded', function () {
-    const checkoutBtn = document.querySelector('.btn-checkout'); // Upewnij się, że `checkoutBtn` odpowiada Twojemu przyciskowi Check Out.
+			const checkoutBtn = document.querySelector('.btn-checkout'); // Upewnij się, że `checkoutBtn` odpowiada Twojemu przyciskowi Check Out.
 
-    if (checkoutBtn) { // Sprawdź, czy przycisk istnieje
-        checkoutBtn.addEventListener('click', async function (e) {
-            e.preventDefault();  // Zapobiega domyślnemu działaniu
-            console.log('Checkout button clicked. Starting to check cart contents.'); // Debug log
+			if (checkoutBtn) { // Sprawdź, czy przycisk istnieje
+				checkoutBtn.addEventListener('click', async function (e) {
+					e.preventDefault();  // Zapobiega domyślnemu działaniu
+					console.log('Checkout button clicked. Starting to check cart contents.'); // Debug log
 
-            try {
-                // Sprawdź, czy są produkty w koszyku
-                const response = await fetch('/cart/get-items/');
-                console.log('Response from server received:', response); // Debug log
-                const data = await response.json();
+					try {
+						// Sprawdź, czy są produkty w koszyku
+						const response = await fetch('/cart/get-items/');
+						console.log('Response from server received:', response); // Debug log
+						const data = await response.json();
 
-                console.log('Cart data:', data); // Debug log - wyświetlenie zawartości koszyka
+						console.log('Cart data:', data); // Debug log - wyświetlenie zawartości koszyka
 
-                if (data.items && data.items.length === 0) {
-                    // Wyświetl komunikat, jeśli koszyk jest pusty
-                    console.log('Cart is empty. Showing toast notification.'); // Debug log
-                    showToast('Your cart is empty. Add items before proceeding to checkout.', 'error');
-                } else {
-                    // Przejdź do checkout, jeśli koszyk zawiera produkty
-                    console.log('Cart has items. Redirecting to checkout page.'); // Debug log
-                    window.location.href = '/checkout/';
-                }
-            } catch (error) {
-                console.error('Error checking cart contents:', error); // Detailed error log
-                showToast('An error occurred. Please try again.', 'error');
-            }
-        });
-    } else {
-        console.error('Checkout button not found. Ensure it exists in the HTML with class="btn-checkout".'); // Debug log
-    }
-});
+						if (data.items && data.items.length === 0) {
+							// Wyświetl komunikat, jeśli koszyk jest pusty
+							console.log('Cart is empty. Showing toast notification.'); // Debug log
+							showToast('Your cart is empty. Add items before proceeding to checkout.', 'error');
+						} else {
+							// Przejdź do checkout, jeśli koszyk zawiera produkty
+							console.log('Cart has items. Redirecting to checkout page.'); // Debug log
+							window.location.href = '/checkout/';
+						}
+					} catch (error) {
+						console.error('Error checking cart contents:', error); // Detailed error log
+						showToast('An error occurred. Please try again.', 'error');
+					}
+				});
+			} else {
+				console.error('Checkout button not found. Ensure it exists in the HTML with class="btn-checkout".'); // Debug log
+			}
+		});
 
 
 
