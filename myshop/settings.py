@@ -134,7 +134,8 @@ GOOGLE_MAPS_API_KEY = env('GOOGLE_MAPS_API_KEY')
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/checkout/'
 
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
 
 
 

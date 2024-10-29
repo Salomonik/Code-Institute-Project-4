@@ -48,7 +48,7 @@
 					<img src="{% static 'images/logo2.webp' %}" alt="Logo" style="height: 40px;">
 				</a>
 				<a class="navbar-brand d-none d-lg-block" href="{% url 'home' %}">
-					<img src="{% static 'images/logo.webp' %}" alt="Logo" style="height: 40px;">
+					<img src="{% static 'images/logo2.webp' %}" alt="Logo" style="height: 40px;">
 				</a>
 
 				<!-- Right Side (Profile & Cart icons on mobile) -->
@@ -322,7 +322,7 @@
 		</div>
 	</header>
 
-	<main class="container mt-4">
+	<main class="container d-flex justify-content-center align-items-center p-3">
 		{% block content %}
 		{% endblock %}
 	</main>
