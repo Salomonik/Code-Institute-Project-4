@@ -4,23 +4,23 @@ import environ
 import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-# Inicjalizacja środowiska
+
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
-# Klucz tajny
+
 SECRET_KEY = env('SECRET_KEY')
 
-# Tryb debugowania
+
 DEBUG = env.bool('DEBUG', default=False)
 
 
 ALLOWED_HOSTS = ['milestone-project-4-jp-01c67f637dac.herokuapp.com', 'localhost', '127.0.0.1', '.herokuapp.com']
 
 
-# Aplikacje
+# Apps
 INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.admin',
