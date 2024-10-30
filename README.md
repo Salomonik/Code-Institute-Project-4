@@ -600,3 +600,43 @@ During the development and testing phases, the application was rigorously tested
 
 - **Cart issue**: There is an unresolved issue where "Your cart is empty." doesnt show after item is deleted from cart due to JS rendering"
 
+## Technologies Used
+
+### Frontend Technologies
+
+- **HTML5**: Markup language used for structuring content on the web.
+- **CSS3**: Stylesheet language used for describing the presentation of web pages.
+- **JavaScript**: Programming language used to create dynamic and interactive elements on web pages.
+- **Bootstrap CSS**: A modern responsive front-end framework based on Material Design.
+- **Font Awesome**: A popular icon toolkit for adding scalable vector icons to the UI.
+
+### Backend Technologies
+
+- **Python**: Programming language used for backend development.
+- **Django**: A high-level Python web framework that enables rapid development of secure and maintainable websites.
+- **Django ORM**: Provides an Object-Relational Mapping (ORM) layer for interacting with the database.
+- **Gunicorn**: A Python WSGI HTTP server for deploying the web application.
+
+### Database
+
+- **PostgreSQL**: An advanced, open-source relational database management system used to store and manage the application's data.
+
+### APIs and Libraries
+
+- **Stripe API**: Used to handle secure payment processing.
+- **Requests**: A simple HTTP library for Python used to make API requests.
+- **Jinja2**: A templating engine for Python used to render HTML templates in Django.
+- **Font Awesome**: Library used for adding icons to the application for improved UI/UX.
+
+### Deployment
+
+- **Heroku**: A cloud platform used to deploy, manage, and scale the application.
+- **Git**: Version control system used for tracking changes in the source code.
+
+### Other Tools
+
+- **Django Admin**: Built-in admin interface for managing application data and users.
+
+
+
+
