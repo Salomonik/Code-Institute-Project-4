@@ -445,3 +445,39 @@ The layout is responsive, adjusting gracefully to different screen sizes for a s
 ### Additional Features
 
 - **Product Filtering and Sorting**: Users can filter products by category and sort items by price or popularity to streamline their shopping experience.
+
+## Implementation Details
+
+### Technology Stack
+
+- **Frontend**: HTML, CSS (Bootstrap), JavaScript
+- **Backend**: Python, Django
+- **Database**: PostgreSQL
+- **APIs**: Stripe API for payment processing
+- **Hosting**: Heroku
+
+### Environment Configuration
+
+The application utilizes environment variables to securely manage configuration settings. These variables are stored in a `.env` file and include:
+
+- `DJANGO_SECRET_KEY`: A secret key used for Django session management and CSRF protection.
+- `DATABASE_URL`: The URL for connecting to the PostgreSQL database.
+- `DEBUG`: A flag to enable/disable debug mode in the development environment.
+- `STRIPE_SECRET_KEY`: The secret key for processing payments through the Stripe API.
+- `STRIPE_PUBLISHABLE_KEY`: The publishable key used for the frontend Stripe integration.
+- `ALLOWED_HOSTS`: Hosts allowed to access the application in production.
+
+### Database Models
+
+The application uses Django ORM to define the following database models:
+
+- **User**: Stores user account information, including username, email, and password hash.
+- **Product**: Stores information about each product, including name, description, price, stock, category, and images.
+- **Category**: Organizes products into categories, aiding in filtering and browsing.
+- **Order**: Stores order information for each transaction, including user, order date, total amount, and status.
+- **OrderItem**: Links products to orders, storing quantity and price per item.
+- **Cart**: Tracks items added by the user before checkout, containing a list of `CartItem` entries.
+- **CartItem**: Associates products with the shopping cart, including quantity and date added.
+
+
+
