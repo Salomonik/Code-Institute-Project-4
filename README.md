@@ -32,3 +32,40 @@ As the owner of **Crafted Nature**, the primary goals of the site are:
 6. **Scalability and Performance**: Utilize scalable technologies such as Heroku for deployment and PostgreSQL for data storage to handle a growing number of users and ensure the site performs well under load.
 
 7. **Security**: Implement robust security measures to protect user data, including secure authentication, payment data encryption, and CSRF protection to ensure a safe shopping environment.
+
+## Development Life Cycle
+
+### Project Planning
+
+During the project planning phase, the following steps were undertaken to ensure a structured and well-organized development process for **Crafted Nature**:
+
+1. **Requirements Gathering**:
+
+   - Identified the primary goals and objectives of the project, including providing a seamless shopping experience and secure payment processing.
+   - Defined the core features and functionalities required for the application, such as product browsing, user authentication, shopping cart management, and order processing.
+
+2. **Research and Analysis**:
+
+   - Conducted research on e-commerce platforms to understand best practices for user experience, security, and product management.
+   - Analyzed other handcrafted product sites to identify unique features and potential areas for improvement in user engagement and functionality.
+
+3. **Technical Planning**:
+
+   - Chose the Django framework for backend development due to its robust features for building e-commerce applications.
+   - Selected PostgreSQL as the database system for its reliability and compatibility with Heroku for deployment.
+   - Decided on using custom responsive CSS for frontend design to ensure a smooth and consistent user experience across all devices.
+
+4. **Wireframing and Prototyping**:
+
+   - Created wireframes and prototypes to visualize the layout and user flow of the website, including the product pages, shopping cart, and checkout process.
+   - Collected feedback on the prototypes to make necessary adjustments before development commenced.
+
+5. **Task Breakdown and Timeline**:
+
+   - Broke down the project into manageable tasks and milestones, focusing on areas like database setup, frontend design, payment integration, and security.
+   - Established a timeline for development, setting realistic deadlines for each phase to ensure steady progress.
+
+6. **Setting Up the Development Environment**:
+
+   - Configured version control using Git and set up a repository on GitHub for collaborative development and tracking changes.
+   - Established a local development environment with necessary tools and libraries, including virtual environments, required Python packages, and PostgreSQL configuration.
