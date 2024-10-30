@@ -334,3 +334,63 @@ The layout is responsive, adjusting gracefully to different screen sizes for a s
 - **Padding and Margin**: Consistent padding and margin ensure balanced spacing between elements, creating a clean and organized look.
 - **Box Shadow**: Subtle shadows provide depth to elements, distinguishing them from the background and enhancing the visual hierarchy.
 
+## Wireframe
+
+<details>
+<summary>Wireframe</summary>
+
+<details>
+
+<summary>Main Page</summary>
+
+![Main Page Wireframe](./media\documentation/main-big.png)
+
+</details>
+
+<details>
+<summary>Category</summary>
+
+![Product Category](./media\documentation/productsandcategory.png)
+
+</details>
+
+<details>
+<summary>Profile</summary>
+
+![Profile Wireframe](./media\documentation/profile-big.png)
+
+</details>
+
+</details>
+
+## Screenshots
+
+<details>
+<summary>Screenshots</summary>
+
+<details>
+
+<summary>Main Page</summary>
+
+![Main Page ](./media\documentation/screen-main.png)
+![Main Page ](./media\documentation/screen-main-mobile.png)
+
+</details>
+
+<details>
+<summary>Game Details</summary>
+
+![Products](./media\documentation/screen-products.png)
+![Products](./media\documentation/screen-products-mobile.png)
+
+</details>
+
+<details>
+<summary>Profile</summary>
+
+![Profile](./media\documentation/screen-profile.png)
+![Profile](./media\documentation/screen-profile-mobile.png)
+
+</details>
+
+</details>
