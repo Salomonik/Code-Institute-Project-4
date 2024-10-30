@@ -562,4 +562,41 @@ The application uses Django ORM to define the following database models:
 The **checkout** app includes automated tests covering key functionalities of the checkout process, such as payment handling, order confirmation, and validation of customer information. These tests ensure the reliability and security of the checkout flow.
 
 
+## Browser Testing
+
+### 1. Cross-browser Testing
+- **Objective**: Ensure the application works correctly across different browsers.
+- **Steps**:
+  1. Test the application in different browsers (Chrome, Firefox, Safari, Edge).
+  2. Verify that all features work as expected.
+- **Expected Result**: The application works correctly across all tested browsers.
+
+### 2. Responsive Design Testing
+- **Objective**: Verify that the application is responsive and works well on different screen sizes.
+- **Steps**:
+  1. Test the application on different devices (desktop, tablet, mobile).
+  2. Verify that the layout adjusts correctly to different screen sizes.
+- **Expected Result**: The application is responsive and works well on different devices.
+
+## Bug Tracking and Fixes
+
+### Overview
+
+During the development and testing phases, the application was rigorously tested to identify and resolve any potential bugs. The following outlines the process used for tracking and fixing bugs.
+
+### Bug Tracking Process
+
+1. **Identification**: Bugs were identified through manual testing, automated testing, and user feedback.
+2. **Logging**: Identified bugs were logged.
+5. **Resolution**: investigated and fixed the bugs.
+6. **Verification**: Fixed bugs were tested to ensure they were resolved and did not introduce new issues.
+
+### Fixed Bugs
+
+- **User Registration Issues**: Fixed an issue where users could register with an existing email address, causing database conflicts.
+- **Login Problems**: Resolved an issue where users were unable to log in due to incorrect password hash comparison.
+
+### Known Issues
+
+- **Cart issue**: There is an unresolved issue where "Your cart is empty." doesnt show after item is deleted from cart due to JS rendering"
 
