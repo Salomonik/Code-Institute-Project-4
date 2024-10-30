@@ -253,3 +253,26 @@ The following features are not included in the current scope of the **Crafted Na
 
    - The application currently supports only one currency and does not include multi-currency or localization options.
 
+## User Experience
+
+### User Stories
+
+1. **As a visitor**, I want to be able to search for products by name so that I can easily find items of interest.
+
+2. **As a visitor**, I want to view detailed information about a product, including its description, price, and stock availability, so that I can make informed purchasing decisions.
+
+3. **As a visitor**, I want to be able to register for an account so that I can save my details for faster checkout and track my orders.
+
+4. **As a registered user**, I want to be able to log in and log out of my account to keep my personal information secure.
+
+5. **As a registered user**, I want to update my profile information, such as my email or password, to keep my account information up to date.
+
+6. **As a registered user**, I want to add items to my shopping cart to keep track of products I intend to purchase.
+
+7. **As a registered user**, I want to view and manage items in my cart, including adjusting quantities and removing items, before completing my purchase.
+
+8. **As a registered user**, I want to securely proceed through checkout, entering my payment and shipping details with confidence.
+
+9. **As a registered user**, I want to view my past orders and order status on my profile page, so that I can keep track of my purchases.
+
+10. **As a registered user**, I want to be able to contact customer support if I have questions about my order or products.
