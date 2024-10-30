@@ -78,13 +78,13 @@ h3 {
 
 p {
     font-family: 'Inter', sans-serif;
-    /* lub inna wybrana czcionka */
+
     font-size: 1rem;
-    /* lub 16px dla standardowej wielkości */
+
     line-height: 1.4;
-    /* odpowiednia interlinia dla lepszej czytelności */
+
     color: #333;
-    /* przyjemny odcień ciemnoszarego, przyjazny dla oczu */
+
     margin-bottom: 1rem;
     text-align: justify;
     max-width: 100%;

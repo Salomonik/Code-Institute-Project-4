@@ -306,3 +306,31 @@ The following features are not included in the current scope of the **Crafted Na
 
    - Notifications or flash messages provide feedback to users for successful actions, such as adding a product to the cart, updating profile information, or completing a purchase.
 
+
+## Design
+
+### Color Scheme
+
+The color scheme is designed to be visually engaging and comfortable for users, creating a cohesive and modern look throughout the application. The palette includes:
+
+- **Primary Color**: `#333`
+- **Secondary Color**: `#555`
+- **Accent Color**: `#007acc`
+- **Background Color**: `#f4f4f9`
+- **Text Color**: `#222`
+
+### Typography
+
+The application’s font choices ensure readability and a clean, modern look:
+
+- **Header Font**: `'Arial'`, sans-serif
+- **Body Font**: `'Inter'`
+
+### Layout
+
+The layout is responsive, adjusting gracefully to different screen sizes for a seamless user experience. Key design principles include:
+
+- **Max Width**: The primary content container is set to a maximum width of `1200px` to maintain readability and a structured layout on larger screens.
+- **Padding and Margin**: Consistent padding and margin ensure balanced spacing between elements, creating a clean and organized look.
+- **Box Shadow**: Subtle shadows provide depth to elements, distinguishing them from the background and enhancing the visual hierarchy.
+
