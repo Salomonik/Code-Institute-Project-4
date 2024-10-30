@@ -69,3 +69,51 @@ During the project planning phase, the following steps were undertaken to ensure
 
    - Configured version control using Git and set up a repository on GitHub for collaborative development and tracking changes.
    - Established a local development environment with necessary tools and libraries, including virtual environments, required Python packages, and PostgreSQL configuration.
+
+### Content Requirements
+
+_Pages and Features_
+
+1. **Home Page**:
+
+   - Introduction to the site and its main offerings.
+   - Search bar for users to search for products by name or category.
+
+2. **Product Details Page**:
+
+   - Detailed information about a specific product, including:
+     - Name
+     - Description
+     - Price
+     - Stock availability
+     - Product images
+   - Option to add the product to the shopping cart.
+
+3. **User Profile Page**:
+
+   - Display user information.
+   - List of past orders with order details and statuses.
+   - Option to update user profile information.
+
+4. **Shopping Cart Page**:
+
+   - Overview of items added to the cart, with options to:
+     - Adjust item quantities
+     - Remove items from the cart
+     - View subtotal and total prices
+   - Proceed to checkout button.
+
+5. **Checkout Page**:
+
+   - Form for users to enter shipping and payment information.
+   - Summary of items in the cart and total cost.
+   - Stripe payment integration to securely handle payments.
+
+6. **Login Page**:
+
+   - Form for users to log in with their email and password.
+
+7. **Registration Page**:
+
+   - Form for new users to sign up with their username, email, and password.
+   - Validation for unique usernames and emails.
