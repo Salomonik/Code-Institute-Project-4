@@ -266,7 +266,7 @@
 		<div class="cart-item-details">
 			<h4>${item.name}</h4>
 			<p class="product-category">${item.category}</p>
-			<p>$${item.price}</p>
+			<p>£${item.price}</p>
 			<div>
 				<button class="remove-item" data-product-id="${item.product_id}">
 			<i class="trash fa fa-trash"></i>
@@ -392,8 +392,8 @@
 			cartItemsContainer.innerHTML = '';  // Make sure this clears the cart first
 
 			if (data.items.length === 0) {
+				cartSubtotal.textContent = 'Subtotal: £0.00';
 				emptyCartMessage.style.display = 'block';
-				cartSubtotal.textContent = 'Subtotal: $0.00';
 			} else {
 				emptyCartMessage.style.display = 'none';
 
@@ -413,7 +413,7 @@
 					<div class="cart-item-details">
 						<h4 class="product-name">${item.name}</h4>
 						<p class="product-category">${item.category ? item.category : 'Unknown Category'}</p>
-						<p class="product-price">$${item.price}</p>
+						<p class="product-price">£${item.price}</p>
 
 						<!-- Quantity Controls -->
 						<div class="cart-one-line">
