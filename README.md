@@ -520,4 +520,46 @@ The application uses Django ORM to define the following database models:
    - **Diagram**: `PRODUCT ||--o{ CART_ITEM : included in`
 
 
+## Manual Testing
+
+### 1. Home Page
+- **Objective**: Verify that the home page loads correctly and displays featured products.
+- **Steps**:
+  1. Navigate to the home page.
+  2. Check if featured products are displayed.
+  3. Verify the accuracy of images, titles, and descriptions for each product.
+- **Expected Result**: The home page loads without errors, and featured products are displayed correctly.
+
+### 2. User Registration
+- **Objective**: Ensure a new user can register successfully.
+- **Steps**:
+  1. Go to the registration page.
+  2. Fill in the registration form with valid data.
+  3. Submit the form.
+  4. Check that a success message appears, and the user is redirected to the login page.
+- **Expected Result**: The user registers successfully, with a success message displayed.
+
+### 3. User Login
+- **Objective**: Ensure registered users can log in without issues.
+- **Steps**:
+  1. Go to the login page.
+  2. Enter valid credentials.
+  3. Submit the form.
+  4. Check that the user is redirected to the home page and that user-specific options (e.g., “My Account,” “Favorites”) are visible.
+- **Expected Result**: Successful login with user-specific options displayed.
+
+### 4. Checkout Process
+- **Objective**: Confirm the checkout process is functional, including payment and order confirmation.
+- **Steps**:
+  1. Add products to the cart.
+  2. Go to the checkout page.
+  3. Fill in payment and shipping details.
+  4. Confirm the order.
+- **Expected Result**: The order is processed successfully, with a confirmation message displayed and payment recorded.
+
+## Automated Tests
+
+The **checkout** app includes automated tests covering key functionalities of the checkout process, such as payment handling, order confirmation, and validation of customer information. These tests ensure the reliability and security of the checkout flow.
+
+
 
