@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'cart',  
     'django_countries',
     'phonenumber_field',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
