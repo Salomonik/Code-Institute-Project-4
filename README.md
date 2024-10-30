@@ -638,5 +638,74 @@ During the development and testing phases, the application was rigorously tested
 - **Django Admin**: Built-in admin interface for managing application data and users.
 
 
+# Pre-Deployment Checklist
+
+Before deploying the application, ensure that the following tasks are completed:
+
+### Code Quality and Testing
+
+- [x] **Code Review**: Ensure all code has been reviewed and adheres to the project's coding standards.
+
+### Application Configuration
+
+- [x] **Environment Variables**: Ensure all necessary environment variables are set, including `DJANGO_SETTINGS_MODULE`, `DATABASE_URL`, `SECRET_KEY`, `STRIPE_PUBLIC_KEY`, and `STRIPE_SECRET_KEY`.
+- [x] **Configuration Files**: Verify that configuration files such as `settings.py` and `.env` are correctly set up for the production environment.
+- [x] **Database Migrations**: Run database migrations to ensure the production database schema is up-to-date.
+
+
+### Deployment Steps
+
+1. **Set Up Heroku CLI**: Make sure you have the Heroku CLI installed on your local machine. If not, you can install it from [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli).
+
+2. **Log In to Heroku**:
+    ```sh
+    heroku login
+    ```
+
+3. **Create a New Heroku Application**:
+    ```sh
+    heroku create your-app-name
+    ```
+
+4. **Set Environment Variables** on Heroku:
+    ```sh
+    heroku config:set SECRET_KEY=your_secret_key
+    heroku config:set DATABASE_URL=your_database_url
+    heroku config:set STRIPE_PUBLIC_KEY=your_stripe_public_key
+    heroku config:set STRIPE_SECRET_KEY=your_stripe_secret_key
+    ```
+
+5. **Push Code to Heroku**:
+    ```sh
+    git push heroku main
+    ```
+
+6. **Run Database Migrations**:
+    ```sh
+    heroku run python manage.py migrate
+    ```
+
+8. **Collect Static Files**:
+    ```sh
+    heroku run python manage.py collectstatic --noinput
+    ```
+
+9. **Open the Application**:
+    ```sh
+    heroku open
+    ```
+
+### Post-Deployment
+
+1. **Monitor Logs**: Use Heroku logs to monitor the application for any errors or issues.
+    ```sh
+    heroku logs --tail
+    ```
+
+2. **Testing**: Perform final testing in the production environment to ensure everything is working as expected.
+
+
+
+
 
 
