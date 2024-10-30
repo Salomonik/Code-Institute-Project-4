@@ -1,41 +1,72 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
 <div class="container mt-5">
-	<h3>Your Orders</h3>
+    <div class="row">
+        <!-- Left Column with Image -->
+        <div class="col-md-6 d-none d-md-block">  <!-- Hidden on mobile -->
+            <img src="{% static 'images/profile.webp' %}" class="img-fluid rounded shadow" alt="Welcome Image">
+        </div>
 
-	{% if orders %}
-	<div class="accordion m-5" id="ordersAccordion">
-		{% for order in orders %}
-			<div class="accordion-item">
-				<h2 class="accordion-header" id="heading{{ order.id }}">
-					<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ order.id }}" aria-expanded="false" aria-controls="collapse{{ order.id }}">
-						Order #{{ order.id }} - {{ order.created_at|date:"Y-m-d H:i" }} - Total: £{{ order.total }}
-					</button>
-				</h2>
-				<div id="collapse{{ order.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ order.id }}" data-bs-parent="#ordersAccordion">
-					<div class="accordion-body">
-						<h5>Order Details</h5>
-						<ul class="list-group mb-3">
-							{% for entry in order.items_with_total %}
-								<li class="list-group-item d-flex justify-content-between align-items-center">
-									{{ entry.item.product.name }} (Quantity: {{ entry.item.quantity }})
-									<span>£{{ entry.total_price }}</span>
-								</li>
-							{% endfor %}
-						</ul>
-						<p><strong>Total:</strong> £{{ order.total }}</p>
-					</div>
-				</div>
-			</div>
-		{% empty %}
-			<p>No orders found.</p>
-		{% endfor %}
-	</div>
-	
+        <!-- Right Column with Content -->
+        <div class="col-md-6">
+            <!-- Welcome Message with Username -->
+            <div class="text-center mb-4">
+                <h2>Welcome, {{ user.username }}!</h2>
+            </div>
 
-	{% else %}
-	<p>You have no orders yet.</p>
-	{% endif %}
+            <!-- Buttons to Change Password and Logout -->
+            <div class="d-flex justify-content-around mb-4">
+                <!-- Button to Change Password -->
+                <a href="{% url 'accounts:password_change' %}" class="btn btn-warning">
+                    <i class="fa-solid fa-lock me-2"></i>Change Password
+                </a>
+
+                <!-- Button to Logout -->
+                <a href="{% url 'accounts:logout' %}" class="btn btn-warning">
+                    <i class="fa-solid fa-right-from-bracket me-2"></i>Logout
+                </a>
+            </div>
+
+            <!-- Order History Section -->
+            <h3 class="text-center my-4">Your Orders</h3>
+            {% if orders %}
+            <div class="accordion" id="ordersAccordion">
+                {% for order in orders %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading{{ order.id }}">
+                            <button class="accordion-button collapsed" type="button" 
+                                    data-bs-toggle="collapse" data-bs-target="#collapse{{ order.id }}" 
+                                    aria-expanded="false" aria-controls="collapse{{ order.id }}">
+                                Order #{{ order.id }} - {{ order.created_at|date:"Y-m-d H:i" }} - Total: £{{ order.total }}
+                            </button>
+                        </h2>
+                        <div id="collapse{{ order.id }}" class="accordion-collapse collapse" 
+                             aria-labelledby="heading{{ order.id }}" data-bs-parent="#ordersAccordion">
+                            <div class="accordion-body">
+                                <h5 class="text-primary">Order Details</h5>
+                                <ul class="list-group mb-3">
+                                    {% for entry in order.items_with_total %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            {{ entry.item.product.name }}
+                                            <span class="badge bg-secondary rounded-pill">Qty: {{ entry.item.quantity }}</span>
+                                            <span>£{{ entry.total_price }}</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                <p class="fw-bold text-end">Total: <span class="text-primary">£{{ order.total }}</span></p>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-center">No orders found.</p>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-center">You have no orders yet.</p>
+            {% endif %}
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -5,6 +5,8 @@
 {% block content %}
 <div class="container">
     
+    <button class="btn btn-outline-secondary btn-light mt-4 mb-4"
+    onclick="window.location.href='{% url 'products:product_list' %}'">Back to Products</button>
 
      <!-- Product Grid -->
      <div class="row">
@@ -33,9 +35,12 @@
                         </a></span>
                 </div>
             </div>
+            
         </div>
         {% endif %}
         {% endfor %}
     </div>
+    <button class="btn btn-outline-secondary btn-light mt-3"
+    onclick="window.location.href='{% url 'products:product_list' %}'">Back to Products</button>
 </div>
 {% endblock %}

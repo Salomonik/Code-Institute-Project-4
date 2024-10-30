@@ -392,8 +392,8 @@
 			cartItemsContainer.innerHTML = '';  // Make sure this clears the cart first
 
 			if (data.items.length === 0) {
-				emptyCartMessage.style.display = 'block';
 				cartSubtotal.textContent = 'Subtotal: £0.00';
+				emptyCartMessage.style.display = 'block';
 			} else {
 				emptyCartMessage.style.display = 'none';
 
@@ -611,7 +611,7 @@
 			console.log(`Liczba przedmiotów: ${data.items.length}`);
 			console.log(`Łączna wartość: ${data.total}`);
 
-			// Szczegóły każdego produktu
+			
 			data.items.forEach((item, index) => {
 				console.log(`Produkt #${index + 1}:`);
 				console.log(`  Nazwa: ${item.name}`);

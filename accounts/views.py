@@ -29,10 +29,10 @@ def login_view(request):
 
 def register_view(request):
     if request.method == 'POST':
-        form = UserRegisterForm(request.POST)  # Użycie własnego formularza z jednym hasłem
+        form = UserRegisterForm(request.POST)   # Using custom form with a single password field
         if form.is_valid():
             user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password'])  # Hasło ustawione za pomocą `set_password`
+            user.set_password(form.cleaned_data['password'])
             user.save()
             if request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 return JsonResponse({'success': True, 'redirect_url': '/'})
@@ -55,14 +55,14 @@ def logout_view(request):
 def profile(request):
     orders = Order.objects.filter(user=request.user).order_by('-created_at')
 
-    # Dla każdego zamówienia obliczamy całkowitą cenę dla elementów
+    # For each order, calculate the total price for each item
     for order in orders:
         order.items_with_total = [
             {
                 'item': item,
                 'total_price': item.product.price * item.quantity
             }
-            for item in order.items.all()  # użycie 'items' zamiast 'orderitem_set'
+            for item in order.items.all()  # Access 'items' instead of 'orderitem_set'
         ]
 
     return render(request, 'accounts/profile.html', {
