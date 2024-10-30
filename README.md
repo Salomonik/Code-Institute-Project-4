@@ -479,5 +479,7 @@ The application uses Django ORM to define the following database models:
 - **Cart**: Tracks items added by the user before checkout, containing a list of `CartItem` entries.
 - **CartItem**: Associates products with the shopping cart, including quantity and date added.
 
+![database Wireframe](./media/documentation/graphviz.svg)
+
 
 
