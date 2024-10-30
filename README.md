@@ -276,3 +276,33 @@ The following features are not included in the current scope of the **Crafted Na
 9. **As a registered user**, I want to view my past orders and order status on my profile page, so that I can keep track of my purchases.
 
 10. **As a registered user**, I want to be able to contact customer support if I have questions about my order or products.
+
+## Returning User Experience
+
+1. **Seamless Login**:
+
+   - Returning users can easily log in to their accounts using their registered email and password to access their shopping and profile information.
+
+2. **Profile Management**:
+
+   - Returning users can view and update their account information.
+   - Users can see a summary of their past orders.
+
+3. **Cart Management**:
+
+   - Returning users can view and manage items in their shopping cart, which remains saved in their profile for easy access during their next visit.
+   - They can add new items to their cart or remove items they are no longer interested in purchasing.
+
+4. **Order History**:
+
+   - Returning users can view their past orders directly from their profile page, allowing them to track previous purchases and order statuses.
+
+5. **Product Search and Discovery**:
+
+   - Users can continue to search for products by name using the search functionality.
+
+
+6. **Personalized Experience**:
+
+   - Notifications or flash messages provide feedback to users for successful actions, such as adding a product to the cart, updating profile information, or completing a purchase.
+
