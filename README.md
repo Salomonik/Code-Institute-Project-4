@@ -394,3 +394,54 @@ The layout is responsive, adjusting gracefully to different screen sizes for a s
 </details>
 
 </details>
+
+## Features
+
+### Homepage
+
+- **Product Search**: Users can search for products by name or category using the search bar on the homepage.
+- **User Authentication**: Users can log in or register directly from the navigation bar on the homepage for quick access to their accounts.
+
+### User Authentication
+
+- **User Registration**: New users can create an account by providing a username, email, and password, enabling them to save profile and order information.
+- **User Login**: Registered users can log in to their accounts securely using their email and password.
+- **User Logout**: Logged-in users have the option to securely log out from their accounts.
+
+### User Profile
+
+- **Profile Page**: Users have access to a personal profile page where they can view and update their account information.
+- **Order History**: Users can view a list of their past orders, with details such as order dates and statuses to help them track purchases.
+
+### Product Details
+
+- **Detailed Product Information**: Clicking on a product provides detailed information, including a description, price, available stock, and high-quality images.
+- **Add to Cart**: Users can add products to their shopping cart directly from the product page.
+
+### Shopping Cart
+
+- **View Cart**: Users can view all items in their shopping cart, including item quantities and subtotal costs, with options to adjust quantities or remove items.
+- **Cart Summary**: The cart displays the total cost of all items, allowing users to review their order before proceeding to checkout.
+
+### Flash Messages
+
+- **Feedback Messages**: Users receive feedback messages for important actions, such as adding items to the cart, successful login/logout, and completed purchases, to confirm actions.
+
+### Responsive Design
+
+- **Mobile-Friendly**: The application is fully responsive, ensuring a consistent and optimized experience across desktops, tablets, and mobile devices.
+
+### Checkout and Payment
+
+- **Secure Checkout**: Users proceed through a secure checkout where they can enter shipping and payment details.
+- **Stripe Integration**: Stripe is integrated for secure and streamlined payment processing, ensuring user data security and payment reliability.
+
+
+### Security
+
+- **CSRF Protection**: The application employs CSRF tokens to guard against Cross-Site Request Forgery attacks, ensuring secure form submissions.
+- **Password Hashing**: User passwords are securely hashed, with additional layers of security applied to protect sensitive information.
+
+### Additional Features
+
+- **Product Filtering and Sorting**: Users can filter products by category and sort items by price or popularity to streamline their shopping experience.
