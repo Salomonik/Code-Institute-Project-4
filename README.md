@@ -481,5 +481,43 @@ The application uses Django ORM to define the following database models:
 
 ![database Wireframe](./media/documentation/graphviz.svg)
 
+### Table Relationships
+
+1. **User - Order**:
+
+   - **Relationship**: One-to-Many
+   - **Description**: A user can have many orders associated with their account. The `user_id` foreign key in the `order` table references the `id` in the `user` table.
+   - **Diagram**: `USER ||--o{ ORDER : places`
+
+2. **Order - OrderItem**:
+
+   - **Relationship**: One-to-Many
+   - **Description**: Each order can have multiple items. The `order_id` foreign key in the `order_item` table references the `id` in the `order` table.
+   - **Diagram**: `ORDER ||--o{ ORDER_ITEM : contains`
+
+3. **Product - OrderItem**:
+
+   - **Relationship**: One-to-Many
+   - **Description**: Each product can be included in many order items. The `product_id` foreign key in the `order_item` table references the `id` in the `product` table.
+   - **Diagram**: `PRODUCT ||--o{ ORDER_ITEM : part of`
+
+4. **User - Cart**:
+
+   - **Relationship**: One-to-One
+   - **Description**: Each user has one cart associated with their account. The `user_id` foreign key in the `cart` table references the `id` in the `user` table.
+   - **Diagram**: `USER ||--o| CART : owns`
+
+5. **Cart - CartItem**:
+
+   - **Relationship**: One-to-Many
+   - **Description**: A cart can have multiple items in it. The `cart_id` foreign key in the `cart_item` table references the `id` in the `cart` table.
+   - **Diagram**: `CART ||--o{ CART_ITEM : holds`
+
+6. **Product - CartItem**:
+
+   - **Relationship**: Many-to-One
+   - **Description**: A product can be added to many carts as separate cart items. The `product_id` foreign key in the `cart_item` table references the `id` in the `product` table.
+   - **Diagram**: `PRODUCT ||--o{ CART_ITEM : included in`
+
 
 
