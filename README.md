@@ -343,21 +343,21 @@ The layout is responsive, adjusting gracefully to different screen sizes for a s
 
 <summary>Main Page</summary>
 
-![Main Page Wireframe](./media\documentation/main-big.png)
+![Main Page Wireframe](./media/documentation/main-big.png)
 
 </details>
 
 <details>
 <summary>Category</summary>
 
-![Product Category](./media\documentation/productsandcategory.png)
+![Product Category](./media/documentation/productsandcategory.png)
 
 </details>
 
 <details>
 <summary>Profile</summary>
 
-![Profile Wireframe](./media\documentation/profile-big.png)
+![Profile Wireframe](./media/documentation/profile-big.png)
 
 </details>
 
@@ -372,24 +372,24 @@ The layout is responsive, adjusting gracefully to different screen sizes for a s
 
 <summary>Main Page</summary>
 
-![Main Page ](./media\documentation/screen-main.png)
-![Main Page ](./media\documentation/screen-main-mobile.png)
+![Main Page ](./media/documentation/screen-main.png)
+![Main Page ](./media/documentation/screen-main-mobile.png)
 
 </details>
 
 <details>
 <summary>Game Details</summary>
 
-![Products](./media\documentation/screen-products.png)
-![Products](./media\documentation/screen-products-mobile.png)
+![Products](./media/product_images/documentation/screen-products.png)
+![Products](./media/documentation/screen-products-mobile.png)
 
 </details>
 
 <details>
 <summary>Profile</summary>
 
-![Profile](./media\documentation/screen-profile.png)
-![Profile](./media\documentation/screen-profile-mobile.png)
+![Profile](./media/documentation/screen-profile.png)
+![Profile](./media/documentation/screen-profile-mobile.png)
 
 </details>
 
