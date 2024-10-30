@@ -39,7 +39,8 @@ class Product(models.Model):
     
     # Optional field to store an image of the product, e.g., product photo
     # Images are stored in the 'product_images/' folder inside 'media'
-    image = models.ImageField(upload_to='product_images/', null=True, blank=True)
+    image = models.ImageField(upload_to='', null=True, blank=True)
+   # image = models.ImageField(upload_to='product_images/', null=True, blank=True)
     
     # Foreign key linking the product to a category (many-to-one relationship)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, default=get_default_category)

@@ -2,6 +2,9 @@ from pathlib import Path
 import dj_database_url
 import environ
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -36,6 +39,8 @@ INSTALLED_APPS = [
     'django_countries',
     'phonenumber_field',
     'django_extensions',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -135,9 +140,11 @@ GOOGLE_MAPS_API_KEY = env('GOOGLE_MAPS_API_KEY')
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/checkout/'
 
+
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
-
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+CLOUDINARY_URL = os.getenv('CLOUDINARY_URL')
 
 
 
