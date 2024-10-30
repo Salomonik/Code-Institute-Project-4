@@ -117,3 +117,88 @@ _Pages and Features_
 
    - Form for new users to sign up with their username, email, and password.
    - Validation for unique usernames and emails.
+
+
+### Development Life Cycle
+
+## Development
+
+1. **Setting Up Django Application**:
+   - Initialized a Django application.
+   - Configured the app with necessary settings, including database configuration for PostgreSQL and CSRF protection for secure transactions.
+
+2. **Defining Database Models**:
+   - Created Django models for `User`, `Product`, `Category`, `Cart`, `Order`, `OrderItem`, and `CartItem` to manage product listings, user shopping cart, and order processing.
+   - Defined relationships between models, such as foreign keys for user accounts and products.
+
+3. **Payment Integration**:
+   - Integrated with Stripe API to securely handle payment processing during checkout.
+   - Implemented functionality to validate payments and update order statuses after successful transactions.
+
+4. **Frontend Development**:
+   - Created HTML templates using Django's templating engine.
+   - Styled the frontend with custom CSS to ensure responsive design across different devices, providing a smooth shopping experience for users.
+
+
+## Requirements
+
+### Functional Requirements
+
+1. **User Authentication**:
+
+   - Users should be able to register, log in, and log out.
+   - Registered users should have a unique username and email.
+   - Passwords should be hashed and stored securely to ensure user data protection.
+
+2. **User Profile**:
+
+   - Users should be able to view and update their profile information, including changing details like email and password.
+   - Profiles should display past orders and order statuses to help users keep track of their purchases.
+   - Users should have access to their profile where they can manage account information and view order history.
+
+3. **Product Search and Display**:
+
+   - Users should be able to search for products by name.
+   - The application should display product details, including name, description, price, and stock status.
+   - Product data should be organized into categories, making browsing and searching intuitive for users.
+
+4. **Shopping Cart Management**:
+
+   - Users should be able to add products to their shopping cart.
+   - Users should be able to view and manage items in their cart, including adjusting quantities or removing items.
+   - The cart should display the total cost and allow users to proceed to checkout.
+
+5. **Checkout and Payment**:
+
+   - Users should be able to securely enter shipping and payment information during checkout.
+   - Integration with Stripe API should enable secure payment processing.
+   - After successful payment, users should receive a confirmation, and order details should be saved in the database.
+
+6. **Main Page**:
+
+   - The main page should direct users to the product catalog.
+   - Users should have immediate access to browse all available products.
+   - A prominent link or button should guide users to explore product categories or search for specific items.
+
+
+7. **Product Details Page**:
+
+   - The product details page should display all relevant information about the product.
+   - Users should have the option to add the product to their cart directly from this page.
+   - If a product is out of stock, the page should clearly indicate this status.
+
+8. **Responsive Design**:
+
+   - The application should be responsive, ensuring optimal viewing on both desktop and mobile devices.
+   - The layout should adapt to different screen sizes to provide a seamless shopping experience across devices.
+
+9. **Error Handling**:
+
+   - The application should handle errors gracefully, providing users with helpful feedback if something goes wrong.
+   - User-friendly error messages should be displayed for issues such as invalid inputs, out-of-stock items, or failed payment attempts.
+
+10. **Security**:
+
+    - CSRF protection should be implemented to prevent cross-site request forgery.
+    - All user input should be validated to prevent SQL injection, XSS, and other security vulnerabilities.
+    - Passwords and sensitive user data should be securely hashed and encrypted where necessary.
