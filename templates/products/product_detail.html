@@ -9,9 +9,9 @@
         <div class="col-md-6">
             <div class="product-image text-center">
                 {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded" aria-labelledby="Product image">
                 {% else %}
-                <img src="https://via.placeholder.com/400" alt="Placeholder Image" class="img-fluid rounded">
+                <img src="{% static 'images/icon.webp' %}" alt="Placeholder" class="img-fluid rounded">
                 {% endif %}
             </div>
         </div>
@@ -34,7 +34,7 @@
 
             <!-- Add to Cart buttons -->
             <button class="add-to-cart btn btn-warning w-100 py-1 mb-1 rounded-pill" data-product-id="{{ product.id }}"
-                data-stock="{{ product.stock }}">
+                data-stock="{{ product.stock }}" aria-labelledby="add to cart">
                 <i class="fas fa-shopping-cart"></i> Add to Cart
             </button>
             <hr class="dashed-line my-4">

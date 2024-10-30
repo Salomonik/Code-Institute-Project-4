@@ -202,3 +202,54 @@ _Pages and Features_
     - CSRF protection should be implemented to prevent cross-site request forgery.
     - All user input should be validated to prevent SQL injection, XSS, and other security vulnerabilities.
     - Passwords and sensitive user data should be securely hashed and encrypted where necessary.
+
+### Non-Functional Requirements
+
+1. **Performance**:
+
+   - Database queries should be optimized for efficient data retrieval to ensure fast loading times.
+   - The application should minimize resource usage and optimize images and other assets for quicker page loading.
+
+2. **Reliability**:
+
+   - The application should have minimal downtime, with robust error handling and stability under normal usage conditions.
+
+3. **Usability**:
+
+   - The user interface should be intuitive and easy to navigate, guiding users seamlessly through browsing, adding items to the cart, and completing checkout.
+   - Forms, buttons, and other interactive elements should provide clear, immediate feedback to the user.
+
+4. **Security**:
+
+   - Sensitive data, such as user passwords and payment information, should be securely encrypted.
+
+5. **Accessibility**:
+
+   - The application should adhere to accessibility guidelines, including providing descriptive alt text for images, ensuring readable font sizes, and maintaining high contrast between text and background colors for users with visual impairments.
+   - Navigation should be keyboard-friendly, allowing users to access all content without a mouse.
+
+   ### Out of Scope
+
+The following features are not included in the current scope of the **Crafted Nature** project:
+
+
+1. **Product Reviews and Ratings**:
+
+   - The functionality for users to leave reviews or rate products is not available in this version. Future updates may include features for product reviews or ratings.
+
+2. **Advanced Inventory Management**:
+
+   - While basic stock levels are displayed, there is no in-depth inventory management system, such as tracking product variants or supplier information.
+
+3. **Wishlist Functionality**:
+
+   - The option for users to save products to a wishlist is not available in the current scope. Users can add products to their cart, but wishlist features are out of scope for this release.
+
+4. **Multiple Shipping Options**:
+
+   - The checkout process does not offer multiple shipping options or estimated delivery times. Shipping details are handled at a basic level, with one standard shipping method available.
+
+5. **International Currency Support**:
+
+   - The application currently supports only one currency and does not include multi-currency or localization options.
+
