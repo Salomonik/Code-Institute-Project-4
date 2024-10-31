@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
 
 /* Global styles */
 /* Root Variables for Easy Theme Adjustments */
@@ -8,8 +8,8 @@
     --accent-color: #007acc;
     --background-color: #f4f4f9;
     --text-color: #222;
-    --heading-font: 'Arial', sans-serif;
-    --body-font: 'Inter', sans-serif;
+    --heading-font: 'jost', sans-serif;
+    --body-font: 'jost', sans-serif;
     --font-size-base: 18px;
     --line-height: 1.6;
     --padding-base: 1rem;
@@ -25,6 +25,8 @@
     margin: 0;
     padding: 0;
 }
+
+
 
 html {
     font-size: var(--font-size-base);
@@ -109,13 +111,14 @@ section {
 button {
     padding: 0.5rem 1rem;
     font-size: 1rem;
-    color: #fff;
+    color: #333;
     background-color: var(--accent-color);
     border: none;
     border-radius: var(--border-radius);
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
+
 
 
 /* Forms */
@@ -180,13 +183,6 @@ footer {
     margin-right: 15px;
 }
 
-.navbar-brand img {
-    transition: var(--transition);
-}
-
-.navbar-brand img:hover {
-    transform: scale(1.05);
-}
 
 .nav-link {
     font-weight: 500;
